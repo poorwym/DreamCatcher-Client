@@ -17,7 +17,7 @@ function App() {
   return (
     <BrowserRouter>
       <DebugNavbar />
-      <div style={{ marginLeft: '200px' }}>
+      <div style={{ marginLeft: '180px' }}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<RegisterPage />} />
