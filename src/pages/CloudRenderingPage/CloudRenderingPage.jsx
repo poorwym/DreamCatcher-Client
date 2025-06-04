@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Camera from '../../core/Camera.js';
 import './CloudRenderingPage.css';
 import Button from '@mui/material/Button';
@@ -8,6 +8,8 @@ function CloudRenderingPage() {
 
     // 保存 WebSocket 实例
     const wsRef = useRef(null);
+    // 添加渲染状态
+    const [isRendering, setIsRendering] = useState(false);
 
     // 页面加载即建立连接
     useEffect(() => {
@@ -50,6 +52,8 @@ function CloudRenderingPage() {
                 id : crypto.randomUUID(),
                 action : "start_render"
             }))
+            // 设置渲染状态为true
+            setIsRendering(true);
         } else {
             console.warn('WebSocket 尚未连接，无法发送 startRender');
         }
@@ -62,6 +66,8 @@ function CloudRenderingPage() {
                 id : crypto.randomUUID(),
                 action : "stop_render"
             }))
+            // 设置渲染状态为false
+            setIsRendering(false);
         } else {
             console.warn('WebSocket 尚未连接，无法发送 stopRender');
         }
@@ -75,7 +81,7 @@ function CloudRenderingPage() {
             <Button variant="contained" onClick={stopRender}>
                 Stop Rendering
             </Button>
-            <RenderWindow wsRef={wsRef} />
+            <RenderWindow wsRef={wsRef} isRendering={isRendering} />
         </div>
     );
 }
