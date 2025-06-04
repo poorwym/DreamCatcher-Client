@@ -1,0 +1,105 @@
+.page-layout {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    width: calc(100% - 200px); /* 减去DebugNavbar的宽度 */
+    margin-left: 200px; /* 与DebugNavbar宽度相同 */
+    position: relative; /* 添加相对定位 */
+    z-index: 1; /* 确保内容在正确的层级 */
+  }
+  
+  .page-header {
+    background-color: #fff;
+    border-bottom: 1px solid #e9ecef;
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .back-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1px solid #dee2e6;
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: #495057;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .back-button:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+    color: #212529;
+  }
+  
+  .back-button svg {
+    flex-shrink: 0;
+  }
+  
+  .page-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+    flex: 1;
+  }
+  
+  .page-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+  }
+  
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .page-layout {
+      width: 100%;
+      margin-left: 0;
+    }
+    
+    .header-content {
+      padding: 0 15px;
+    }
+    
+    .page-title {
+      font-size: 24px;
+    }
+    
+    .page-content {
+      padding: 20px 15px;
+    }
+    
+    .back-button {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .header-content {
+      gap: 15px;
+    }
+    
+    .page-title {
+      font-size: 20px;
+    }
+    
+    .back-button span {
+      display: none; /* 在小屏幕上隐藏"返回"文字，只显示图标 */
+    }
+  }
