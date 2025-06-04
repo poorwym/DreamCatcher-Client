@@ -2,10 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import Camera from '../../core/Camera.js';
 import './CloudRenderingPage.css';
 import Button from '@mui/material/Button';
-import WebRTCPlayer from "../../components/WebRTCPlayer/WebRTCPlayer.jsx";
+import RenderWindow from "../../components/RenderWindow/RenderWindow.jsx";
 
 function CloudRenderingPage() {
-    const camera = new Camera();
 
     // 保存 WebSocket 实例
     const wsRef = useRef(null);
@@ -44,10 +43,9 @@ function CloudRenderingPage() {
     }, []); // 空依赖数组确保只执行一次
 
     // 点击按钮后向服务端发送开始渲染指令
-    const onClick = () => {
+    const startRender = () => {
         const ws = wsRef.current;
         if (ws && ws.readyState === WebSocket.OPEN) {
-            // ws.send(JSON.stringify({ type: 'startRender' }));
             ws.send(JSON.stringify({
                 id : crypto.randomUUID(),
                 action : "start_render"
@@ -57,12 +55,27 @@ function CloudRenderingPage() {
         }
     };
 
+    const stopRender = () => {
+        const ws = wsRef.current;
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                id : crypto.randomUUID(),
+                action : "stop_render"
+            }))
+        } else {
+            console.warn('WebSocket 尚未连接，无法发送 stopRender');
+        }
+    };
+
     return (
         <div>
-            <Button variant="contained" onClick={onClick}>
+            <Button variant="contained" onClick={startRender}>
                 Start Rendering
             </Button>
-            <WebRTCPlayer />
+            <Button variant="contained" onClick={stopRender}>
+                Stop Rendering
+            </Button>
+            <RenderWindow wsRef={wsRef} />
         </div>
     );
 }

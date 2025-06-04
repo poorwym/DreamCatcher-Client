@@ -76,8 +76,9 @@ function WebRTCPlayer() {
                 id="video"
                 autoPlay
                 playsInline
-                controls
                 muted
+                // controls={false}
+                controls
                 style={{ width: "100%" }}
             />
         </div>
