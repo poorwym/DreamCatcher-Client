@@ -29,15 +29,15 @@
     "resium": "^1.19.0-beta.1",
     "suncalc": "^1.9.0",
     "tailwindcss": "^4.1.4",
-    "vite-plugin-cesium": "^1.2.23"
-    "three": "^0.176.0"
+    "vite-plugin-cesium": "^1.2.23",
+    "three": "^0.176.0",
     "styled-components": "^6.1.18",
     "http-proxy-middleware": "^3.0.5",
     "express": "^5.1.0",
     "cors": "^2.8.5",
     "axios": "^1.9.0",
     "@react-three/fiber": "^9.1.2",
-    "@react-three/drei": "^10.0.8",
+    "@react-three/drei": "^10.0.8"
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",

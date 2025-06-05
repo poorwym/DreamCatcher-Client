@@ -1,8 +1,9 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import cesium from "vite-plugin-cesium";
 
+import cesium from "vite-plugin-cesium";
 export default defineConfig({
+  plugins: [react(), cesium()],
   server: {
     proxy: {
       '/oauth': {
@@ -18,4 +19,3 @@ export default defineConfig({
     }
   }
 })
-  plugins: [react(), cesium()],
