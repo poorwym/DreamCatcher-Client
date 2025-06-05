@@ -1,0 +1,536 @@
+.register-container {
+  min-height: 100vh;
+  padding: 2rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, 
+    rgba(0, 10, 30, 1) 0%,      /* 深海蓝 - 基础背景 */
+    rgba(20, 40, 80, 1) 50%,    /* 深蓝 */
+    rgba(0, 20, 50, 1) 100%     /* 深海蓝 */
+  );
+}
+
+/* 视频背景 - 地球主题优化 */
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.85; /* 稍微提高可见度展示地球美景 */
+  filter: brightness(1.1) contrast(1.1) saturate(1.2); /* 增强地球的色彩 */
+}
+
+/* 背景遮罩层 - 地球主题 */
+.register-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(
+      135deg,
+      rgba(0, 10, 30, 0.3) 0%,     /* 深海蓝 */
+      rgba(16, 30, 50, 0.4) 30%,    /* 深空蓝 */
+      rgba(32, 45, 70, 0.35) 70%,   /* 大气蓝 */
+      rgba(0, 20, 40, 0.3) 100%     /* 深海蓝 */
+    );
+  z-index: 1;
+}
+
+/* 动态光效 - 模拟大气层和极光 */
+.register-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(64, 224, 208, 0.06) 0%, transparent 50%),  /* 青色极光 */
+    radial-gradient(circle at 80% 20%, rgba(135, 206, 250, 0.08) 0%, transparent 50%), /* 天空蓝 */
+    radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 50%), /* 白色大气光 */
+    radial-gradient(circle at 70% 60%, rgba(30, 144, 255, 0.05) 0%, transparent 50%);  /* 蓝色海洋光 */
+  animation: earthGlow 15s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+@keyframes earthGlow {
+  0% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  33% {
+    opacity: 0.6;
+    transform: scale(1.02);
+  }
+  66% {
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+}
+
+.register-content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 500px;
+  background: rgba(15, 20, 30, 0.75); /* 更深邃的半透明背景 */
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  padding: 3rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08); /* 非常微妙的白色边框 */
+  box-shadow: 
+    0 32px 100px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+  transition: all 0.3s ease;
+}
+
+.register-content:hover {
+  background: rgba(15, 20, 30, 0.8);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 40px 120px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.register-content h1 {
+  color: rgba(255, 255, 255, 0.95);
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 3rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  position: relative;
+  text-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.register-content h1::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.3), 
+    transparent
+  );
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.form-group label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  font-weight: 400;
+  margin-bottom: 0.8rem;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 1.2rem 1.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.form-group input.error {
+  border-color: rgba(255, 120, 140, 0.4);
+  box-shadow: 
+    0 0 10px rgba(255, 120, 140, 0.1),
+    0 4px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 120, 140, 0.03);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.05),
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.form-group input.error:focus {
+  border-color: rgba(255, 120, 140, 0.5);
+  box-shadow: 
+    0 0 15px rgba(255, 120, 140, 0.1),
+    0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  font-style: normal;
+}
+
+.error-message {
+  color: rgba(255, 140, 160, 0.9);
+  font-size: 0.8rem;
+  margin-top: 0.6rem;
+  display: block;
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: fadeInError 0.4s ease forwards;
+}
+
+@keyframes fadeInError {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.submit-error {
+  color: rgba(255, 140, 160, 0.9);
+  background: rgba(255, 120, 140, 0.08);
+  border: 1px solid rgba(255, 120, 140, 0.2);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  animation: fadeInError 0.4s ease forwards;
+}
+
+.register-button {
+  width: 100%;
+  margin-top: 2rem;
+  padding: 1.3rem;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.register-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.register-button:disabled:hover {
+  transform: none;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.register-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 2.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+}
+
+.login-link a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-left: 0.5rem;
+  border-bottom: 1px solid transparent;
+}
+
+.login-link a:hover {
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 移除原有的星星效果，让视频背景更突出 */
+.star,
+.shooting-star {
+  display: none;
+}
+
+/* CSS地球主题背景 */
+.css-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  background: 
+    radial-gradient(circle at center, rgba(30, 60, 90, 0.8) 0%, rgba(0, 0, 0, 1) 70%),
+    linear-gradient(135deg, 
+      rgba(0, 10, 30, 1) 0%,      /* 深海蓝 */
+      rgba(20, 40, 80, 1) 25%,    /* 深蓝 */
+      rgba(40, 80, 120, 1) 50%,   /* 海洋蓝 */
+      rgba(60, 100, 140, 1) 75%,  /* 天空蓝 */
+      rgba(0, 20, 50, 1) 100%     /* 深海蓝 */
+    );
+  animation: backgroundShift 20s ease-in-out infinite;
+}
+
+@keyframes backgroundShift {
+  0%, 100% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  25% {
+    filter: hue-rotate(10deg) brightness(1.1);
+  }
+  50% {
+    filter: hue-rotate(-5deg) brightness(0.9);
+  }
+  75% {
+    filter: hue-rotate(15deg) brightness(1.05);
+  }
+}
+
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.6;
+  animation: float 25s ease-in-out infinite;
+}
+
+.orb-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, 
+    rgba(135, 206, 250, 0.4) 0%,     /* 天空蓝 */
+    rgba(64, 224, 208, 0.3) 50%,     /* 青色 */
+    transparent 80%
+  );
+  top: -250px;
+  left: -250px;
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, 
+    rgba(30, 144, 255, 0.3) 0%,      /* 深蓝 */
+    rgba(135, 206, 250, 0.2) 50%,    /* 天空蓝 */
+    transparent 80%
+  );
+  top: 50%;
+  right: -200px;
+  animation-delay: -10s;
+}
+
+.orb-3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, 
+    rgba(64, 224, 208, 0.25) 0%,     /* 青色 */
+    rgba(72, 209, 204, 0.2) 50%,     /* 青绿色 */
+    transparent 80%
+  );
+  bottom: -225px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-delay: -15s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-30px) translateX(20px) rotate(90deg);
+  }
+  50% {
+    transform: translateY(-20px) translateX(-20px) rotate(180deg);
+  }
+  75% {
+    transform: translateY(-40px) translateX(10px) rotate(270deg);
+  }
+}
+
+.particle-field {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(135, 206, 250, 0.8);  /* 地球蓝色调 */
+  border-radius: 50%;
+  box-shadow: 
+    0 0 8px rgba(135, 206, 250, 0.8),
+    0 0 15px rgba(64, 224, 208, 0.4);
+  animation: particleFloat linear infinite;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(100vh) translateX(0px) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(90vh) translateX(10px) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(10vh) translateX(100px) scale(1);
+  }
+  100% {
+    transform: translateY(-10vh) translateX(120px) scale(0);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .register-container {
+    padding: 1rem;
+  }
+
+  .register-content {
+    padding: 2.5rem 2rem;
+    max-width: 90%;
+  }
+
+  .register-content h1 {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
+
+  .form-group input {
+    padding: 1.2rem;
+  }
+
+  .register-button {
+    padding: 1.2rem;
+    font-size: 1rem;
+  }
+
+  /* 移动端优化地球背景 */
+  .background-video {
+    filter: brightness(1.0) contrast(1.0) saturate(1.1); /* 移动端降低滤镜强度 */
+  }
+
+  /* 移动端优化星星效果 */
+  .star-dot {
+    width: 1.5px;
+    height: 1.5px;
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.6); /* 简化星光效果 */
+  }
+
+  /* 移动端优化CSS背景 */
+  .gradient-orb {
+    filter: blur(20px);
+  }
+
+  .orb-1, .orb-2, .orb-3 {
+    width: 200px;
+    height: 200px;
+  }
+
+  .particle {
+    display: none; /* 移动端隐藏粒子效果以提升性能 */
+  }
+}
+
+/* 精简星星装饰 - 地球主题 */
+.stars-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.star-dot {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 4px rgba(255, 255, 255, 0.6),
+    0 0 8px rgba(135, 206, 250, 0.3); /* 蓝色星光 */
+  animation: starTwinkle linear infinite;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { 
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.2);
+  }
+} 
