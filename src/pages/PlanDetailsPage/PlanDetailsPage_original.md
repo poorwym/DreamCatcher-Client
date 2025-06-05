@@ -1,22 +1,3 @@
-/**
- * PlanDetailsPage - 拍摄计划详情页面
- * 
- * 功能描述：
- * - 显示拍摄计划的详细信息，包括基本信息、地图预览、拍摄参数等
- * - 提供天气信息和天文数据的可视化展示
- * - 支持编辑、复制、分享、删除等操作
- * - 集成Leaflet地图显示拍摄位置
- * - 实时获取天气和天文数据
- * 
- * 主要组件结构：
- * - HeaderCard: 标题和操作按钮
- * - MapPreview: 地图预览组件
- * - ShootingInfo: 拍摄信息
- * - AstronomyPanel: 天文数据面板
- * - WeatherPanel: 天气信息面板
- * - ChecklistCard: 拍摄准备清单
- */
-
 import React from 'react'
 import { useRef, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -37,7 +18,6 @@ import {
   Statistic,
   Progress,
   Modal,
-  Collapse,
 } from 'antd';
 import {
   EditOutlined,
@@ -52,9 +32,7 @@ import {
   CloudOutlined,
   CompassOutlined,
   ThunderboltOutlined,
-  EyeOutlined,
-  DownOutlined,
-  UpOutlined
+  EyeOutlined
 } from '@ant-design/icons';
 
 import L from 'leaflet';
@@ -74,31 +52,19 @@ import ErrorDisplay from '../../components/ErrorDisplay/ErrorDisplay';
 
 import styles from './PlanDetailsPage.module.css';
 
-/**
- * PlanDetailsPage 主组件
- * 负责显示和管理拍摄计划的详细信息
- */
 function PlanDetailsPage() {
-  // ====== 路由参数和导航 ======
-  const { id } = useParams(); // 从URL获取计划ID
-  const navigate = useNavigate(); // 路由导航钩子
-  
-  // ====== 组件状态管理 ======
-  const [planData, setPlanData] = useState(null); // 计划数据状态
-  const [loading, setLoading] = useState(true); // 加载状态
-  const [error, setError] = useState(null); // 错误状态
-  const [astronomicalData, setAstronomicalData] = useState(null); // 天文和天气数据
-  const [checklistCollapsed, setChecklistCollapsed] = useState(true); // 拍摄清单折叠状态
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [planData, setPlanData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [astronomicalData, setAstronomicalData] = useState(null);
 
-  // ====== DOM引用管理 ======
-  const mapContainerRef = useRef(null); // 地图容器DOM引用
-  const mapRef = useRef(null); // Leaflet地图实例引用
-  const cameraMarkerRef = useRef(null); // 相机标记引用
+  // 创建 ref 用于存储 DOM 元素
+  const mapContainerRef = useRef(null);
+  const mapRef = useRef(null);
+  const cameraMarkerRef = useRef(null);
 
-  /**
-   * 主要数据获取Effect
-   * 负责获取计划数据、天气数据和天文数据
-   */
   useEffect(() => {
     const fetchPlanData = async () => {
       try {
@@ -217,10 +183,6 @@ function PlanDetailsPage() {
     fetchPlanData();
   }, [id]);
 
-  /**
-   * 地图初始化监听Effect
-   * 当计划数据加载完成后，监听地图容器准备状态
-   */
   useEffect(() => {
     console.log('=== useEffect 地图初始化触发 ===');
     console.log('planData 状态:', planData);
@@ -260,10 +222,7 @@ function PlanDetailsPage() {
     };
   }, [planData]);
 
-  /**
-   * 地图容器就绪监听Effect
-   * 确保地图容器DOM准备好后再初始化地图
-   */
+  // 新增：专门处理地图容器准备状态的 useEffect
   useEffect(() => {
     // 确保地图容器DOM准备好后再初始化地图
     if (planData && mapContainerRef.current && !mapRef.current) {
@@ -284,10 +243,7 @@ function PlanDetailsPage() {
     }
   }, [planData, mapContainerRef.current]);
 
-  /**
-   * 路由参数变化监听Effect
-   * 确保复制后的页面能正确初始化，清理现有状态
-   */
+  // 新增：监听路由参数变化，确保复制后的页面能正确初始化
   useEffect(() => {
     console.log('=== 路由参数变化，重新初始化 ===');
     console.log('当前计划ID:', id);
@@ -306,14 +262,7 @@ function PlanDetailsPage() {
     
   }, [id]); // 依赖id参数
 
-  /**
-   * 初始化Leaflet地图
-   * 创建地图实例、添加底图、设置相机标记等
-   * 
-   * @async
-   * @function initializeMap
-   * @returns {Promise<void>}
-   */
+  // 初始化地图
   const initializeMap = async () => {
     console.log('=== initializeMap 函数开始执行 ===');
     console.log('检查条件:');
@@ -392,7 +341,7 @@ function PlanDetailsPage() {
         message.error(`经度数据错误: ${longitude}`);
         return;
       }
-      
+
       // 设置地图中心和缩放级别
       mapRef.current.setView([latitude, longitude], 15);
 
@@ -441,7 +390,7 @@ function PlanDetailsPage() {
 
       // 添加点击事件
       cameraMarkerRef.current.on('click', () => {
-          message.info(`拍摄位置: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
+        message.info(`拍摄位置: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
       });
 
       // 确保地图正确渲染
@@ -463,12 +412,7 @@ function PlanDetailsPage() {
     }
   };
 
-  /**
-   * 创建相机位置图标
-   * 返回自定义的DivIcon用于标记拍摄位置
-   * 
-   * @returns {L.DivIcon} Leaflet DivIcon 实例
-   */
+  // 创建相机图标
   const createCameraIcon = () => {
     return L.divIcon({
       html: `<div style="
@@ -491,13 +435,6 @@ function PlanDetailsPage() {
     });
   };
 
-  /**
-   * 删除计划处理函数
-   * 显示确认对话框，确认后删除计划并跳转到列表页
-   * 
-   * @async
-   * @function handleDelete
-   */
   const handleDelete = async () => {
     if (window.confirm('确定要删除这个拍摄计划吗？')) {
       try {
@@ -514,22 +451,13 @@ function PlanDetailsPage() {
     }
   };
 
-  /**
-   * 测试按钮功能（调试用）
-   * 用于测试按钮点击事件是否正常工作
-   */
+  // 测试函数
   const testCopy = () => {
     console.log('测试按钮被点击了！');
     alert('测试按钮工作正常！');
   };
 
-  /**
-   * 复制计划处理函数
-   * 创建当前计划的副本并导航到新计划页面
-   * 
-   * @async
-   * @function handleCopy
-   */
+  // 复制计划
   const handleCopy = async () => {
     try {
       console.log('=== 复制按钮被点击 ===');
@@ -603,15 +531,7 @@ function PlanDetailsPage() {
     }
   };
 
-  /**
-   * 更新计划数据
-   * 调用API更新计划信息并刷新本地状态
-   * 
-   * @async
-   * @function handleUpdate
-   * @param {Object} updates - 要更新的字段
-   * @returns {Promise<Object>} 更新后的计划数据
-   */
+  // 更新计划数据
   const handleUpdate = async (updates) => {
     try {
       const updatedPlan = await planAPI.updatePlan(id, updates);
@@ -625,32 +545,19 @@ function PlanDetailsPage() {
     }
   };
 
-  /**
-   * 编辑计划 - 跳转到编辑页面
-   */
   const handleEdit = () => {
-    console.log('编辑计划');
-    //待实现
+    navigate(`/plans/${id}/edit`);
   };
 
-  /**
-   * 查看2D地图 - 跳转到2D地图页面
-   */
   const handleView2D = () => {
     navigate(`/plans/${id}/map2D`);
   };
 
-  /**
-   * 查看3D地图 - 跳转到3D地图页面
-   */
   const handleView3D = () => {
     navigate(`/plans/${id}/map3D`);
   };
 
-  /**
-   * 飞行到相机位置
-   * 将地图视图定位到相机拍摄位置并打开标记弹窗
-   */
+  // 飞行到相机位置
   const flyToCamera = () => {
     if (mapRef.current && planData) {
       const latitude = planData.camera.position[0];
@@ -672,10 +579,7 @@ function PlanDetailsPage() {
     }
   };
 
-  /**
-   * 调试地图容器状态
-   * 输出地图容器和地图实例的详细状态信息，用于问题排查
-   */
+  // 调试地图容器
   const debugMapContainer = () => {
     console.log('=== 调试地图容器状态 ===');
     console.log('mapContainerRef.current:', mapContainerRef.current);
@@ -729,10 +633,7 @@ function PlanDetailsPage() {
     }
   };
 
-  /**
-   * 强制重新创建地图
-   * 清理现有地图实例并重新初始化，用于解决地图显示问题
-   */
+  // 强制重新创建地图
   const forceRecreateMap = () => {
     console.log('=== 强制重新创建地图 ===');
     
@@ -763,13 +664,7 @@ function PlanDetailsPage() {
     }
   };
 
-  /**
-   * 根据天气条件获取对应的图标和颜色
-   * 支持中文和英文天气描述的识别
-   * 
-   * @param {string} conditions - 天气条件描述（中文或英文）
-   * @returns {Object} 包含图标组件和颜色的对象 { icon: ReactElement, color: string }
-   */
+  // 根据天气条件获取图标和颜色
   const getWeatherIcon = (conditions) => {
     const condition = conditions?.toLowerCase() || '';
     
@@ -790,13 +685,7 @@ function PlanDetailsPage() {
     }
   };
 
-  /**
-   * 根据温度获取对应的颜色编码
-   * 使用色温理论，高温为暖色，低温为冷色
-   * 
-   * @param {number} temp - 温度值（摄氏度）
-   * @returns {string} 十六进制颜色值
-   */
+  // 获取温度颜色
   const getTemperatureColor = (temp) => {
     if (temp >= 30) return '#e74c3c'; // 热 - 红色
     if (temp >= 20) return '#f39c12'; // 温暖 - 橙色
@@ -805,17 +694,7 @@ function PlanDetailsPage() {
     return '#9b59b6'; // 很冷 - 紫色
   };
 
-  /**
-   * 根据天气条件生成智能拍摄建议
-   * 考虑降水、云量、风速等因素给出相应建议
-   * 
-   * @param {Object} weather - 天气数据对象
-   * @param {string} weather.conditions - 天气条件
-   * @param {number} weather.cloudCover - 云量百分比
-   * @param {number} weather.precipitation - 降水量（毫米）
-   * @param {number} weather.windSpeed - 风速（公里/小时）
-   * @returns {string} 拍摄建议文本，包含emoji图标
-   */
+  // 根据天气条件给出拍摄建议
   const getShootingTip = (weather) => {
     const { conditions, cloudCover, precipitation, windSpeed } = weather;
     
@@ -832,9 +711,6 @@ function PlanDetailsPage() {
     }
   };
 
-  // ====== 渲染逻辑 ======
-  
-  // 加载状态渲染
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -843,7 +719,6 @@ function PlanDetailsPage() {
     );
   }
 
-  // 错误状态渲染
   if (error) {
     return (
       <div className={styles.errorContainer}>
@@ -860,7 +735,6 @@ function PlanDetailsPage() {
     );
   }
 
-  // 空数据状态渲染
   if (!planData) {
     return (
       <div className={styles.emptyContainer}>
@@ -869,10 +743,8 @@ function PlanDetailsPage() {
     );
   }
 
-  // ====== 主要内容渲染 ======
   return (
     <div className={styles.container}>
-      {/* 头部卡片 - 计划标题和操作按钮 */}
       <Card className={styles.headerCard}>
         <Row justify="space-between" align="middle">
           <Col>
@@ -937,101 +809,23 @@ function PlanDetailsPage() {
       <div className={styles.contentRow}>
         {/* 左侧信息区 */}
         <div className={styles.leftColumn}>
-          {/* 基本信息和3D模型预览 */}
-          <Row gutter={16} style={{ height: '280px' }}>
-            <Col span={14}>
           {/* 基本信息 */}
-              <Card 
-                title={<span className={styles.cardTitle}>基本信息</span>} 
-                className={styles.basicInfoCard}
-                style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
-              >
-                <div>
-                  <Typography.Paragraph style={{ margin: '0 0 16px 0', lineHeight: '1.5' }}>
-                    {planData.description}
-                  </Typography.Paragraph>
-                  
-                  <Row gutter={16} style={{ marginBottom: '12px' }}>
-                    <Col span={12}>
-                      <Descriptions column={1} size="small" colon={false} style={{ marginBottom: '8px' }}>
-                        <Descriptions.Item label={<span style={{ color: '#666', fontSize: '12px' }}>创建时间</span>}>
-                          <span style={{ fontSize: '13px' }}>{new Date(planData.created_at).toLocaleString()}</span>
+          <Card title={<span className={styles.cardTitle}>基本信息</span>} className={styles.basicInfoCard}>
+            <Typography.Paragraph>{planData.description}</Typography.Paragraph>
+            <Descriptions column={2}>
+              <Descriptions.Item label="创建时间">
+                {new Date(planData.created_at).toLocaleString()}
               </Descriptions.Item>
-                        <Descriptions.Item label={<span style={{ color: '#666', fontSize: '12px' }}>拍摄时间</span>}>
-                          <span style={{ fontSize: '13px' }}>{new Date(planData.start_time).toLocaleString()}</span>
+              <Descriptions.Item label="更新时间">
+                {new Date(planData.updated_at).toLocaleString()}
               </Descriptions.Item>
             </Descriptions>
-                    </Col>
-                    <Col span={12}>
-                      <Descriptions column={1} size="small" colon={false} style={{ marginBottom: '8px' }}>
-                        <Descriptions.Item label={<span style={{ color: '#666', fontSize: '12px' }}>更新时间</span>}>
-                          <span style={{ fontSize: '13px' }}>{new Date(planData.updated_at).toLocaleString()}</span>
-                        </Descriptions.Item>
-                        <Descriptions.Item label={<span style={{ color: '#666', fontSize: '12px' }}>相机焦距</span>}>
-                          <span style={{ fontSize: '13px' }}>{planData.camera.focal_length}mm</span>
-                        </Descriptions.Item>
-                      </Descriptions>
-                    </Col>
-                  </Row>
-                </div>
-                
-                <div>
-                  <Divider style={{ margin: '12px 0 10px 0' }} />
-                  
-                  <Descriptions column={1} size="small" colon={false} style={{ marginBottom: '0' }}>
-                    <Descriptions.Item 
-                      label={<span style={{ color: '#666', fontSize: '12px' }}><EnvironmentOutlined style={{ marginRight: '4px' }} />拍摄位置</span>}
-                      style={{ paddingBottom: '8px' }}
-                    >
-                      <span style={{ fontSize: '13px' }}>
-                        经度: {parseFloat(planData.camera.position[1]).toFixed(4)} | 
-                        纬度: {parseFloat(planData.camera.position[0]).toFixed(4)} | 
-                        高度: {parseFloat(planData.camera.position[2]).toFixed(1)}m
-                      </span>
-                    </Descriptions.Item>
-                    <Descriptions.Item 
-                      label={<span style={{ color: '#666', fontSize: '12px' }}><CompassOutlined style={{ marginRight: '4px' }} />相机旋转</span>}
-                      style={{ paddingBottom: '0' }}
-                    >
-                      <span style={{ fontSize: '13px' }}>
-                        X: {parseFloat(planData.camera.rotation[0]).toFixed(3)} | 
-                        Y: {parseFloat(planData.camera.rotation[1]).toFixed(3)} | 
-                        Z: {parseFloat(planData.camera.rotation[2]).toFixed(3)} | 
-                        W: {parseFloat(planData.camera.rotation[3]).toFixed(3)}
-                      </span>
-                    </Descriptions.Item>
-                  </Descriptions>
-                </div>
           </Card>
-            </Col>
-            
-            <Col span={10}>
-              {/* 3D模型预览 */}
-              <Card 
-                title={<span className={styles.cardTitle}>3D模型预览</span>} 
-                className={styles.modelPreviewCard}
-                style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
-              >
-                <div className={styles.modelPreview} style={{ height: '200px', flex: '0 0 180px' }}>
-                  <div className={styles.modelPlaceholder}>
-                    <CameraOutlined style={{ fontSize: '42px', marginBottom: '10px' }} />
-                    <Typography.Text style={{ color: 'white', fontSize: '13px' }}>3D模型加载中...</Typography.Text>
-                  </div>
-                </div>
-                <Typography.Paragraph style={{ marginTop: '12px', fontSize: '12px', marginBottom: '0', lineHeight: '1.4' }}>
-
-                </Typography.Paragraph>
-              </Card>
-            </Col>
-          </Row>
 
           {/* 地图预览 */}
           <Card 
             title={<span className={styles.cardTitle}>地图预览</span>}
             className={styles.mapPreviewCard}
-            style={{ marginTop: '8px' }}
             extra={
               <Space>
                 <Button 
@@ -1072,191 +866,173 @@ function PlanDetailsPage() {
             </div>
           </Card>
 
-          {/* 拍摄准备清单 */}
-          <Card 
-            title={
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <CameraOutlined style={{ color: '#8e44ad', marginRight: '8px', fontSize: '16px' }} />
-                <span style={{ fontSize: '16px', fontWeight: '500' }}>拍摄准备清单</span>
-              </div>
-            }
-            className={styles.checklistCard}
-            style={{ marginTop: '2px' }}
-            size="small"
-          >
-            <Row gutter={[12, 12]}>
-              <Col span={12}>
-                <Card size="small" title="📅 时间安排" style={{ height: '100%', backgroundColor: '#f6f3ff', border: '1px solid #e6d7ff' }} bodyStyle={{ padding: '8px' }}>
-                  <List
-                    size="small"
-                    dataSource={[
-                      '提前30分钟到达拍摄地点',
-                      '确认日出/日落时间',
-                      '预留设备调试时间'
-                    ]}
-                    renderItem={(item) => (
-                      <List.Item style={{ padding: '2px 0', fontSize: '12px' }}>
-                        <span style={{ color: '#9b59b6', marginRight: '6px' }}>✓</span>
-                        {item}
-                      </List.Item>
-                    )}
-                  />
-                </Card>
-              </Col>
+          <Row gutter={16}>
+            <Col span={12}>
+              {/* 拍摄信息 */}
+              <Card title={<span className={styles.cardTitle}>拍摄信息</span>} className={styles.shootingInfoCard}>
+                <List
+                  className={styles.infoList}
+                  itemLayout="horizontal"
+                  dataSource={[
+                    {
+                      icon: <ClockCircleOutlined />,
+                      title: '拍摄时间',
+                      content: new Date(planData.start_time).toLocaleString(),
+                    },
+                    {
+                      icon: <CameraOutlined />,
+                      title: '相机参数',
+                      content: `焦距: ${planData.camera.focal_length}mm`,
+                    },
+                    {
+                      icon: <EnvironmentOutlined />,
+                      title: '拍摄位置',
+                      content: `经度: ${parseFloat(planData.camera.position[1]).toFixed(4)}, 纬度: ${parseFloat(planData.camera.position[0]).toFixed(4)}, 高度: ${parseFloat(planData.camera.position[2]).toFixed(1)}m`,
+                    },
+                    {
+                      icon: <CompassOutlined />,
+                      title: '相机旋转',
+                      content: `X: ${parseFloat(planData.camera.rotation[0]).toFixed(3)}, Y: ${parseFloat(planData.camera.rotation[1]).toFixed(3)}, Z: ${parseFloat(planData.camera.rotation[2]).toFixed(3)}, W: ${parseFloat(planData.camera.rotation[3]).toFixed(3)}`,
+                    },
+                  ]}
+                  renderItem={(item) => (
+                    <List.Item>
+                      <List.Item.Meta
+                        avatar={item.icon}
+                        title={item.title}
+                        description={item.content}
+                      />
+                    </List.Item>
+                  )}
+                />
+              </Card>
+            </Col>
 
-              <Col span={12}>
-                <Card size="small" title="📷 器材清单" style={{ height: '100%', backgroundColor: '#f6f3ff', border: '1px solid #e6d7ff' }} bodyStyle={{ padding: '8px' }}>
-                  <List
-                    size="small"
-                    dataSource={[
-                      '相机机身和镜头',
-                      '三脚架和云台',
-                      '备用电池和存储卡'
-                    ]}
-                    renderItem={(item) => (
-                      <List.Item style={{ padding: '2px 0', fontSize: '12px' }}>
-                        <span style={{ color: '#9b59b6', marginRight: '6px' }}>✓</span>
-                        {item}
-                      </List.Item>
-                    )}
-                  />
-                </Card>
-              </Col>
-            </Row>
-          </Card>
-        </div>
-
-        {/* 右侧预览区 */}
-        <div className={styles.rightColumn}>
-          {/* 天文数据和天气信息 */}
-          <Row gutter={[16, 16]}>
-            <Col span={24}>
+            <Col span={12}>
               {/* 天文数据 */}
               {astronomicalData && (
                 <Card 
                   title={
                     <div className={styles.astronomyCardTitle}>
-                      <SunOutlined style={{ color: '#8e44ad', marginRight: '8px' }} />
+                      <SunOutlined style={{ color: '#f39c12', marginRight: '8px' }} />
                       <span>天文数据</span>
                     </div>
                   } 
                   className={styles.astronomyCard}
-                  style={{ height: '530px', display: 'flex', flexDirection: 'column' }}
-                  bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
                 >
                   {/* 主要天文信息 */}
-                  <div className={styles.mainAstronomyInfo} style={{ padding: '5px 0 5px 0', borderBottom: '1px solid rgba(0,0,0,0.06)', marginBottom: '12px' }}>
+                  <div className={styles.mainAstronomyInfo}>
                     <div className={styles.sunSection}>
                       <div className={styles.sunDisplay}>
-                        <SunOutlined style={{ fontSize: '22px', color: '#9b59b6', marginBottom: '3px' }} />
-                        <div className={styles.astronomyLabel} style={{ fontSize: '11px' }}>太阳</div>
-                        <div className={styles.astronomyValue} style={{ fontSize: '16px' }}>
+                        <SunOutlined style={{ fontSize: '32px', color: '#f39c12', marginBottom: '8px' }} />
+                        <div className={styles.astronomyLabel}>太阳</div>
+                        <div className={styles.astronomyValue}>
                           {parseFloat(astronomicalData.sunPosition.altitude).toFixed(1)}°
                         </div>
-                        <div className={styles.astronomySubValue} style={{ fontSize: '9px' }}>高度角</div>
+                        <div className={styles.astronomySubValue}>高度角</div>
                       </div>
                     </div>
                     
                     <div className={styles.moonSection}>
                       <div className={styles.moonDisplay}>
-                        <MoonOutlined style={{ fontSize: '22px', color: '#8e44ad', marginBottom: '3px' }} />
-                        <div className={styles.astronomyLabel} style={{ fontSize: '11px' }}>月亮</div>
-                        <div className={styles.astronomyValue} style={{ fontSize: '16px' }}>
+                        <MoonOutlined style={{ fontSize: '32px', color: '#95a5a6', marginBottom: '8px' }} />
+                        <div className={styles.astronomyLabel}>月亮</div>
+                        <div className={styles.astronomyValue}>
                           {parseFloat(astronomicalData.moonPosition.altitude).toFixed(1)}°
                         </div>
-                        <div className={styles.astronomySubValue} style={{ fontSize: '9px' }}>高度角</div>
+                        <div className={styles.astronomySubValue}>高度角</div>
                       </div>
                     </div>
                   </div>
 
                   {/* 详细天文信息 */}
-                  <div className={styles.astronomyDetails} style={{ flex: 1, marginBottom: '12px' }}>
-                    <Row gutter={[6, 2]}>
+                  <div className={styles.astronomyDetails}>
+                    <Row gutter={[12, 12]}>
                       <Col span={12}>
-                        <div className={styles.astronomyDetailItem} style={{ height: '30px', padding: '6px' }}>
-                          <div className={styles.detailHeader} style={{ marginBottom: '4px' }}>
+                        <div className={styles.astronomyDetailItem}>
+                          <div className={styles.detailHeader}>
                             <div className={styles.detailIcon}>
-                              <SunOutlined style={{ color: '#9b59b6', fontSize: '10px' }} />
+                              <SunOutlined style={{ color: '#f39c12' }} />
                             </div>
-                            <div className={styles.detailLabel} style={{ fontSize: '9px' }}>日出</div>
+                            <div className={styles.detailLabel}>日出</div>
                           </div>
                           <div className={styles.detailContent}>
-                            <div className={styles.detailValue} style={{ fontSize: '13px', marginTop: '2px' }}>{astronomicalData.sunPosition.sunrise}</div>
+                            <div className={styles.detailValue}>{astronomicalData.sunPosition.sunrise}</div>
                           </div>
                         </div>
                       </Col>
                       
                       <Col span={12}>
-                        <div className={styles.astronomyDetailItem} style={{ height: '30px', padding: '6px' }}>
-                          <div className={styles.detailHeader} style={{ marginBottom: '4px' }}>
+                        <div className={styles.astronomyDetailItem}>
+                          <div className={styles.detailHeader}>
                             <div className={styles.detailIcon}>
-                              <SunOutlined style={{ color: '#8e44ad', fontSize: '10px' }} />
+                              <SunOutlined style={{ color: '#e67e22' }} />
                             </div>
-                            <div className={styles.detailLabel} style={{ fontSize: '9px' }}>日落</div>
+                            <div className={styles.detailLabel}>日落</div>
                           </div>
                           <div className={styles.detailContent}>
-                            <div className={styles.detailValue} style={{ fontSize: '13px', marginTop: '2px' }}>{astronomicalData.sunPosition.sunset}</div>
+                            <div className={styles.detailValue}>{astronomicalData.sunPosition.sunset}</div>
                           </div>
                         </div>
                       </Col>
                       
                       <Col span={12}>
-                        <div className={styles.astronomyDetailItem} style={{ height: '30px', padding: '6px' }}>
-                          <div className={styles.detailHeader} style={{ marginBottom: '4px' }}>
+                        <div className={styles.astronomyDetailItem}>
+                          <div className={styles.detailHeader}>
                             <div className={styles.detailIcon}>
-                              <MoonOutlined style={{ color: '#8e44ad', fontSize: '10px' }} />
+                              <MoonOutlined style={{ color: '#95a5a6' }} />
                             </div>
-                            <div className={styles.detailLabel} style={{ fontSize: '9px' }}>月出</div>
+                            <div className={styles.detailLabel}>月出</div>
                           </div>
                           <div className={styles.detailContent}>
-                            <div className={styles.detailValue} style={{ fontSize: '13px', marginTop: '2px' }}>{astronomicalData.moonPosition.moonrise}</div>
+                            <div className={styles.detailValue}>{astronomicalData.moonPosition.moonrise}</div>
                           </div>
                         </div>
                       </Col>
                       
                       <Col span={12}>
-                        <div className={styles.astronomyDetailItem} style={{ height: '30px', padding: '6px' }}>
-                          <div className={styles.detailHeader} style={{ marginBottom: '4px' }}>
+                        <div className={styles.astronomyDetailItem}>
+                          <div className={styles.detailHeader}>
                             <div className={styles.detailIcon}>
-                              <MoonOutlined style={{ color: '#663399', fontSize: '10px' }} />
+                              <MoonOutlined style={{ color: '#34495e' }} />
                             </div>
-                            <div className={styles.detailLabel} style={{ fontSize: '9px' }}>月落</div>
+                            <div className={styles.detailLabel}>月落</div>
                           </div>
                           <div className={styles.detailContent}>
-                            <div className={styles.detailValue} style={{ fontSize: '13px', marginTop: '2px' }}>{astronomicalData.moonPosition.moonset}</div>
+                            <div className={styles.detailValue}>{astronomicalData.moonPosition.moonset}</div>
                           </div>
                         </div>
                       </Col>
                       
-                      <Col span={12}>
-                        <div className={styles.astronomyDetailItem} style={{ height: '60px', padding: '6px' }}>
-                          <div className={styles.detailHeader} style={{ marginBottom: '4px' }}>
+                      <Col span={24}>
+                        <div className={styles.astronomyDetailItem} style={{ height: 'auto' }}>
+                          <div className={styles.detailHeader}>
                             <div className={styles.detailIcon}>
-                              <SunOutlined style={{ color: '#9b59b6', fontSize: '10px' }} />
+                              <SunOutlined style={{ color: '#f1c40f' }} />
                             </div>
-                            <div className={styles.detailLabel} style={{ fontSize: '9px' }}>黄金时刻</div>
+                            <div className={styles.detailLabel}>黄金时刻</div>
                           </div>
                           <div className={styles.detailContent}>
-                            <div className={styles.detailValue} style={{ fontSize: '11px', marginBottom: '1px' }}>
+                            <div className={styles.detailValue}>
                               早晨: {astronomicalData.sunPosition.goldenHour.morning}
                             </div>
-                            <div className={styles.detailSubValue} style={{ fontSize: '11px' }}>
+                            <div className={styles.detailSubValue}>
                               傍晚: {astronomicalData.sunPosition.goldenHour.evening}
                             </div>
                           </div>
                         </div>
                       </Col>
                       
-                      <Col span={12}>
-                        <div className={styles.astronomyDetailItem} style={{ height: '60px', padding: '6px' }}>
-                          <div className={styles.detailHeader} style={{ marginBottom: '4px' }}>
+                      <Col span={24}>
+                        <div className={styles.astronomyDetailItem} style={{ height: 'auto' }}>
+                          <div className={styles.detailHeader}>
                             <div className={styles.detailIcon}>
-                              <MoonOutlined style={{ color: '#8e44ad', fontSize: '10px' }} />
+                              <MoonOutlined style={{ color: '#8e44ad' }} />
                             </div>
-                            <div className={styles.detailLabel} style={{ fontSize: '9px' }}>月相</div>
+                            <div className={styles.detailLabel}>月相</div>
                           </div>
                           <div className={styles.detailContent}>
-                            <div className={styles.detailValue} style={{ fontSize: '13px' }}>{astronomicalData.moonPosition.phase}</div>
+                            <div className={styles.detailValue}>{astronomicalData.moonPosition.phase}</div>
                           </div>
                         </div>
                       </Col>
@@ -1264,179 +1040,218 @@ function PlanDetailsPage() {
                   </div>
 
                   {/* 拍摄建议 */}
-                  <div className={styles.astronomyTip} style={{ padding: '8px 10px', fontSize: '12px', marginTop: 'auto' }}>
+                  <div className={styles.astronomyTip}>
                     🌅 最佳拍摄时间：黄金时刻和蓝调时分
                   </div>
                 </Card>
               )}
             </Col>
-
-            <Col span={24}>
-              {/* 天气信息 */}
-              {astronomicalData && (
-                <Card 
-                  title={
-                    <div className={styles.weatherCardTitle}>
-                      <span style={{ color: getWeatherIcon(astronomicalData.weather.conditions).color }}>
-                        {getWeatherIcon(astronomicalData.weather.conditions).icon}
-                      </span>
-                      <span style={{ marginLeft: '8px' }}>天气信息</span>
-                    </div>
-                  } 
-                  className={styles.weatherCard}
-                  style={{ height: '480px', display: 'flex', flexDirection: 'column' }}
-                  bodyStyle={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-                >
-                  {/* 主要天气信息 */}
-                  <div className={styles.mainWeatherInfo} style={{ padding: '16px 0 12px 0', borderBottom: '1px solid rgba(0,0,0,0.06)', marginBottom: '16px' }}>
-                    <div className={styles.temperatureSection}>
-                      <div className={styles.temperatureDisplay}>
-                        <span 
-                          className={styles.currentTemp}
-                          style={{ color: getTemperatureColor(astronomicalData.weather.temperature), fontSize: '32px' }}
-                        >
-                          {astronomicalData.weather.temperature}°
-                        </span>
-                        <span className={styles.tempUnit} style={{ fontSize: '16px' }}>C</span>
-                      </div>
-                      <div className={styles.feelsLike} style={{ fontSize: '13px' }}>
-                        体感 {astronomicalData.weather.feelsLike}°C
-                      </div>
-                    </div>
-                    
-                    <div className={styles.weatherIconSection}>
-                      <div className={styles.weatherIconLarge}>
-                        <span style={{ 
-                          fontSize: '40px', 
-                          color: getWeatherIcon(astronomicalData.weather.conditions).color 
-                        }}>
-                          {getWeatherIcon(astronomicalData.weather.conditions).icon}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div className={styles.conditionSection}>
-                      <div className={styles.condition} style={{ fontSize: '16px' }}>{astronomicalData.weather.conditions}</div>
-                      <div className={styles.description} style={{ fontSize: '13px' }}>{astronomicalData.weather.description}</div>
-                    </div>
-                  </div>
-
-                  {/* 详细信息 */}
-                  <div className={styles.weatherDetails} style={{ flex: 1, marginBottom: '16px' }}>
-                    <Row gutter={[12, 12]}>
-                      <Col span={8}>
-                        <div className={styles.weatherDetailItem} style={{ height: '75px', padding: '10px' }}>
-                          <div className={styles.detailHeader}>
-                            <div className={styles.detailIcon}>
-                              <CloudOutlined style={{ color: '#3498db', fontSize: '12px' }} />
-                            </div>
-                            <div className={styles.detailLabel} style={{ fontSize: '11px' }}>湿度</div>
-                          </div>
-                          <div className={styles.detailContent}>
-                            <div className={styles.detailValue} style={{ fontSize: '16px', marginBottom: '4px' }}>{astronomicalData.weather.humidity}%</div>
-                            <Progress 
-                              percent={astronomicalData.weather.humidity} 
-                              size="small" 
-                              strokeColor="#3498db"
-                              showInfo={false}
-                              className={styles.weatherProgress}
-                              style={{ width: '100%' }}
-                            />
-                          </div>
-                        </div>
-                      </Col>
-                      
-                      <Col span={8}>
-                        <div className={styles.weatherDetailItem} style={{ height: '75px', padding: '10px' }}>
-                          <div className={styles.detailHeader}>
-                            <div className={styles.detailIcon}>
-                              <CloudOutlined style={{ color: '#95a5a6', fontSize: '12px' }} />
-                            </div>
-                            <div className={styles.detailLabel} style={{ fontSize: '11px' }}>云量</div>
-                          </div>
-                          <div className={styles.detailContent}>
-                            <div className={styles.detailValue} style={{ fontSize: '16px', marginBottom: '4px' }}>{astronomicalData.weather.cloudCover}%</div>
-                            <Progress 
-                              percent={astronomicalData.weather.cloudCover} 
-                              size="small" 
-                              strokeColor="#95a5a6"
-                              showInfo={false}
-                              className={styles.weatherProgress}
-                              style={{ width: '100%' }}
-                            />
-                          </div>
-                        </div>
-                      </Col>
-                      
-                      <Col span={8}>
-                        <div className={styles.weatherDetailItem} style={{ height: '75px', padding: '10px' }}>
-                          <div className={styles.detailHeader}>
-                            <div className={styles.detailIcon}>
-                              <CloudOutlined style={{ color: '#3498db', fontSize: '12px' }} />
-                            </div>
-                            <div className={styles.detailLabel} style={{ fontSize: '11px' }}>降水</div>
-                          </div>
-                          <div className={styles.detailContent}>
-                            <div className={styles.detailValue} style={{ fontSize: '16px' }}>{astronomicalData.weather.precipitation}mm</div>
-                            <div className={styles.detailSubValue} style={{ fontSize: '11px' }}>
-                              {astronomicalData.weather.precipitationProbability}% 概率
-                            </div>
-                          </div>
-                        </div>
-                      </Col>
-                      
-                      <Col span={8}>
-                        <div className={styles.weatherDetailItem} style={{ height: '75px', padding: '10px' }}>
-                          <div className={styles.detailHeader}>
-                            <div className={styles.detailIcon}>
-                              <CompassOutlined style={{ color: '#2ecc71', fontSize: '12px' }} />
-                            </div>
-                            <div className={styles.detailLabel} style={{ fontSize: '11px' }}>风速</div>
-                          </div>
-                          <div className={styles.detailContent}>
-                            <div className={styles.detailValue} style={{ fontSize: '16px' }}>{astronomicalData.weather.windSpeed} km/h</div>
-                          </div>
-                        </div>
-                      </Col>
-                      
-                      <Col span={8}>
-                        <div className={styles.weatherDetailItem} style={{ height: '75px', padding: '10px' }}>
-                          <div className={styles.detailHeader}>
-                            <div className={styles.detailIcon}>
-                              <CompassOutlined style={{ color: '#e67e22', fontSize: '12px' }} />
-                            </div>
-                            <div className={styles.detailLabel} style={{ fontSize: '11px' }}>风向</div>
-                          </div>
-                          <div className={styles.detailContent}>
-                            <div className={styles.detailValue} style={{ fontSize: '16px' }}>{astronomicalData.weather.windDirection}°</div>
-                          </div>
-                        </div>
-                      </Col>
-                      
-                      <Col span={8}>
-                        <div className={styles.weatherDetailItem} style={{ height: '75px', padding: '10px' }}>
-                          <div className={styles.detailHeader}>
-                            <div className={styles.detailIcon}>
-                              <EyeOutlined style={{ color: '#9b59b6', fontSize: '12px' }} />
-                            </div>
-                            <div className={styles.detailLabel} style={{ fontSize: '11px' }}>能见度</div>
-                          </div>
-                          <div className={styles.detailContent}>
-                            <div className={styles.detailValue} style={{ fontSize: '16px' }}>{astronomicalData.weather.visibility}</div>
-                          </div>
-                        </div>
-                      </Col>
-                    </Row>
-                  </div>
-
-                  {/* 拍摄建议 */}
-                  <div className={styles.shootingTip} style={{ padding: '10px 12px', fontSize: '13px', marginTop: 'auto' }}>
-                    {getShootingTip(astronomicalData.weather)}
-                  </div>
-                </Card>
-              )}
-            </Col>
           </Row>
+        </div>
+
+        {/* 右侧预览区 */}
+        <div className={styles.rightColumn}>
+          {/* 3D模型预览 */}
+          <Card title={<span className={styles.cardTitle}>3D模型预览</span>} className={styles.modelPreviewCard}>
+            <div className={styles.modelPreview}>
+              <div className={styles.modelPlaceholder}>
+                <CameraOutlined style={{ fontSize: '48px', marginBottom: '16px' }} />
+                <Typography.Text style={{ color: 'white' }}>3D模型加载中...</Typography.Text>
+              </div>
+            </div>
+            <Typography.Paragraph style={{ marginTop: '16px', fontSize: '12px' }}>
+              模型地址: {planData.tileset_url}
+            </Typography.Paragraph>
+          </Card>
+
+          {/* 天气信息 */}
+          {astronomicalData && (
+            <Card 
+              title={
+                <div className={styles.weatherCardTitle}>
+                  <span style={{ color: getWeatherIcon(astronomicalData.weather.conditions).color }}>
+                    {getWeatherIcon(astronomicalData.weather.conditions).icon}
+                  </span>
+                  <span style={{ marginLeft: '8px' }}>天气信息</span>
+                </div>
+              } 
+              className={styles.weatherCard}
+            >
+              {/* 主要天气信息 */}
+              <div className={styles.mainWeatherInfo}>
+                <div className={styles.temperatureSection}>
+                  <div className={styles.temperatureDisplay}>
+                    <span 
+                      className={styles.currentTemp}
+                      style={{ color: getTemperatureColor(astronomicalData.weather.temperature) }}
+                    >
+                      {astronomicalData.weather.temperature}°
+                    </span>
+                    <span className={styles.tempUnit}>C</span>
+                  </div>
+                  <div className={styles.feelsLike}>
+                    体感 {astronomicalData.weather.feelsLike}°C
+                  </div>
+                </div>
+                
+                <div className={styles.weatherIconSection}>
+                  <div className={styles.weatherIconLarge}>
+                    <span style={{ 
+                      fontSize: '48px', 
+                      color: getWeatherIcon(astronomicalData.weather.conditions).color 
+                    }}>
+                      {getWeatherIcon(astronomicalData.weather.conditions).icon}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className={styles.conditionSection}>
+                  <div className={styles.condition}>{astronomicalData.weather.conditions}</div>
+                  <div className={styles.description}>{astronomicalData.weather.description}</div>
+                </div>
+              </div>
+
+              {/* 详细信息 */}
+              <div className={styles.weatherDetails}>
+                <Row gutter={[12, 12]}>
+                  <Col span={8}>
+                    <div className={styles.weatherDetailItem}>
+                      <div className={styles.detailHeader}>
+                        <div className={styles.detailIcon}>
+                          <CloudOutlined style={{ color: '#3498db' }} />
+                        </div>
+                        <div className={styles.detailLabel}>湿度</div>
+                      </div>
+                      <div className={styles.detailContent}>
+                        <div className={styles.detailValue}>{astronomicalData.weather.humidity}%</div>
+                        <Progress 
+                          percent={astronomicalData.weather.humidity} 
+                          size="small" 
+                          strokeColor="#3498db"
+                          showInfo={false}
+                          className={styles.weatherProgress}
+                        />
+                      </div>
+                    </div>
+                  </Col>
+                  
+                  <Col span={8}>
+                    <div className={styles.weatherDetailItem}>
+                      <div className={styles.detailHeader}>
+                        <div className={styles.detailIcon}>
+                          <CloudOutlined style={{ color: '#95a5a6' }} />
+                        </div>
+                        <div className={styles.detailLabel}>云量</div>
+                      </div>
+                      <div className={styles.detailContent}>
+                        <div className={styles.detailValue}>{astronomicalData.weather.cloudCover}%</div>
+                        <Progress 
+                          percent={astronomicalData.weather.cloudCover} 
+                          size="small" 
+                          strokeColor="#95a5a6"
+                          showInfo={false}
+                          className={styles.weatherProgress}
+                        />
+                      </div>
+                    </div>
+                  </Col>
+                  
+                  <Col span={8}>
+                    <div className={styles.weatherDetailItem}>
+                      <div className={styles.detailHeader}>
+                        <div className={styles.detailIcon}>
+                          <CloudOutlined style={{ color: '#3498db' }} />
+                        </div>
+                        <div className={styles.detailLabel}>降水</div>
+                      </div>
+                      <div className={styles.detailContent}>
+                        <div className={styles.detailValue}>{astronomicalData.weather.precipitation}mm</div>
+                        <div className={styles.detailSubValue}>
+                          {astronomicalData.weather.precipitationProbability}% 概率
+                        </div>
+                      </div>
+                    </div>
+                  </Col>
+                  
+                  <Col span={8}>
+                    <div className={styles.weatherDetailItem}>
+                      <div className={styles.detailHeader}>
+                        <div className={styles.detailIcon}>
+                          <CompassOutlined style={{ color: '#2ecc71' }} />
+                        </div>
+                        <div className={styles.detailLabel}>风速</div>
+                      </div>
+                      <div className={styles.detailContent}>
+                        <div className={styles.detailValue}>{astronomicalData.weather.windSpeed} km/h</div>
+                      </div>
+                    </div>
+                  </Col>
+                  
+                  <Col span={8}>
+                    <div className={styles.weatherDetailItem}>
+                      <div className={styles.detailHeader}>
+                        <div className={styles.detailIcon}>
+                          <CompassOutlined style={{ color: '#e67e22' }} />
+                        </div>
+                        <div className={styles.detailLabel}>风向</div>
+                      </div>
+                      <div className={styles.detailContent}>
+                        <div className={styles.detailValue}>{astronomicalData.weather.windDirection}°</div>
+                      </div>
+                    </div>
+                  </Col>
+                  
+                  <Col span={8}>
+                    <div className={styles.weatherDetailItem}>
+                      <div className={styles.detailHeader}>
+                        <div className={styles.detailIcon}>
+                          <EyeOutlined style={{ color: '#9b59b6' }} />
+                        </div>
+                        <div className={styles.detailLabel}>能见度</div>
+                      </div>
+                      <div className={styles.detailContent}>
+                        <div className={styles.detailValue}>{astronomicalData.weather.visibility}</div>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+
+              {/* 拍摄建议 */}
+              <div className={styles.shootingTip}>
+                {getShootingTip(astronomicalData.weather)}
+              </div>
+            </Card>
+          )}
+
+          {/* 拍摄准备清单 */}
+          <Card title={<span className={styles.cardTitle}>拍摄准备清单</span>} className={styles.checklistCard}>
+            <List
+              size="small"
+              dataSource={[
+                {
+                  title: '最佳到达时间',
+                  content: '建议提前30分钟到达拍摄地点',
+                },
+                {
+                  title: '器材准备',
+                  content: '相机、三脚架、备用电池、存储卡',
+                },
+                {
+                  title: '天气提醒',
+                  content: '建议查看天气预报，注意光线条件',
+                },
+              ]}
+              renderItem={(item) => (
+                <List.Item className={styles.checklistItem}>
+                  <List.Item.Meta
+                    title={item.title}
+                    description={item.content}
+                  />
+                </List.Item>
+              )}
+            />
+          </Card>
         </div>
       </div>
     </div>
