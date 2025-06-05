@@ -12,7 +12,6 @@ function RegisterPage() {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [videoLoaded, setVideoLoaded] = useState(false);
   const [videoError, setVideoError] = useState(false);
 
   const handleChange = (e) => {
@@ -120,14 +119,12 @@ function RegisterPage() {
 
   const handleVideoLoad = () => {
     console.log('视频加载成功');
-    setVideoLoaded(true);
     setVideoError(false);
   };
 
   const handleVideoError = (e) => {
     console.error('视频加载失败:', e);
     setVideoError(true);
-    setVideoLoaded(false);
   };
 
   return (
@@ -185,28 +182,7 @@ function RegisterPage() {
         ))}
       </div>
 
-      {/* 地球主题CSS背景 - 作为备用方案，现在注释掉 */}
-      {/* 
-      <div className="css-background">
-        <div className="gradient-orb orb-1"></div>
-        <div className="gradient-orb orb-2"></div>
-        <div className="gradient-orb orb-3"></div>
-        <div className="particle-field">
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={`particle-${i}`}
-              className="particle"
-              style={{
-                left: Math.random() * 100 + '%',
-                animationDelay: Math.random() * 3 + 's',
-                animationDuration: (3 + Math.random() * 4) + 's'
-              }}
-            />
-          ))}
-        </div>
-      </div>
-      */}
-      
+
       <div className="register-content">
         <h1>创建账号</h1>
         <form onSubmit={handleSubmit} className="register-form">
