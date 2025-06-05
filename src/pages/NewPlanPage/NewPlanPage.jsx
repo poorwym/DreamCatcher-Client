@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PageLayout from '../../components/PageLayout/PageLayout';
-import PlanStorage from '../../services/apiService';
+import HybridPlanStorage, { DATA_SOURCE } from '../../services/hybridPlanStorage';
 import { checkAPIConnection } from '../../services/apiService';
+import PageLayout from '../../components/PageLayout/PageLayout';
 import './NewPlanPage.css';
 import decoImg from './ken-cheung-WKcS19JBFVU-unsplash.jpg';
 import { FaBullseye, FaCamera } from 'react-icons/fa';
@@ -26,7 +26,7 @@ const NewPlanPage = () => {
     longitude: '',
     altitude: '',
     focalLength: '50',
-    aperture: '1.5',
+    aperture: 'f/1.5',
     tags: [],
     tilesetUrl: '',
     userId: 'default_user'
@@ -35,18 +35,21 @@ const NewPlanPage = () => {
   const [newTag, setNewTag] = useState('');
 
   // 预设标签
-  const commonTags = ['日出', '日落', '山景', '湖景', '海景', '夜景', '星空', '人像', '风景', '建筑', '街拍', '野生动物'];
+  const commonTags = [
+    '日出', '日落', '夜景', '星空', '云海', '雪景', '秋叶', '花朵',
+    '山景', '湖景', '海景', '森林', '建筑', '人文', '街头', '野生动物'
+  ];
 
   // 著名景点坐标
   const famousLocations = [
     { name: '黄山', latitude: 30.1304, longitude: 118.1670, altitude: 1864 },
-    { name: '西湖', latitude: 30.2294, longitude: 120.1551, altitude: 0 },
-    { name: '张家界', latitude: 29.1269, longitude: 110.4790, altitude: 400 },
+    { name: '张家界', latitude: 29.1269, longitude: 110.4790, altitude: 1080 },
+    { name: '九寨沟', latitude: 33.1903, longitude: 103.8568, altitude: 2000 },
     { name: '桂林', latitude: 25.2740, longitude: 110.2990, altitude: 150 },
-    { name: '三亚', latitude: 18.2528, longitude: 109.5122, altitude: 0 },
-    { name: '长城', latitude: 40.4319, longitude: 116.5704, altitude: 800 },
+    { name: '西湖', latitude: 30.2294, longitude: 120.1551, altitude: 8 },
     { name: '泰山', latitude: 36.2540, longitude: 117.1340, altitude: 1545 },
-    { name: '玉龙雪山', latitude: 27.1090, longitude: 100.1870, altitude: 5596 }
+    { name: '华山', latitude: 34.4749, longitude: 110.0845, altitude: 2155 },
+    { name: '峨眉山', latitude: 29.5525, longitude: 103.3347, altitude: 3099 }
   ];
 
   // 检查API连接状态
@@ -138,8 +141,9 @@ const NewPlanPage = () => {
 
       mapRef.current = map;
 
-      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
+      window.L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+        attribution: '© 高德地图',
+        subdomains: '1234'
       }).addTo(map);
 
       // 添加预设位置标记
@@ -277,11 +281,6 @@ const NewPlanPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!apiStatus.connected) {
-      alert('API连接失败，无法创建计划。请检查后端服务是否正常运行。');
-      return;
-    }
-    
     // 基本验证
     if (!formData.planName.trim()) {
       alert('请输入计划名称');
@@ -308,17 +307,24 @@ const NewPlanPage = () => {
     try {
       console.log('📤 提交计划数据:', formData);
       
-      const savedPlan = await PlanStorage.addNewPlan(formData);
+      const result = await HybridPlanStorage.addNewPlan(formData);
       
-      console.log('✅ 新建计划成功:', savedPlan);
+      console.log('✅ 新建计划成功:', result);
       
-      alert(`计划"${formData.planName}"创建成功！\nID: ${savedPlan.id}\n已保存到服务器。`);
+      // 根据数据源显示不同的成功消息
+      const sourceMessage = result.source === DATA_SOURCE.API 
+        ? '已保存到API服务器' 
+        : result.source === DATA_SOURCE.LOCAL 
+        ? '已保存到本地存储（API连接失败）' 
+        : '保存位置未知';
+      
+      alert(`计划"${formData.planName}"创建成功！\nID: ${result.data.id}\n${sourceMessage}`);
       
       navigate('/dashboard');
       
     } catch (error) {
       console.error('❌ 保存计划失败:', error);
-      alert(`保存计划失败: ${error.message}\n\n请检查：\n1. 后端服务是否正常运行\n2. 网络连接是否正常\n3. 表单数据是否完整`);
+      alert(`保存计划失败: ${error.message}\n\n请检查表单数据是否完整`);
     } finally {
       setSaving(false);
     }
@@ -591,7 +597,7 @@ const NewPlanPage = () => {
                   )}
                 </div>
               </div>
-              
+              　
               {/* 装饰图片 */}
               <img 
                 src={decoImg}
@@ -599,7 +605,7 @@ const NewPlanPage = () => {
                 style={{
                   position: 'absolute',
                   left: 50,
-                  top: 400,
+                  top: 480,
                   width: 400,
                   height: 'auto',
                   borderRadius: 20,
