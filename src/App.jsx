@@ -13,6 +13,7 @@ import PlanMap2DPage from './pages/PlanMap2DPage/PlanMap2DPage';
 import PlanMap3DPage from './pages/PlanMap3DPage/PlanMap3DPage';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import AboutPage from "./pages/AboutPage/AboutPage"
+import CloudRenderingPage from "./pages/CloudRenderingPage/CloudRenderingPage.jsx";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           
           {/* 可选：添加一个捕获所有未匹配路由的路由 */}
           <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="cloudrendering" element={<CloudRenderingPage />} />
         </Routes>
       </div>
     </BrowserRouter>
