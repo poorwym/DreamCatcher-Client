@@ -1,22 +1,28 @@
 .plans-list-container {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #f8f9fa;
+  color: #333333;
+  min-height: calc(100vh - 140px);
+  padding: 20px;
 }
 
 .plans-controls {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 30px;
+  gap: 20px;
   padding: 20px;
-  background-color: #fff;
+  background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
 }
 
 .search-container {
   flex: 1;
   min-width: 250px;
-  margin-right: 20px;
-  margin-bottom: 15px;
 }
 
 .search-input {
@@ -25,30 +31,38 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 14px;
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.search-input::placeholder {
+  color: #999999;
 }
 
 .search-input:focus {
   border-color: #667eea;
   outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .filter-container {
   flex: 2;
   display: flex;
   flex-wrap: wrap;
+  gap: 20px;
 }
 
 .filter-group {
-  margin-right: 20px;
-  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .filter-label {
   display: block;
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 8px;
-  color: #555;
+  color: #555555;
 }
 
 .tags-filter {
@@ -62,18 +76,27 @@
   background-color: #f5f7fa;
   border-radius: 20px;
   font-size: 13px;
-  color: #666;
+  color: #666666;
   cursor: pointer;
   transition: all 0.2s;
+  border: 1px solid #e9ecef;
 }
 
 .filter-tag:hover {
   background-color: #e8ecf1;
+  color: #333333;
 }
 
 .filter-tag.active {
   background-color: #667eea;
-  color: white;
+  color: #ffffff;
+  border-color: #667eea;
+}
+
+.no-tags {
+  color: #adb5bd;
+  font-style: italic;
+  padding: 6px 12px;
 }
 
 .sort-select {
@@ -81,14 +104,54 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 14px;
-  background-color: #f9fafc;
+  background-color: #ffffff;
+  color: #333333;
   min-width: 200px;
+}
+
+.sort-select:focus {
+  border-color: #667eea;
+  outline: none;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.refresh-button {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: opacity 0.3s, transform 0.2s;
+  height: 36px;
+  min-width: 0;
+}
+
+.refresh-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.refresh-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .new-plan-button {
   padding: 16px 36px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: #ffffff;
   border: none;
   border-radius: 6px;
   font-size: 18px;
@@ -97,12 +160,26 @@
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, transform 0.2s;
   height: 48px;
 }
 
 .new-plan-button:hover {
   opacity: 0.9;
+  transform: translateY(-1px);
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.plans-stats {
+  padding: 10px 0;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.api-warning {
+  color: #dc3545;
+  font-weight: 500;
 }
 
 .plans-grid {
@@ -112,11 +189,12 @@
 }
 
 .plan-item {
-  background-color: #fff;
+  background-color: #ffffff;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid #e9ecef;
 }
 
 .plan-item:hover {
@@ -160,26 +238,38 @@
   text-decoration: none;
   cursor: pointer;
   border: none;
+  transition: all 0.2s;
 }
 
 .action-button.view {
   background-color: #4caf50;
-  color: white;
+  color: #ffffff;
 }
 
 .action-button.edit {
   background-color: #2196f3;
-  color: white;
+  color: #ffffff;
 }
 
 .action-button.view-3d {
   background-color: #9c27b0;
-  color: white;
+  color: #ffffff;
 }
 
 .action-button.delete {
   background-color: #f44336;
-  color: white;
+  color: #ffffff;
+}
+
+.action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #6c757d;
+}
+
+.action-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  opacity: 0.9;
 }
 
 .plan-details {
@@ -190,25 +280,45 @@
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 10px;
-  color: #333;
+  color: #333333;
 }
 
 .plan-location {
   font-size: 14px;
-  color: #666;
+  color: #666666;
   margin-bottom: 5px;
 }
 
 .plan-date {
   font-size: 14px;
-  color: #888;
+  color: #888888;
+  margin-bottom: 5px;
+}
+
+.plan-time {
+  font-size: 14px;
+  color: #888888;
+  margin-bottom: 5px;
+}
+
+.plan-description {
+  font-size: 13px;
+  color: #666666;
   margin-bottom: 10px;
+  line-height: 1.4;
+  max-height: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .plan-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
+  margin-bottom: 10px;
 }
 
 .plan-tag {
@@ -216,58 +326,57 @@
   background-color: #f5f7fa;
   border-radius: 20px;
   font-size: 12px;
-  color: #666;
+  color: #666666;
+  border: 1px solid #e9ecef;
+}
+
+.plan-meta-info {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e9ecef;
+}
+
+.plan-created, .plan-updated, .plan-id {
+  font-size: 11px;
+  color: #6c757d;
+  margin: 2px 0;
+}
+
+.data-source-indicator {
+  font-size: 10px;
+  color: #888888;
 }
 
 .no-plans-message {
   grid-column: 1 / -1;
   text-align: center;
   padding: 40px;
-  background-color: #fff;
+  background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
 }
 
 .no-plans-message p {
   margin-bottom: 15px;
-  color: #666;
+  color: #666666;
 }
 
 .clear-filters-button {
   padding: 8px 16px;
   background-color: #667eea;
-  color: white;
+  color: #ffffff;
   border: none;
   border-radius: 5px;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
 }
 
 .clear-filters-button:hover {
   background-color: #5a6fcf;
+  transform: translateY(-1px);
 }
-
-@media (max-width: 768px) {
-  .plans-controls {
-    flex-direction: column;
-  }
-  
-  .search-container, .filter-container {
-    width: 100%;
-    margin-right: 0;
-  }
-  
-  .new-plan-button {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .plans-grid {
-    grid-template-columns: 1fr;
-  }
-} 
-/* 在你现有的 PlansListPage.css 文件末尾添加这些样式 */
 
 .loading-overlay {
   position: fixed;
@@ -285,9 +394,11 @@
 .loading-message {
   text-align: center;
   padding: 20px;
-  background-color: white;
+  background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  color: #333333;
+  border: 1px solid #e9ecef;
 }
 
 .loading-spinner {
@@ -309,150 +420,11 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: #666666;
+  background-color: #f9fafc;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
 }
-
-.image-credit {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-  color: white;
-  font-size: 11px;
-  padding: 8px;
-  text-align: right;
-}
-
-.image-credit a {
-  color: white;
-  text-decoration: none;
-}
-
-.image-credit a:hover {
-  text-decoration: underline;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
-
-.refresh-button {
-  padding: 8px 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  transition: opacity 0.3s;
-  height: 36px;
-  min-width: 0;
-}
-
-.refresh-button:hover {
-  opacity: 0.9;
-}
-
-.plans-stats {
-  margin-bottom: 20px;
-  padding: 10px 0;
-  color: #6c757d;
-  font-size: 14px;
-}
-
-.no-tags {
-  color: #adb5bd;
-  font-style: italic;
-  padding: 6px 12px;
-}
-
-.plan-time {
-  font-size: 14px;
-  color: #888;
-  margin-bottom: 5px;
-}
-
-.plan-description {
-  font-size: 13px;
-  color: #666;
-  margin-bottom: 10px;
-  line-height: 1.4;
-  max-height: 40px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.plan-created {
-  font-size: 12px;
-  color: #adb5bd;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #f1f3f4;
-}
-
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.loading-message {
-  text-align: center;
-  padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 10px auto;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* 响应式调整 */
-@media (max-width: 768px) {
-  .action-buttons {
-    width: 100%;
-    justify-content: stretch;
-  }
-  
-  .refresh-button {
-    flex: 1;
-    min-width: 0;
-  }
-  
-  .new-plan-button {
-    flex: 1;
-    min-width: 0;
-  }
-}
-/* 添加到 PlansListPage.css 末尾 */
 
 /* API连接状态指示器 */
 .api-status {
@@ -479,75 +451,6 @@
   background: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
-}
-
-/* API警告文本 */
-.api-warning {
-  color: #dc3545;
-  font-weight: 500;
-}
-
-/* API错误消息 */
-.api-error-message {
-  grid-column: 1 / -1;
-  padding: 40px;
-  text-align: center;
-  background: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 8px;
-  color: #721c24;
-}
-
-.error-content h3 {
-  margin: 0 0 20px 0;
-  color: #721c24;
-}
-
-.error-content ul {
-  text-align: left;
-  display: inline-block;
-  margin: 20px 0;
-}
-
-.retry-button {
-  background: #dc3545;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  margin-top: 15px;
-  transition: background-color 0.3s ease;
-}
-
-.retry-button:hover {
-  background: #c82333;
-}
-
-/* 计划元信息 */
-.plan-meta-info {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #e9ecef;
-}
-
-.plan-created, .plan-updated, .plan-id {
-  font-size: 11px;
-  color: #6c757d;
-  margin: 2px 0;
-}
-
-/* 禁用状态的操作按钮 */
-.action-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background-color: #6c757d;
-}
-
-.refresh-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 /* 数据源状态指示器 */
@@ -585,7 +488,102 @@
   border: 1px solid #f5c6cb;
 }
 
-/* 调整API状态指示器位置，避免重叠 */
-.api-status {
-  top: 20px;
+/* API错误消息 */
+.api-error-message {
+  grid-column: 1 / -1;
+  padding: 40px;
+  text-align: center;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  color: #721c24;
+}
+
+.error-content h3 {
+  margin: 0 0 20px 0;
+  color: #721c24;
+}
+
+.error-content ul {
+  text-align: left;
+  display: inline-block;
+  margin: 20px 0;
+  color: #721c24;
+}
+
+.retry-button {
+  background: #dc3545;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+}
+
+.retry-button:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .plans-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  
+  .filter-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .plans-list-container {
+    padding: 15px;
+  }
+  
+  .plans-controls {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .search-container {
+    width: 100%;
+  }
+  
+  .filter-container {
+    width: 100%;
+  }
+  
+  .action-buttons {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .refresh-button {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .new-plan-button {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+  }
+  
+  .plans-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .api-status,
+  .data-source-status {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-bottom: 10px;
+    max-width: none;
+  }
 }

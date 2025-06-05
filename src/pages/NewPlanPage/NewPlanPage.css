@@ -3,17 +3,24 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px; /* 移除顶部padding，避免空白 */
+  padding: 20px;
+  background-color: #f8f9fa;
+  color: #333333;
+  min-height: calc(100vh - 140px);
+  display: flex;
+  flex-direction: column;
 }
 
 .new-plan-form {
-  background-color: #fff;
+  background-color: #ffffff;
   border-radius: 12px;
   padding: 40px;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  flex: 1;
 }
 
-/* 主要布局 - 两列布局 */
+/* 主要布局 - 使用 CSS Grid 布局 */
 .form-sections {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -26,7 +33,9 @@
   background: #fafafa;
   padding: 25px;
   border-radius: 8px;
-  border: 1px solid #eee;
+  border: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 左侧基本信息区块 */
@@ -37,20 +46,25 @@
 /* 右侧设置和地图区块 */
 .form-section.settings-and-map {
   background: #f5f6f8;
+  position: relative;
 }
 
 .form-section h2 {
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: #333333;
   margin: 0 0 25px 0;
   padding-bottom: 15px;
   border-bottom: 2px solid #e0e0e0;
+  display: flex;
+  align-items: center;
 }
 
 /* 表单组 */
 .form-group {
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group label {
@@ -58,7 +72,7 @@
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 8px;
-  color: #555;
+  color: #555555;
 }
 
 .form-group input,
@@ -70,7 +84,14 @@
   border-radius: 8px;
   font-size: 14px;
   transition: all 0.3s ease;
-  background-color: #fff;
+  background-color: #ffffff;
+  color: #333333;
+  box-sizing: border-box;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #999999;
 }
 
 .form-group input:focus,
@@ -81,14 +102,19 @@
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-/* 表单行 - 避免重叠 */
+/* 表单行 - 使用 flexbox */
 .form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 15px;
+  margin-bottom: 20px;
 }
 
-/* 标签部分 - 美化样式 */
+.form-row .form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* 标签部分 */
 .tags-section {
   margin-top: 10px;
 }
@@ -104,20 +130,21 @@
 }
 
 .add-tag-btn {
-  padding: 0 20px;
+  padding: 12px 20px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: #ffffff;
   border: none;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .add-tag-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 /* 常用标签 */
@@ -126,117 +153,125 @@
 }
 
 .common-tags-label {
-  display: inline-block;
+  display: block;
   font-size: 13px;
-  color: #666;
-  margin-right: 10px;
   font-weight: 500;
+  color: #666666;
+  margin-bottom: 8px;
 }
 
 .common-tag {
   display: inline-block;
-  padding: 6px 14px;
-  margin: 4px;
+  padding: 6px 12px;
+  margin: 3px;
   background: #f0f2f5;
-  border: 1px solid #d1d5db;
-  border-radius: 20px;
-  font-size: 13px;
-  color: #4b5563;
+  border: 1px solid #d0d7de;
+  border-radius: 15px;
+  font-size: 12px;
+  color: #333333;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .common-tag:hover {
-  background: #e7e9ed;
-  border-color: #9ca3af;
+  background: #e1e7ef;
+  border-color: #667eea;
+  color: #667eea;
   transform: translateY(-1px);
 }
 
 .common-tag:disabled {
-  opacity: 0.5;
+  background: #e9ecef;
+  color: #999999;
   cursor: not-allowed;
+  border-color: #dee2e6;
 }
 
-/* 已选标签 - 美化样式 */
+/* 已选标签 */
 .selected-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 10px;
 }
 
 .selected-tag {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   padding: 6px 12px;
-  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-  border: 1px solid #667eea30;
-  border-radius: 20px;
-  font-size: 13px;
-  color: #5850ec;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-radius: 15px;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .remove-tag {
-  margin-left: 8px;
   background: none;
   border: none;
-  color: #9ca3af;
-  font-size: 18px;
-  line-height: 1;
+  color: #ffffff;
+  font-size: 16px;
+  margin-left: 6px;
   cursor: pointer;
   padding: 0;
-  transition: color 0.2s ease;
+  line-height: 1;
 }
 
 .remove-tag:hover {
-  color: #ef4444;
+  opacity: 0.7;
 }
 
-/* 地图全宽部分 */
+/* 地图全宽区域 */
 .map-full-width {
-  margin-top: 40px;
-  padding: 25px;
-  background: #fafafa;
+  grid-column: 1 / -1;
+  background-color: #ffffff;
   border-radius: 8px;
-  border: 1px solid #eee;
+  padding: 25px;
+  margin-top: 20px;
+  border: 1px solid #e9ecef;
 }
 
 .map-full-width h2 {
   font-size: 20px;
   font-weight: 600;
-  color: #333;
-  margin: 0 0 25px 0;
+  color: #333333;
+  margin: 0 0 20px 0;
   padding-bottom: 15px;
   border-bottom: 2px solid #e0e0e0;
 }
 
-/* 地图部分 */
 .map-section {
-  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
+/* 快速位置选择 */
 .quick-locations {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
 }
 
 .quick-locations-label {
-  display: inline-block;
   font-size: 13px;
-  color: #666;
-  margin-right: 10px;
+  color: #666666;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .quick-location {
-  display: inline-block;
   padding: 8px 16px;
-  margin: 4px;
-  background: #fff;
+  background: #ffffff;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
   font-size: 13px;
-  color: #333;
+  color: #333333;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -249,7 +284,7 @@
 
 .quick-location.active {
   background: #667eea;
-  color: white;
+  color: #ffffff;
   border-color: #667eea;
 }
 
@@ -264,8 +299,12 @@
 .map-hint {
   margin-top: 10px;
   font-size: 13px;
-  color: #666;
+  color: #666666;
   text-align: center;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
 }
 
 /* 表单操作按钮 */
@@ -286,6 +325,8 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-width: 120px;
+  text-align: center;
 }
 
 .cancel-btn {
@@ -296,12 +337,13 @@
 
 .cancel-btn:hover {
   background-color: #e5e7eb;
+  color: #1f2937;
   transform: translateY(-1px);
 }
 
 .submit-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: #ffffff;
   border: none;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
 }
@@ -316,41 +358,13 @@
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
-/* 响应式设计 */
-@media (max-width: 968px) {
-  .form-sections {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  
-  .new-plan-form {
-    padding: 25px;
-  }
+.submit-btn.disabled {
+  background-color: #6c757d;
+  background-image: none;
 }
-
-@media (max-width: 640px) {
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-  
-  .form-actions {
-    flex-direction: column;
-  }
-  
-  .cancel-btn,
-  .submit-btn {
-    width: 100%;
-  }
-  
-  .common-tag,
-  .quick-location {
-    font-size: 12px;
-    padding: 5px 10px;
-  }
-}
-/* 添加到 NewPlanPage.css 末尾 */
 
 /* API连接状态指示器 */
 .api-status {
@@ -388,16 +402,93 @@
   font-style: italic;
 }
 
-/* 禁用状态的提交按钮 */
-.submit-btn.disabled,
-.submit-btn:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-  opacity: 0.6;
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .form-sections {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .new-plan-form {
+    padding: 25px;
+  }
+  
+  .new-plan-container {
+    padding: 15px;
+  }
 }
 
-.submit-btn.disabled:hover,
-.submit-btn:disabled:hover {
-  background-color: #6c757d;
-  transform: none;
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .form-row .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .cancel-btn,
+  .submit-btn {
+    width: 100%;
+  }
+  
+  .quick-locations {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .quick-locations-label {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .common-tag,
+  .quick-location {
+    font-size: 12px;
+    padding: 6px 12px;
+    text-align: center;
+  }
+  
+  .api-status {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-bottom: 15px;
+  }
+  
+  .tags-input {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .add-tag-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .new-plan-form {
+    padding: 20px;
+  }
+  
+  .form-section {
+    padding: 20px;
+  }
+  
+  .map-full-width {
+    padding: 20px;
+  }
+  
+  .common-tags {
+    text-align: center;
+  }
+  
+  .quick-locations {
+    padding: 15px;
+  }
 }
