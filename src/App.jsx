@@ -12,6 +12,7 @@ import PlanDetailsPage from './pages/PlanDetailsPage/PlanDetailsPage';
 import PlanMap2DPage from './pages/PlanMap2DPage/PlanMap2DPage';
 import PlanMap3DPage from './pages/PlanMap3DPage/PlanMap3DPage';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
+import AboutPage from "./pages/AboutPage/AboutPage"
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/plans/:id/map3D" element={<PlanMap3DPage />} />
           
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/about" element={<AboutPage/>}/>
           
           {/* 可选：添加一个捕获所有未匹配路由的路由 */}
           <Route path="*" element={<Navigate to="/" replace />} />
