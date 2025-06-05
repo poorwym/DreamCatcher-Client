@@ -71,6 +71,9 @@ function PlanMap2DPage() {
   const [showMoonPath, setShowMoonPath] = useState(true);//是否显示月亮轨迹
   const [isDragging, setIsDragging] = useState(false);//是否正在拖拽相机位置
 
+  // 添加原始时间状态
+  const [originalDateTime, setOriginalDateTime] = useState(null);
+
   const mapContainerRef = useRef(null);//地图容器
   const mapRef = useRef(null);//地图实例
   const cameraMarkerRef = useRef(null);//相机位置标记
@@ -116,6 +119,9 @@ function PlanMap2DPage() {
         const initialTime = dayjs(data.start_time);
         setSelectedDate(initialTime);
         setSelectedTime(initialTime);
+        
+        // 保存原始时间
+        setOriginalDateTime(initialTime);
 
         // 获取天文数据
         const astroData = await astronomyAPI.getAstronomyData({
@@ -512,6 +518,29 @@ function PlanMap2DPage() {
     setSelectedTime(prev => prev.hour(hours).minute(minutes));
   };
 
+  // 处理日期选择器变化，当值为null时恢复原始日期
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    // 检查是否需要恢复原始时间
+    checkAndRestoreOriginalTime(date, selectedTime);
+  };
+
+  // 处理时间选择器变化，当值为null时恢复原始时间
+  const handleTimeChange = (time) => {
+    setSelectedTime(time);
+    // 检查是否需要恢复原始时间
+    checkAndRestoreOriginalTime(selectedDate, time);
+  };
+
+  // 检查并恢复原始时间：只有当日期和时间都为null时才恢复
+  const checkAndRestoreOriginalTime = (currentDate, currentTime) => {
+    if (currentDate === null && currentTime === null && originalDateTime) {
+      setSelectedDate(originalDateTime);
+      setSelectedTime(originalDateTime);
+      message.info('已恢复到原始计划时间');
+    }
+  };
+
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -587,14 +616,14 @@ function PlanMap2DPage() {
                 <Col span={12}>
                   <DatePicker
                     value={selectedDate}
-                    onChange={setSelectedDate}
+                    onChange={handleDateChange}
                     style={{ width: '100%' }}
                   />
                 </Col>
                 <Col span={12}>
                   <TimePicker
                     value={selectedTime}
-                    onChange={setSelectedTime}
+                    onChange={handleTimeChange}
                     format="HH:mm"
                     style={{ width: '100%' }}
                   />

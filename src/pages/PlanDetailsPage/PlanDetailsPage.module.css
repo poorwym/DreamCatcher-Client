@@ -156,6 +156,20 @@
   line-height: 1.6;
 }
 
+/* 基本信息描述列表样式 */
+.basicInfoCard .ant-descriptions-item {
+  padding-bottom: 4px !important;
+}
+
+.basicInfoCard .ant-descriptions-item-label {
+  font-weight: 500 !important;
+  padding-bottom: 2px !important;
+}
+
+.basicInfoCard .ant-descriptions-item-content {
+  padding-bottom: 2px !important;
+}
+
 /* 地图预览卡片 */
 .mapPreviewCard {
   composes: infoCard;
@@ -225,6 +239,135 @@
 /* 天文数据卡片 */
 .astronomyCard {
   composes: infoCard;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 245, 255, 0.95));
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(142, 68, 173, 0.1);
+}
+
+/* 天文卡片标题 */
+.astronomyCardTitle {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* 主要天文信息显示 */
+.mainAstronomyInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 24px;
+}
+
+/* 太阳区域 */
+.sunSection {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.sunDisplay {
+  text-align: center;
+  animation: gentle-pulse 4s ease-in-out infinite;
+}
+
+@keyframes gentle-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* 月亮区域 */
+.moonSection {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.moonDisplay {
+  text-align: center;
+  animation: gentle-rotate 6s ease-in-out infinite;
+}
+
+@keyframes gentle-rotate {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* 天文标签和数值 */
+.astronomyLabel {
+  font-size: 12px;
+  color: #5a6c7d;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.astronomyValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2c3e50;
+  line-height: 1.1;
+  margin-bottom: 2px;
+}
+
+.astronomySubValue {
+  font-size: 10px;
+  color: #95a5a6;
+  font-weight: 500;
+}
+
+/* 天文详细信息 */
+.astronomyDetails {
+  margin-bottom: 24px;
+}
+
+.astronomyDetailItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(142, 68, 173, 0.1);
+  transition: all 0.3s ease;
+  height: 80px;
+  min-height: 80px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.astronomyDetailItem:hover {
+  background: rgba(142, 68, 173, 0.08);
+  border-color: rgba(142, 68, 173, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(142, 68, 173, 0.15);
+}
+
+/* 天文拍摄建议 */
+.astronomyTip {
+  background: linear-gradient(135deg, rgba(142, 68, 173, 0.1), rgba(155, 89, 182, 0.1));
+  border: 1px solid rgba(142, 68, 173, 0.2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a5568;
+  text-align: center;
+  animation: fadeIn 0.6s ease-out;
+  transition: all 0.3s ease;
+}
+
+.astronomyTip:hover {
+  background: linear-gradient(135deg, rgba(142, 68, 173, 0.15), rgba(155, 89, 182, 0.15));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(142, 68, 173, 0.2);
 }
 
 /* 3D模型预览卡片 */
@@ -275,12 +418,243 @@
 /* 天气信息卡片 */
 .weatherCard {
   composes: infoCard;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(247, 249, 252, 0.95));
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 天气卡片标题 */
+.weatherCardTitle {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* 主要天气信息显示 */
+.mainWeatherInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 24px;
+}
+
+/* 温度区域 */
+.temperatureSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* 温度显示 */
+.temperatureDisplay {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.currentTemp {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+.tempUnit {
+  font-size: 20px;
+  font-weight: 500;
+  color: #7f8c8d;
+  margin-left: 4px;
+}
+
+.feelsLike {
+  font-size: 14px;
+  color: #95a5a6;
+  font-weight: 500;
+}
+
+/* 天气图标区域 */
+.weatherIconSection {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 32px;
+}
+
+/* 大天气图标 */
+.weatherIconLarge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+  animation: gentle-float 3s ease-in-out infinite;
+}
+
+@keyframes gentle-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* 天气状况区域 */
+.conditionSection {
+  flex: 1;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.condition {
+  font-size: 20px;
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-size: 14px;
+  color: #7f8c8d;
+  line-height: 1.4;
+  max-width: 120px;
+}
+
+/* 天气详细信息 */
+.weatherDetails {
+  margin-bottom: 24px;
+}
+
+.weatherDetailItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  height: 80px;
+  min-height: 80px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.weatherDetailItem:hover {
+  background: rgba(102, 126, 234, 0.08);
+  border-color: rgba(102, 126, 234, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.12);
+}
+
+.detailIcon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  font-size: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.detailContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  width: 100%;
+}
+
+.detailLabel {
+  font-size: 11px;
+  color: #5a6c7d;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.detailValue {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2c3e50;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.detailSubValue {
+  font-size: 9px;
+  color: #95a5a6;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-top: -2px;
+}
+
+/* 天气进度条样式 */
+.weatherProgress {
+  width: 100%;
+  margin-top: 2px;
+}
+
+.weatherProgress .ant-progress-bg {
+  border-radius: 2px;
+  height: 3px !important;
+}
+
+.weatherProgress .ant-progress-outer {
+  line-height: 1;
+}
+
+.weatherProgress .ant-progress-inner {
+  background-color: rgba(0, 0, 0, 0.05);
+  height: 3px !important;
+}
+
+/* 拍摄建议 */
+.shootingTip {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a5568;
+  text-align: center;
+  animation: fadeIn 0.6s ease-out;
+  transition: all 0.3s ease;
+}
+
+.shootingTip:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
 .weatherItem {
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+  padding: 16px 0 !important;
 }
 
 .weatherItem:last-child {
@@ -290,7 +664,8 @@
 .progressContainer {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  width: 100%;
 }
 
 /* 拍摄准备清单卡片 */
@@ -313,6 +688,90 @@
 
 .checklistItem:last-child {
   border-bottom: none !important;
+}
+
+/* 可折叠拍摄准备清单 */
+.checklistCollapse {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  margin-top: 16px;
+}
+
+.checklistCollapse:hover {
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.15);
+  transform: translateY(-2px);
+}
+
+.checklistCollapse .ant-collapse-header {
+  padding: 16px 24px !important;
+  border-radius: 16px !important;
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+.checklistCollapse .ant-collapse-content {
+  border-top: 1px solid rgba(102, 126, 234, 0.1);
+  background: transparent;
+}
+
+.checklistCollapse .ant-collapse-content-box {
+  padding: 0 !important;
+}
+
+.checklistCollapse .ant-collapse-expand-icon {
+  color: #1890ff !important;
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.checklistCollapse .ant-collapse-item-active .ant-collapse-expand-icon {
+  transform: rotate(180deg);
+}
+
+/* 清单内部卡片样式 */
+.checklistCollapse .ant-card {
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.checklistCollapse .ant-card:hover {
+  border-color: rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.1);
+  transform: translateY(-1px);
+}
+
+.checklistCollapse .ant-card-head {
+  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  padding: 8px 16px;
+  min-height: auto;
+}
+
+.checklistCollapse .ant-card-head-title {
+  font-size: 14px;
+  font-weight: 500;
+  padding: 4px 0;
+}
+
+.checklistCollapse .ant-card-body {
+  padding: 12px 16px;
+}
+
+.checklistCollapse .ant-list-item {
+  padding: 4px 0;
+  border-bottom: none;
+  align-items: flex-start;
+}
+
+.checklistCollapse .ant-list-item:hover {
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 4px;
+  padding-left: 8px;
+  transition: all 0.2s ease;
 }
 
 /* 快速操作卡片 */

@@ -110,9 +110,11 @@ const weatherRequest = async (location, date1, date2 = null) => {
     url += `/${date2}`;
   }
   
-  url += `?key=${WEATHER_API_KEY}&include=current,days,hours&elements=datetime,temp,feelslike,humidity,precip,precipprob,windspeed,winddir,visibility,cloudcover,conditions,description`;
+  // 添加温度单位参数，确保返回摄氏度
+  url += `?key=${WEATHER_API_KEY}&unitGroup=metric&include=current,days,hours&elements=datetime,temp,feelslike,humidity,precip,precipprob,windspeed,winddir,visibility,cloudcover,conditions,description`;
 
   try {
+    console.log('请求天气API URL:', url);
     const response = await fetch(url);
     
     if (!response.ok) {
@@ -120,7 +122,9 @@ const weatherRequest = async (location, date1, date2 = null) => {
       throw new Error(`Weather API ${response.status}: ${errorText}`);
     }
     
-    return await response.json();
+    const data = await response.json();
+    console.log('天气API响应:', data);
+    return data;
   } catch (error) {
     console.error(`天气API请求错误: ${url}`, error);
     throw error;
@@ -406,6 +410,8 @@ export const astronomyAPI = {
 
 // 转换天气数据格式以适应现有的UI组件
 const transformWeatherData = (weatherData) => {
+  console.log('原始天气数据:', weatherData);
+  
   const currentConditions = weatherData.currentConditions || weatherData.days?.[0];
   const todayData = weatherData.days?.[0];
   
@@ -414,10 +420,17 @@ const transformWeatherData = (weatherData) => {
   }
   
   const data = currentConditions || todayData;
+  console.log('处理的天气数据:', data);
   
-  return {
-    temperature: Math.round(data.temp || 0),
-    feelsLike: Math.round(data.feelslike || data.temp || 0),
+  // Visual Crossing API 现在使用公制单位，应该直接返回摄氏度
+  const convertTemp = (temp) => {
+    if (typeof temp !== 'number') return 0;
+    return Math.round(temp);
+  };
+
+  const result = {
+    temperature: convertTemp(data.temp),
+    feelsLike: convertTemp(data.feelslike || data.temp),
     humidity: Math.round(data.humidity || 0),
     cloudCover: Math.round(data.cloudcover || 0),
     visibility: data.visibility ? `${Math.round(data.visibility)}km` : '良好',
@@ -428,14 +441,19 @@ const transformWeatherData = (weatherData) => {
     conditions: data.conditions || '未知',
     description: weatherData.description || data.description || '无描述',
     forecast: data.conditions || '晴朗',
-    // 原始数据，供高级用户使用
+    // 原始数据，供调试使用
     raw: {
+      originalTemp: data.temp,
+      originalFeelsLike: data.feelslike,
       current: currentConditions,
       today: todayData,
       days: weatherData.days,
       alerts: weatherData.alerts
     }
   };
+  
+  console.log('转换后的天气数据:', result);
+  return result;
 };
 
 // WebSocket 连接管理
