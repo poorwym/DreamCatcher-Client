@@ -1,6 +1,9 @@
 import React from 'react';
 import './AboutPage.css';
+import React from 'react';
+import './AboutPage.css';
 
+const AboutPage = () => {
 const AboutPage = () => {
   return (
     <div className="about-container">
@@ -135,5 +138,9 @@ const AboutPage = () => {
     </div>
   );
 };
+    </div>
+  );
+};
 
+export default AboutPage;
 export default AboutPage;

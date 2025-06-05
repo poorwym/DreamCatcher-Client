@@ -13,7 +13,10 @@ import PlanMap2DPage from './pages/PlanMap2DPage/PlanMap2DPage';
 import PlanMap3DPage from './pages/PlanMap3DPage/PlanMap3DPage';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import AboutPage from "./pages/AboutPage/AboutPage"
+<<<<<<< HEAD
 import CloudRenderingPage from "./pages/CloudRenderingPage/CloudRenderingPage.jsx";
+=======
+>>>>>>> d20ccd9 (Add About page with team details and styles; upload team images)
 
 function App() {
   return (
