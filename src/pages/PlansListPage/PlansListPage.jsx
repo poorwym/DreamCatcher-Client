@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PageLayout from '../../components/PageLayout/PageLayout';
+import HybridPlanStorage, { DATA_SOURCE } from '../../services/hybridPlanStorage';
+import { PlanAPIService, checkAPIConnection } from '../../services/apiService';
 import imageService from '../../services/imageService';
-import PlanStorage, { PlanAPIService, checkAPIConnection } from '../../services/apiService';
 import './PlansListPage.css';
 import { FiRefreshCw } from 'react-icons/fi';
 import { MdImage } from 'react-icons/md';
@@ -12,11 +13,13 @@ const PlansListPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
-  const [sortOption, setSortOption] = useState('dateDesc');
+  const [sortBy, setSortBy] = useState('date');
   const [apiStatus, setApiStatus] = useState({ connected: false, message: '检查中...' });
+  const [dataSource, setDataSource] = useState({ source: DATA_SOURCE.UNKNOWN, error: null });
+  const navigate = useNavigate();
 
-  // 动态获取所有可用标签
-  const allTags = [...new Set(plans.flatMap(plan => (plan.tags && Array.isArray(plan.tags)) ? plan.tags : []))];
+  // 获取所有唯一标签
+  const allTags = [...new Set(plans.flatMap(plan => plan.tags || []))];
 
   // 检查API连接状态
   useEffect(() => {
@@ -33,48 +36,54 @@ const PlansListPage = () => {
     checkConnection();
   }, []);
 
-  // 加载所有计划数据
+  // 加载计划数据 - 使用混合存储服务
   useEffect(() => {
-    const loadAllPlans = async () => {
+    const loadPlans = async () => {
       setLoading(true);
       
       try {
-        console.log('🔄 开始从API加载计划数据...');
+        console.log('🔄 开始从混合存储加载计划数据...');
         
-        const allPlansData = await PlanAPIService.getAllPlans();
+        const result = await HybridPlanStorage.getAllPlans();
+        
+        // 更新数据源状态
+        setDataSource({ 
+          source: result.source, 
+          error: result.error 
+        });
 
-        console.log('📊 API返回计划数据:', allPlansData.length, '个计划');
+        console.log('📊 混合存储返回数据:', {
+          recent: result.data.recentPlans.length,
+          upcoming: result.data.upcomingPlans.length,
+          source: result.source,
+          error: result.error
+        });
 
-        if (!allPlansData || allPlansData.length === 0) {
-          console.log('📭 API返回空数据，设置空数组');
+        const allPlansData = [...result.data.recentPlans, ...result.data.upcomingPlans];
+
+        if (allPlansData.length === 0) {
           setPlans([]);
+          console.log('📋 暂无计划数据');
           return;
         }
 
-        // 为每个计划加载图片
+        // 为计划获取图片
         const plansWithImages = await Promise.all(
           allPlansData.map(async (plan) => {
-            try {
-              const safePlan = {
-                id: plan.id || `plan-${Date.now()}`,
-                name: plan.name || plan.planName || '未命名计划',
-                location: plan.location || '未知地点',
-                tags: Array.isArray(plan.tags) ? plan.tags : [],
-                date: plan.shootingDate || plan.date || new Date().toISOString(),
-                shootingTime: plan.shootingTime || '',
-                description: plan.description || '',
-                createdAt: plan.createdAt || new Date().toISOString(),
-                updatedAt: plan.updatedAt || new Date().toISOString(),
-                latitude: plan.latitude || '',
-                longitude: plan.longitude || '',
-                altitude: plan.altitude || '',
-                focalLength: plan.focalLength || '50',
-                aperture: plan.aperture || '1.5',
-                tilesetUrl: plan.tilesetUrl || '',
-                userId: plan.userId || 'default_user',
-                ...plan
-              };
+            const safePlan = {
+              id: plan.id || `plan-${Date.now()}`,
+              name: plan.name || plan.planName || '未命名计划',
+              location: plan.location || '未知地点',
+              tags: Array.isArray(plan.tags) ? plan.tags : [],
+              date: plan.shootingDate || plan.date || new Date().toISOString(),
+              shootingTime: plan.shootingTime || '',
+              description: plan.description || '',
+              createdAt: plan.createdAt || new Date().toISOString(),
+              updatedAt: plan.updatedAt || new Date().toISOString(),
+              ...plan
+            };
 
+            try {
               const imageData = await imageService.getImageByTags(safePlan.location, safePlan.tags);
               return {
                 ...safePlan,
@@ -85,21 +94,7 @@ const PlansListPage = () => {
                 photographerUrl: imageData.photographerUrl
               };
             } catch (error) {
-              console.error(`加载 ${plan.name || plan.planName} 的图片失败:`, error);
-              
-              const safePlan = {
-                id: plan.id || `plan-${Date.now()}`,
-                name: plan.name || plan.planName || '未命名计划',
-                location: plan.location || '未知地点',
-                tags: Array.isArray(plan.tags) ? plan.tags : [],
-                date: plan.shootingDate || plan.date || new Date().toISOString(),
-                shootingTime: plan.shootingTime || '',
-                description: plan.description || '',
-                createdAt: plan.createdAt || new Date().toISOString(),
-                updatedAt: plan.updatedAt || new Date().toISOString(),
-                ...plan
-              };
-
+              console.error(`加载 ${safePlan.name} 的图片失败:`, error);
               return {
                 ...safePlan,
                 thumbnail: `https://via.placeholder.com/300x200/667eea/ffffff?text=${encodeURIComponent(safePlan.location)}`,
@@ -112,17 +107,18 @@ const PlansListPage = () => {
           })
         );
 
-        console.log('✅ 处理后的计划数据:', plansWithImages.length, '个计划');
         setPlans(plansWithImages);
+        console.log('✅ 计划数据加载完成');
       } catch (error) {
-        console.error('❌ 加载计划失败:', error);
+        console.error('❌ 加载计划数据失败:', error);
         setPlans([]);
+        setDataSource({ source: DATA_SOURCE.UNKNOWN, error: error.message });
       } finally {
         setLoading(false);
       }
     };
 
-    loadAllPlans();
+    loadPlans();
   }, []);
 
   // 筛选和排序逻辑
@@ -153,11 +149,11 @@ const PlansListPage = () => {
       const nameA = a.name || '';
       const nameB = b.name || '';
       
-      if (sortOption === 'dateAsc') {
+      if (sortBy === 'dateAsc') {
         return dateA - dateB;
-      } else if (sortOption === 'dateDesc') {
+      } else if (sortBy === 'dateDesc') {
         return dateB - dateA;
-      } else if (sortOption === 'nameAsc') {
+      } else if (sortBy === 'nameAsc') {
         return nameA.localeCompare(nameB);
       } else {
         return nameB.localeCompare(nameA);
@@ -343,6 +339,16 @@ const PlansListPage = () => {
           {apiStatus.connected ? '✅ API已连接' : '❌ ' + apiStatus.message}
         </div>
 
+        {/* 数据源状态指示器 */}
+        {dataSource.source !== DATA_SOURCE.UNKNOWN && (
+          <div className={`data-source-status ${dataSource.source === DATA_SOURCE.API ? 'success' : 'warning'}`}>
+            {dataSource.source === DATA_SOURCE.API 
+              ? '📡 数据来自API服务器' 
+              : `⚠️ API连接失败，显示本地缓存数据${dataSource.error ? ` (${dataSource.error})` : ''}`
+            }
+          </div>
+        )}
+
         <div className="plans-controls">
           <div className="search-container">
             <input
@@ -375,12 +381,12 @@ const PlansListPage = () => {
             <div className="filter-group">
               <label className="filter-label">排序:</label>
               <select 
-                value={sortOption} 
-                onChange={(e) => setSortOption(e.target.value)}
+                value={sortBy} 
+                onChange={(e) => setSortBy(e.target.value)}
                 className="sort-select"
               >
-                <option value="dateDesc">日期 (最新优先)</option>
                 <option value="dateAsc">日期 (最旧优先)</option>
+                <option value="dateDesc">日期 (最新优先)</option>
                 <option value="nameAsc">名称 (A-Z)</option>
                 <option value="nameDesc">名称 (Z-A)</option>
               </select>
@@ -402,7 +408,7 @@ const PlansListPage = () => {
               disabled={loading}
               title="重新加载图片"
             >
-              {loading ? '刷新中...' : <><MdImage style={{ marginRight: 6, verticalAlign: 'middle' }} />刷新图片</>}
+              {loading ? '刷新中...' : '🖼️ 刷新图片'}
             </button>
             <Link to="/plans/new" className="new-plan-button">
               + 创建新计划
@@ -413,7 +419,7 @@ const PlansListPage = () => {
         {loading && (
           <div className="loading-overlay">
             <div className="loading-message">
-              <p>正在从API加载数据...</p>
+              <p>正在加载数据...</p>
               <div className="loading-spinner"></div>
             </div>
           </div>
@@ -423,30 +429,12 @@ const PlansListPage = () => {
           <p>
             共找到 {filteredPlans.length} 个计划 
             {plans.length > filteredPlans.length ? `(共 ${plans.length} 个)` : ''}
-            {!apiStatus.connected && <span className="api-warning"> ⚠️ API未连接</span>}
+            {dataSource.source === DATA_SOURCE.LOCAL && <span className="api-warning"> ⚠️ 本地缓存数据</span>}
           </p>
         </div>
 
         <div className="plans-grid">
-          {!apiStatus.connected ? (
-            <div className="api-error-message">
-              <div className="error-content">
-                <h3>🔌 API连接失败</h3>
-                <p>无法连接到后端服务，请检查：</p>
-                <ul>
-                  <li>后端服务是否正常运行</li>
-                  <li>API地址配置是否正确</li>
-                  <li>网络连接是否正常</li>
-                </ul>
-                <button 
-                  onClick={() => window.location.reload()} 
-                  className="retry-button"
-                >
-                  重试连接
-                </button>
-              </div>
-            </div>
-          ) : filteredPlans.length > 0 ? (
+          {filteredPlans.length > 0 ? (
             filteredPlans.map(plan => (
               <div className="plan-item" key={plan.id}>
                 <div className="plan-thumbnail" style={{ backgroundImage: `url(${plan.thumbnail || ''})` }}>
@@ -491,6 +479,11 @@ const PlansListPage = () => {
                       </div>
                     )}
                     <div className="plan-id">ID: {plan.id}</div>
+                    {dataSource.source === DATA_SOURCE.LOCAL && (
+                      <div className="data-source-indicator" style={{ fontSize: '10px', color: '#888' }}>
+                        📦 本地缓存
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -499,7 +492,7 @@ const PlansListPage = () => {
             <div className="no-plans-message">
               {plans.length === 0 ? (
                 <>
-                  <p>🎯 API中还没有任何拍摄计划</p>
+                  <p>🎯 {dataSource.source === DATA_SOURCE.LOCAL ? '本地缓存中' : 'API中'}还没有任何拍摄计划</p>
                   <p>开始创建您的第一个摄影计划吧！</p>
                   <Link to="/plans/new" className="clear-filters-button">
                     创建第一个计划

@@ -549,3 +549,43 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* 数据源状态指示器 */
+.data-source-status {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  max-width: 300px;
+  word-wrap: break-word;
+}
+
+.data-source-status.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.data-source-status.warning {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.data-source-status.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* 调整API状态指示器位置，避免重叠 */
+.api-status {
+  top: 20px;
+}
