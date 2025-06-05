@@ -3,24 +3,30 @@
   top: 0;
   left: 0;
   background-color: #2c3e50;
-  color: white;
+  color: #ffffff;
   padding: 1rem;
   z-index: 1000;
   width: 200px;
   height: 100vh;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .debug-navbar h3 {
   margin: 0 0 1rem 0;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #34495e;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .debug-navbar ul {
   list-style: none;
   padding: 0;
   margin: 0;
+  flex: 1;
 }
 
 .debug-navbar li {
@@ -31,11 +37,21 @@
   color: #ecf0f1;
   text-decoration: none;
   display: block;
-  padding: 0.5rem;
-  border-radius: 4px;
-  transition: background-color 0.2s;
+  padding: 0.75rem 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .debug-navbar a:hover {
   background-color: #34495e;
+  color: #ffffff;
+  transform: translateX(4px);
+  text-decoration: none;
+}
+
+.debug-navbar a.active {
+  background-color: #667eea;
+  color: #ffffff;
 } 

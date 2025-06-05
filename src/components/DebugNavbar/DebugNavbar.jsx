@@ -21,6 +21,7 @@ const DebugNavbar = () => {
           <li><Link to={`/plans/${samplePlanId}/map3D`}>3D地图</Link></li>
           <li><Link to="/settings">设置</Link></li>
           <li><Link to="/about">关于</Link></li>
+          <li><Link to="/cloudrendering">云渲染</Link></li>
         </ul>
       </nav>
     </div>
