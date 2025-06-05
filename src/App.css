@@ -12,10 +12,14 @@
       sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #f8f9fa;
+    color: #333333;
   }
   
   #root {
     height: 100%;
+    background-color: #f8f9fa;
+    color: #333333;
   }
   
   /* 应用容器 */
@@ -23,13 +27,15 @@
     display: flex;
     height: 100vh;
     overflow: hidden;
+    background-color: #f8f9fa;
   }
   
   /* 主内容区域 */
   .main-content {
     flex: 1;
     overflow-y: auto;
-    background-color: #f5f5f5;
+    background-color: #f8f9fa;
+    color: #333333;
   }
   
   /* 响应式设计 */
@@ -47,16 +53,19 @@
   /* 全局按钮样式重置 */
   button {
     font-family: inherit;
+    color: #333333;
+    background-color: transparent;
   }
   
   /* 全局链接样式 */
   a {
     text-decoration: none;
-    color: inherit;
+    color: #333333;
   }
   
   a:hover {
     text-decoration: underline;
+    color: #667eea;
   }
   
   /* 全局滚动条样式 */
@@ -70,12 +79,12 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #888888;
     border-radius: 4px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #555555;
   }
   
   /* 加载动画 */
@@ -116,4 +125,5 @@
     padding: 20px;
     max-width: 1400px;
     margin: 0 auto;
+    color: #333333;
   }

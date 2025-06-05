@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageLayout from '../../components/PageLayout/PageLayout';
 import imageService from '../../services/imageService';
-import PlanStorage, { PlanAPIService, checkAPIConnection } from '../../services/apiService';
+import HybridPlanStorage, { DATA_SOURCE } from '../../services/hybridPlanStorage';
 import './PlansListPage.css';
 import { FiRefreshCw } from 'react-icons/fi';
 import { MdImage } from 'react-icons/md';
@@ -13,7 +13,7 @@ const PlansListPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
   const [sortOption, setSortOption] = useState('dateDesc');
-  const [apiStatus, setApiStatus] = useState({ connected: false, message: '检查中...' });
+  const [dataSource, setDataSource] = useState(DATA_SOURCE.UNKNOWN);
 
   // 动态获取所有可用标签
   const allTags = [...new Set(plans.flatMap(plan => (plan.tags && Array.isArray(plan.tags)) ? plan.tags : []))];
@@ -22,11 +22,12 @@ const PlansListPage = () => {
   useEffect(() => {
     const checkConnection = async () => {
       try {
-        const status = await checkAPIConnection();
-        setApiStatus(status);
-        console.log('🌐 API状态:', status);
+        const status = await HybridPlanStorage.getConnectionStatus();
+        setDataSource(status.source);
+        console.log('🌐 服务状态:', status);
       } catch (error) {
-        setApiStatus({ connected: false, message: '连接检查失败' });
+        setDataSource(DATA_SOURCE.UNKNOWN);
+        console.warn('状态检查失败:', error);
       }
     };
 
@@ -34,95 +35,66 @@ const PlansListPage = () => {
   }, []);
 
   // 加载所有计划数据
-  useEffect(() => {
-    const loadAllPlans = async () => {
-      setLoading(true);
+  const loadPlans = async () => {
+    setLoading(true);
+    try {
+      console.log('🔄 开始加载计划列表...');
       
-      try {
-        console.log('🔄 开始从API加载计划数据...');
-        
-        const allPlansData = await PlanAPIService.getAllPlans();
+      const result = await HybridPlanStorage.getAllPlans();
+      
+      console.log('📊 计划数据加载结果:', {
+        recent: result.data.recentPlans.length,
+        upcoming: result.data.upcomingPlans.length,
+        source: result.source
+      });
 
-        console.log('📊 API返回计划数据:', allPlansData.length, '个计划');
+      // 更新数据源状态
+      setDataSource(result.source);
 
-        if (!allPlansData || allPlansData.length === 0) {
-          console.log('📭 API返回空数据，设置空数组');
-          setPlans([]);
-          return;
-        }
+      // 合并所有计划
+      const allPlans = [...result.data.recentPlans, ...result.data.upcomingPlans];
 
-        // 为每个计划加载图片
-        const plansWithImages = await Promise.all(
-          allPlansData.map(async (plan) => {
-            try {
-              const safePlan = {
-                id: plan.id || `plan-${Date.now()}`,
-                name: plan.name || plan.planName || '未命名计划',
-                location: plan.location || '未知地点',
-                tags: Array.isArray(plan.tags) ? plan.tags : [],
-                date: plan.shootingDate || plan.date || new Date().toISOString(),
-                shootingTime: plan.shootingTime || '',
-                description: plan.description || '',
-                createdAt: plan.createdAt || new Date().toISOString(),
-                updatedAt: plan.updatedAt || new Date().toISOString(),
-                latitude: plan.latitude || '',
-                longitude: plan.longitude || '',
-                altitude: plan.altitude || '',
-                focalLength: plan.focalLength || '50',
-                aperture: plan.aperture || '1.5',
-                tilesetUrl: plan.tilesetUrl || '',
-                userId: plan.userId || 'default_user',
-                ...plan
-              };
+      // 为计划获取图片
+      const plansWithImages = await Promise.all(
+        allPlans.map(async (plan) => {
+          try {
+            const imageData = await imageService.getImageByTags(plan.location, plan.tags);
+            return {
+              ...plan,
+              thumbnail: imageData.thumbnail || imageData.url,
+              imageUrl: imageData.url,
+              imageAlt: imageData.alt || `${plan.location} 摄影`,
+              photographer: imageData.photographer,
+              photographerUrl: imageData.photographerUrl
+            };
+          } catch (error) {
+            console.warn(`获取计划 ${plan.id} 的图片失败:`, error);
+            return {
+              ...plan,
+              thumbnail: `https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60`,
+              imageUrl: `https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60`,
+              imageAlt: `${plan.location} 摄影`,
+              photographer: '默认图片',
+              photographerUrl: '#'
+            };
+          }
+        })
+      );
 
-              const imageData = await imageService.getImageByTags(safePlan.location, safePlan.tags);
-              return {
-                ...safePlan,
-                thumbnail: imageData.thumbnail,
-                imageUrl: imageData.url,
-                imageAlt: imageData.alt,
-                photographer: imageData.photographer,
-                photographerUrl: imageData.photographerUrl
-              };
-            } catch (error) {
-              console.error(`加载 ${plan.name || plan.planName} 的图片失败:`, error);
-              
-              const safePlan = {
-                id: plan.id || `plan-${Date.now()}`,
-                name: plan.name || plan.planName || '未命名计划',
-                location: plan.location || '未知地点',
-                tags: Array.isArray(plan.tags) ? plan.tags : [],
-                date: plan.shootingDate || plan.date || new Date().toISOString(),
-                shootingTime: plan.shootingTime || '',
-                description: plan.description || '',
-                createdAt: plan.createdAt || new Date().toISOString(),
-                updatedAt: plan.updatedAt || new Date().toISOString(),
-                ...plan
-              };
+      setPlans(plansWithImages);
+      console.log('✅ 计划数据加载完成，总数:', plansWithImages.length);
+    } catch (error) {
+      console.error('❌ 加载计划失败:', error);
+      // 即使发生错误，也不阻塞用户界面
+      setPlans([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-              return {
-                ...safePlan,
-                thumbnail: `https://via.placeholder.com/300x200/667eea/ffffff?text=${encodeURIComponent(safePlan.location)}`,
-                imageUrl: `https://via.placeholder.com/800x600/667eea/ffffff?text=${encodeURIComponent(safePlan.location)}`,
-                imageAlt: `${safePlan.location}的占位图片`,
-                photographer: '占位图片',
-                photographerUrl: '#'
-              };
-            }
-          })
-        );
-
-        console.log('✅ 处理后的计划数据:', plansWithImages.length, '个计划');
-        setPlans(plansWithImages);
-      } catch (error) {
-        console.error('❌ 加载计划失败:', error);
-        setPlans([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadAllPlans();
+  // 初始加载计划数据
+  useEffect(() => {
+    loadPlans();
   }, []);
 
   // 筛选和排序逻辑
@@ -173,29 +145,29 @@ const PlansListPage = () => {
     }
   };
 
-  // 删除计划功能
-  const handleDeletePlan = async (id) => {
-    if (!apiStatus.connected) {
-      alert('API连接失败，无法删除计划');
+  // 删除计划
+  const handleDeletePlan = async (planId) => {
+    if (!window.confirm('确定要删除这个计划吗？')) {
       return;
     }
 
-    if (window.confirm('确定要删除此计划吗？此操作不可撤销。')) {
-      try {
-        console.log(`🗑️ 删除计划: ${id}`);
+    try {
+      const result = await HybridPlanStorage.deletePlan(planId);
+      if (result.success) {
+        // 删除成功，重新加载计划列表
+        await loadPlans();
         
-        const success = await PlanAPIService.deletePlan(id);
-        if (success) {
-          setPlans(plans.filter(plan => plan.id !== id));
-          alert('计划删除成功！');
-          console.log(`✅ 计划 ${id} 删除成功`);
-        } else {
-          alert('删除失败，请重试');
+        let message = '计划删除成功！';
+        if (result.source === DATA_SOURCE.LOCAL) {
+          message += ' (仅从本地存储删除)';
         }
-      } catch (error) {
-        console.error('❌ 删除计划失败:', error);
-        alert(`删除失败: ${error.message}`);
+        alert(message);
+      } else {
+        alert('删除计划失败：' + (result.error || '未知错误'));
       }
+    } catch (error) {
+      console.error('删除计划失败:', error);
+      alert('删除计划失败：' + error.message);
     }
   };
 
@@ -218,9 +190,9 @@ const PlansListPage = () => {
             const imageData = await imageService.getImageByTags(plan.location, plan.tags || []);
             return {
               ...plan,
-              thumbnail: imageData.thumbnail,
+              thumbnail: imageData.thumbnail || imageData.url,
               imageUrl: imageData.url,
-              imageAlt: imageData.alt,
+              imageAlt: imageData.alt || `${plan.location} 摄影`,
               photographer: imageData.photographer,
               photographerUrl: imageData.photographerUrl
             };
@@ -243,8 +215,8 @@ const PlansListPage = () => {
 
   // 重新加载计划数据
   const handleRefreshPlans = async () => {
-    if (!apiStatus.connected) {
-      alert('API连接失败，无法刷新计划');
+    if (!dataSource) {
+      alert('服务状态未知，无法刷新计划');
       return;
     }
 
@@ -253,69 +225,9 @@ const PlansListPage = () => {
     try {
       console.log('🔄 开始刷新计划数据...');
       
-      const allPlansData = await PlanAPIService.getAllPlans();
+      await loadPlans();
 
-      console.log('📊 刷新获取的计划数据:', allPlansData.length, '个计划');
-
-      if (allPlansData.length === 0) {
-        setPlans([]);
-        alert('API中暂无计划数据');
-        return;
-      }
-
-      const refreshedPlans = await Promise.all(
-        allPlansData.map(async (plan) => {
-          const safePlan = {
-            id: plan.id || `plan-${Date.now()}`,
-            name: plan.name || plan.planName || '未命名计划',
-            location: plan.location || '未知地点',
-            tags: Array.isArray(plan.tags) ? plan.tags : [],
-            date: plan.shootingDate || plan.date || new Date().toISOString(),
-            shootingTime: plan.shootingTime || '',
-            description: plan.description || '',
-            createdAt: plan.createdAt || new Date().toISOString(),
-            updatedAt: plan.updatedAt || new Date().toISOString(),
-            ...plan
-          };
-
-          const existingPlan = plans.find(p => p.id === safePlan.id);
-          if (existingPlan && existingPlan.thumbnail) {
-            return {
-              ...safePlan,
-              thumbnail: existingPlan.thumbnail,
-              imageUrl: existingPlan.imageUrl,
-              imageAlt: existingPlan.imageAlt,
-              photographer: existingPlan.photographer,
-              photographerUrl: existingPlan.photographerUrl
-            };
-          }
-
-          try {
-            const imageData = await imageService.getImageByTags(safePlan.location, safePlan.tags);
-            return {
-              ...safePlan,
-              thumbnail: imageData.thumbnail,
-              imageUrl: imageData.url,
-              imageAlt: imageData.alt,
-              photographer: imageData.photographer,
-              photographerUrl: imageData.photographerUrl
-            };
-          } catch (error) {
-            console.error(`加载 ${safePlan.name} 的图片失败:`, error);
-            return {
-              ...safePlan,
-              thumbnail: `https://via.placeholder.com/300x200/667eea/ffffff?text=${encodeURIComponent(safePlan.location)}`,
-              imageUrl: `https://via.placeholder.com/800x600/667eea/ffffff?text=${encodeURIComponent(safePlan.location)}`,
-              imageAlt: `${safePlan.location}的占位图片`,
-              photographer: '占位图片',
-              photographerUrl: '#'
-            };
-          }
-        })
-      );
-
-      setPlans(refreshedPlans);
-      alert(`计划列表已更新！从API获取到 ${refreshedPlans.length} 个计划`);
+      alert(`计划列表已更新！从${dataSource === DATA_SOURCE.API ? 'API' : '本地存储'}获取到 ${plans.length} 个计划`);
       console.log('✅ 计划数据刷新完成');
     } catch (error) {
       console.error('❌ 刷新计划失败:', error);
@@ -338,9 +250,11 @@ const PlansListPage = () => {
   return (
     <PageLayout title="我的拍摄计划">
       <div className="plans-list-container">
-        {/* API连接状态指示器 */}
-        <div className={`api-status ${apiStatus.connected ? 'connected' : 'disconnected'}`}>
-          {apiStatus.connected ? '✅ API已连接' : '❌ ' + apiStatus.message}
+        {/* 数据源状态指示器 */}
+        <div className={`data-source-status ${dataSource === DATA_SOURCE.API ? 'success' : dataSource === DATA_SOURCE.LOCAL ? 'warning' : 'error'}`}>
+          {dataSource === DATA_SOURCE.API && '✅ API已连接'}
+          {dataSource === DATA_SOURCE.LOCAL && '⚠️ 使用本地存储'}
+          {dataSource === DATA_SOURCE.UNKNOWN && '❌ 服务状态未知'}
         </div>
 
         <div className="plans-controls">
@@ -391,7 +305,7 @@ const PlansListPage = () => {
             <button 
               onClick={handleRefreshPlans}
               className="refresh-button"
-              disabled={loading || !apiStatus.connected}
+              disabled={loading || !dataSource}
               title="从API刷新计划列表"
             >
               {loading ? '刷新中...' : <><FiRefreshCw style={{ marginRight: 6, verticalAlign: 'middle' }} />刷新计划</>}
@@ -420,33 +334,40 @@ const PlansListPage = () => {
         )}
 
         <div className="plans-stats">
-          <p>
-            共找到 {filteredPlans.length} 个计划 
-            {plans.length > filteredPlans.length ? `(共 ${plans.length} 个)` : ''}
-            {!apiStatus.connected && <span className="api-warning"> ⚠️ API未连接</span>}
-          </p>
+          {loading ? (
+            <span>正在加载计划数据...</span>
+          ) : (
+            <span>
+              共找到 {filteredPlans.length} 个计划
+              {dataSource === DATA_SOURCE.LOCAL && ' (本地缓存)'}
+              {dataSource === DATA_SOURCE.API && ' (服务器数据)'}
+            </span>
+          )}
         </div>
 
         <div className="plans-grid">
-          {!apiStatus.connected ? (
-            <div className="api-error-message">
-              <div className="error-content">
-                <h3>🔌 API连接失败</h3>
-                <p>无法连接到后端服务，请检查：</p>
-                <ul>
-                  <li>后端服务是否正常运行</li>
-                  <li>API地址配置是否正确</li>
-                  <li>网络连接是否正常</li>
-                </ul>
-                <button 
-                  onClick={() => window.location.reload()} 
-                  className="retry-button"
-                >
-                  重试连接
-                </button>
-              </div>
+          {loading ? (
+            <div className="loading-placeholder">
+              <p>正在加载计划数据...</p>
             </div>
-          ) : filteredPlans.length > 0 ? (
+          ) : filteredPlans.length === 0 ? (
+            searchTerm || selectedTags.length > 0 ? (
+              <div className="no-plans-message">
+                <h3>没有找到匹配的计划</h3>
+                <p>请尝试调整搜索条件或筛选标签</p>
+                {dataSource === DATA_SOURCE.LOCAL && <p><small>💾 当前显示本地缓存数据</small></p>}
+              </div>
+            ) : (
+              <div className="no-plans-message">
+                <h3>还没有任何拍摄计划</h3>
+                <p>开始创建您的第一个拍摄计划吧！</p>
+                {dataSource === DATA_SOURCE.LOCAL && <p><small>💾 当前显示本地缓存数据</small></p>}
+                <Link to="/plans/new" className="new-plan-button">
+                  + 创建新计划
+                </Link>
+              </div>
+            )
+          ) : (
             filteredPlans.map(plan => (
               <div className="plan-item" key={plan.id}>
                 <div className="plan-thumbnail" style={{ backgroundImage: `url(${plan.thumbnail || ''})` }}>
@@ -457,8 +378,8 @@ const PlansListPage = () => {
                     <button 
                       className="action-button delete"
                       onClick={() => handleDeletePlan(plan.id)}
-                      disabled={!apiStatus.connected}
-                      title={!apiStatus.connected ? 'API未连接，无法删除' : '删除计划'}
+                      disabled={!dataSource}
+                      title={!dataSource ? '服务状态未知，无法删除' : '删除计划'}
                     >
                       删除
                     </button>
@@ -495,31 +416,6 @@ const PlansListPage = () => {
                 </div>
               </div>
             ))
-          ) : (
-            <div className="no-plans-message">
-              {plans.length === 0 ? (
-                <>
-                  <p>🎯 API中还没有任何拍摄计划</p>
-                  <p>开始创建您的第一个摄影计划吧！</p>
-                  <Link to="/plans/new" className="clear-filters-button">
-                    创建第一个计划
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <p>😔 没有符合筛选条件的计划</p>
-                  <button 
-                    className="clear-filters-button"
-                    onClick={() => {
-                      setSearchTerm('');
-                      setSelectedTags([]);
-                    }}
-                  >
-                    清除筛选条件
-                  </button>
-                </>
-              )}
-            </div>
           )}
         </div>
       </div>

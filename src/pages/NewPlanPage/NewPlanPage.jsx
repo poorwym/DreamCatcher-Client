@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '../../components/PageLayout/PageLayout';
-import PlanStorage from '../../services/apiService';
-import { checkAPIConnection } from '../../services/apiService';
+import HybridPlanStorage, { DATA_SOURCE } from '../../services/hybridPlanStorage';
 import './NewPlanPage.css';
 import decoImg from './ken-cheung-WKcS19JBFVU-unsplash.jpg';
 import { FaBullseye, FaCamera } from 'react-icons/fa';
@@ -13,7 +12,7 @@ const NewPlanPage = () => {
   const mapRef = useRef(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [apiStatus, setApiStatus] = useState({ connected: false, message: '检查中...' });
+  const [dataSource, setDataSource] = useState(DATA_SOURCE.UNKNOWN);
 
   // 表单状态
   const [formData, setFormData] = useState({
@@ -53,11 +52,12 @@ const NewPlanPage = () => {
   useEffect(() => {
     const checkConnection = async () => {
       try {
-        const status = await checkAPIConnection();
-        setApiStatus(status);
-        console.log('🌐 API状态:', status);
+        const status = await HybridPlanStorage.getConnectionStatus();
+        setDataSource(status.source);
+        console.log('🌐 服务状态:', status);
       } catch (error) {
-        setApiStatus({ connected: false, message: '连接检查失败' });
+        setDataSource(DATA_SOURCE.UNKNOWN);
+        console.warn('状态检查失败:', error);
       }
     };
 
@@ -277,11 +277,6 @@ const NewPlanPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!apiStatus.connected) {
-      alert('API连接失败，无法创建计划。请检查后端服务是否正常运行。');
-      return;
-    }
-    
     // 基本验证
     if (!formData.planName.trim()) {
       alert('请输入计划名称');
@@ -308,17 +303,25 @@ const NewPlanPage = () => {
     try {
       console.log('📤 提交计划数据:', formData);
       
-      const savedPlan = await PlanStorage.addNewPlan(formData);
+      const result = await HybridPlanStorage.addNewPlan(formData);
       
-      console.log('✅ 新建计划成功:', savedPlan);
+      console.log('✅ 新建计划成功:', result);
       
-      alert(`计划"${formData.planName}"创建成功！\nID: ${savedPlan.id}\n已保存到服务器。`);
+      let message = `计划"${formData.planName}"创建成功！`;
+      if (result.source === DATA_SOURCE.API) {
+        message += `\nID: ${result.data.id}\n已保存到服务器。`;
+      } else if (result.source === DATA_SOURCE.LOCAL) {
+        message += `\nID: ${result.data.id}\n由于API连接失败，已保存到本地存储。`;
+      } else {
+        message += `\n保存状态未知，请检查数据。`;
+      }
       
+      alert(message);
       navigate('/dashboard');
       
     } catch (error) {
       console.error('❌ 保存计划失败:', error);
-      alert(`保存计划失败: ${error.message}\n\n请检查：\n1. 后端服务是否正常运行\n2. 网络连接是否正常\n3. 表单数据是否完整`);
+      alert(`保存计划失败: ${error.message || error}\n\n计划将尝试保存到本地存储以防数据丢失。`);
     } finally {
       setSaving(false);
     }
@@ -380,9 +383,11 @@ const NewPlanPage = () => {
   return (
     <PageLayout title="创建新计划">
       <div className="new-plan-container">
-        {/* API连接状态指示器 */}
-        <div className={`api-status ${apiStatus.connected ? 'connected' : 'disconnected'}`}>
-          {apiStatus.connected ? '✅ API已连接' : '❌ ' + apiStatus.message}
+        {/* 数据源状态指示器 */}
+        <div className={`data-source-status ${dataSource === DATA_SOURCE.API ? 'success' : dataSource === DATA_SOURCE.LOCAL ? 'warning' : 'error'}`}>
+          {dataSource === DATA_SOURCE.API && '✅ API已连接'}
+          {dataSource === DATA_SOURCE.LOCAL && '⚠️ 使用本地存储'}
+          {dataSource === DATA_SOURCE.UNKNOWN && '❌ 服务状态未知'}
         </div>
 
         <form onSubmit={handleSubmit} className="new-plan-form">
@@ -599,7 +604,7 @@ const NewPlanPage = () => {
                 style={{
                   position: 'absolute',
                   left: 50,
-                  top: 400,
+                  top: 480,
                   width: 400,
                   height: 'auto',
                   borderRadius: 20,
@@ -652,10 +657,10 @@ const NewPlanPage = () => {
             </button>
             <button
               type="submit"
-              className={`submit-btn ${!apiStatus.connected ? 'disabled' : ''}`}
-              disabled={saving || !apiStatus.connected}
+              className="submit-btn"
+              disabled={saving}
             >
-              {saving ? '保存中...' : !apiStatus.connected ? 'API未连接' : '创建计划'}
+              {saving ? '保存中...' : '创建计划'}
             </button>
           </div>
         </form>

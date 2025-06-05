@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import PageLayout from '../../components/PageLayout/PageLayout';
 import imageService from '../../services/imageService';
-import PlanStorage from '../../services/apiService';
-import { checkAPIConnection } from '../../services/apiService';
+import HybridPlanStorage, { DATA_SOURCE } from '../../services/hybridPlanStorage';
 import { FaBullseye, FaCamera } from 'react-icons/fa';
 import { AiOutlineClockCircle } from 'react-icons/ai';
 import './DashboardPage.css';
@@ -19,7 +18,7 @@ const DashboardPage = () => {
   const [recentPlans, setRecentPlans] = useState([]);
   const [upcomingPlans, setUpcomingPlans] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [apiStatus, setApiStatus] = useState({ connected: false, message: '检查中...' });
+  const [dataSource, setDataSource] = useState(DATA_SOURCE.UNKNOWN);
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
 
@@ -39,11 +38,12 @@ const DashboardPage = () => {
   useEffect(() => {
     const checkConnection = async () => {
       try {
-        const status = await checkAPIConnection();
-        setApiStatus(status);
-        console.log('🌐 API状态:', status);
+        const status = await HybridPlanStorage.getConnectionStatus();
+        setDataSource(status.source);
+        console.log('🌐 服务状态:', status);
       } catch (error) {
-        setApiStatus({ connected: false, message: '连接检查失败' });
+        setDataSource(DATA_SOURCE.UNKNOWN);
+        console.warn('状态检查失败:', error);
       }
     };
 
@@ -64,19 +64,30 @@ const DashboardPage = () => {
       setLoading(true);
       
       try {
-        console.log('🔄 开始从API加载计划数据...');
+        console.log('🔄 开始加载计划数据...');
         
-        const storedRecentPlans = await PlanStorage.getRecentPlans();
-        const storedUpcomingPlans = await PlanStorage.getUpcomingPlans();
+        const [recentResult, upcomingResult] = await Promise.all([
+          HybridPlanStorage.getRecentPlans(),
+          HybridPlanStorage.getUpcomingPlans()
+        ]);
 
-        console.log('📊 API返回数据:', {
-          recent: storedRecentPlans.length,
-          upcoming: storedUpcomingPlans.length
+        console.log('📊 数据加载结果:', {
+          recent: { count: recentResult.data.length, source: recentResult.source },
+          upcoming: { count: upcomingResult.data.length, source: upcomingResult.source }
         });
+
+        // 更新数据源状态
+        if (recentResult.source === DATA_SOURCE.LOCAL || upcomingResult.source === DATA_SOURCE.LOCAL) {
+          setDataSource(DATA_SOURCE.LOCAL);
+        } else if (recentResult.source === DATA_SOURCE.API && upcomingResult.source === DATA_SOURCE.API) {
+          setDataSource(DATA_SOURCE.API);
+        } else {
+          setDataSource(DATA_SOURCE.UNKNOWN);
+        }
 
         // 为最近计划获取图片
         const recentPlansWithImages = await Promise.all(
-          storedRecentPlans.map(async (plan) => {
+          recentResult.data.map(async (plan) => {
             try {
               const imageData = await imageService.getImageByTags(plan.location, plan.tags);
               return {
@@ -103,7 +114,7 @@ const DashboardPage = () => {
 
         // 为即将拍摄的计划获取图片
         const upcomingPlansWithImages = await Promise.all(
-          storedUpcomingPlans.map(async (plan) => {
+          upcomingResult.data.map(async (plan) => {
             try {
               const imageData = await imageService.getImageByTags(plan.location, plan.tags);
               return {
@@ -504,9 +515,11 @@ const DashboardPage = () => {
   return (
     <PageLayout title="仪表盘">
       <div className="dashboard-container">
-        {/* API连接状态指示器 - 使用你现有的CSS类或添加新类 */}
-        <div className={`api-status ${apiStatus.connected ? 'connected' : 'disconnected'}`}>
-          {apiStatus.connected ? '✅ API已连接' : '❌ ' + apiStatus.message}
+        {/* 数据源状态指示器 */}
+        <div className={`data-source-status ${dataSource === DATA_SOURCE.API ? 'success' : dataSource === DATA_SOURCE.LOCAL ? 'warning' : 'error'}`}>
+          {dataSource === DATA_SOURCE.API && '✅ API已连接'}
+          {dataSource === DATA_SOURCE.LOCAL && '⚠️ 使用本地存储'}
+          {dataSource === DATA_SOURCE.UNKNOWN && '❌ 服务状态未知'}
         </div>
 
         <div className="dashboard-stats">
@@ -552,16 +565,12 @@ const DashboardPage = () => {
             <div className="plan-cards">
               {loading ? (
                 <div className="loading-placeholder">
-                  <p>正在从API加载数据...</p>
-                </div>
-              ) : !apiStatus.connected ? (
-                <div className="error-placeholder">
-                  <p>⚠️ API连接失败，无法加载计划数据</p>
-                  <p>请检查后端服务是否正常运行</p>
+                  <p>正在加载数据...</p>
                 </div>
               ) : recentPlans.length === 0 ? (
                 <div className="empty-placeholder">
                   <p>📋 暂无最近计划</p>
+                  {dataSource === DATA_SOURCE.LOCAL && <small>💾 本地缓存数据</small>}
                 </div>
               ) : (
                 recentPlans.map(plan => (
@@ -599,15 +608,12 @@ const DashboardPage = () => {
             <div className="plan-cards">
               {loading ? (
                 <div className="loading-placeholder">
-                  <p>正在从API加载数据...</p>
-                </div>
-              ) : !apiStatus.connected ? (
-                <div className="error-placeholder">
-                  <p>⚠️ API连接失败，无法加载计划数据</p>
+                  <p>正在加载数据...</p>
                 </div>
               ) : upcomingPlans.length === 0 ? (
                 <div className="empty-placeholder">
                   <p>📅 暂无即将拍摄的计划</p>
+                  {dataSource === DATA_SOURCE.LOCAL && <small>💾 本地缓存数据</small>}
                 </div>
               ) : (
                 upcomingPlans.map(plan => (
