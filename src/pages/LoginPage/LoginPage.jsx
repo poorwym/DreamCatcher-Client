@@ -1,8 +1,13 @@
 import React from 'react';
+import Background from "../../components/Background/Background.jsx";
+import LoginContainer from "./components/LoginContainer.jsx";
 
 function LoginPage() {
     return (
-        <div></div>
+        <div>
+            <LoginContainer />
+            <Background />
+        </div>
     );
 }
 

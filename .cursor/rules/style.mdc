@@ -8,6 +8,7 @@ use material ui when possible
 always include src/asset/style.css in all file that need css or style
 
 design style
+所有的card设计都使用shadow+80%透明度的磨砂质感
 
 这个网页整体展现出一种极具科技感与宇宙氛围的视觉设计风格，以下是对其各方面风格的详细描述：
 
