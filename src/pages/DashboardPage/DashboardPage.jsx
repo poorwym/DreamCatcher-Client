@@ -234,11 +234,14 @@ const DashboardPage = () => {
                 <div className="grid grid-cols-4 gap-6 mb-8">
                     {/* 总计划数 */}
                     <Card 
-                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 transition-all hover:border-primary/50 hover:shadow-xl"
+                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 transition-all duration-300 ease-out hover:border-primary/50 hover:shadow-xl hover:scale-103 cursor-pointer"
                         sx={{ 
                             backgroundColor: 'transparent',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                             '&:hover': {
-                                backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.95)'
+                                backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.95)',
+                                boxShadow: '0 0 30px rgba(14, 165, 233, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                                transform: 'scale(1.05) translateY(-2px)'
                             }
                         }}
                     >
@@ -248,7 +251,8 @@ const DashboardPage = () => {
                                     fontSize: 48, 
                                     color: 'var(--accent-blue)', 
                                     marginBottom: 2,
-                                    filter: 'drop-shadow(0 0 8px rgba(14, 165, 233, 0.3))'
+                                    filter: 'drop-shadow(0 0 8px rgba(14, 165, 233, 0.3))',
+                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                                 }}
                             />
                             <Typography 
@@ -278,11 +282,14 @@ const DashboardPage = () => {
 
                     {/* 最近7天创建 */}
                     <Card 
-                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 transition-all hover:border-primary/50 hover:shadow-xl"
+                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 transition-all duration-300 ease-out hover:border-primary/50 hover:shadow-xl hover:scale-103 cursor-pointer"
                         sx={{ 
                             backgroundColor: 'transparent',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                             '&:hover': {
-                                backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.95)'
+                                backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.95)',
+                                boxShadow: '0 0 30px rgba(16, 185, 129, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                                transform: 'scale(1.05) translateY(-2px)'
                             }
                         }}
                     >
@@ -292,7 +299,8 @@ const DashboardPage = () => {
                                     fontSize: 48, 
                                     color: 'var(--accent-green)', 
                                     marginBottom: 2,
-                                    filter: 'drop-shadow(0 0 8px rgba(16, 185, 129, 0.3))'
+                                    filter: 'drop-shadow(0 0 8px rgba(16, 185, 129, 0.3))',
+                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                                 }}
                             />
                             <Typography 
@@ -322,11 +330,14 @@ const DashboardPage = () => {
 
                     {/* 即将到来 */}
                     <Card 
-                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 transition-all hover:border-primary/50 hover:shadow-xl"
+                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 transition-all duration-300 ease-out hover:border-primary/50 hover:shadow-xl hover:scale-103 cursor-pointer"
                         sx={{ 
                             backgroundColor: 'transparent',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                             '&:hover': {
-                                backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.95)'
+                                backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.95)',
+                                boxShadow: '0 0 30px rgba(245, 158, 11, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                                transform: 'scale(1.05) translateY(-2px)'
                             }
                         }}
                     >
@@ -336,7 +347,8 @@ const DashboardPage = () => {
                                     fontSize: 48, 
                                     color: 'var(--accent-orange)', 
                                     marginBottom: 2,
-                                    filter: 'drop-shadow(0 0 8px rgba(245, 158, 11, 0.3))'
+                                    filter: 'drop-shadow(0 0 8px rgba(245, 158, 11, 0.3))',
+                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                                 }}
                             />
                             <Typography 
@@ -366,12 +378,14 @@ const DashboardPage = () => {
 
                     {/* 创建新计划 */}
                     <Card 
-                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 cursor-pointer transition-all hover:border-accent/70 hover:shadow-xl group"
+                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 cursor-pointer transition-all duration-300 ease-out hover:border-accent/70 hover:shadow-xl hover:scale-103 group"
                         sx={{ 
                             backgroundColor: 'transparent',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                             '&:hover': {
                                 backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.95)',
-                                transform: 'translateY(-2px)'
+                                boxShadow: '0 0 30px rgba(14, 165, 233, 0.4), 0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                                transform: 'scale(1.05) translateY(-4px)'
                             }
                         }}
                         onClick={handleCreateNewPlan}
@@ -417,9 +431,14 @@ const DashboardPage = () => {
                 <div className="grid grid-cols-2 gap-6 mb-8">
                     {/* 最近编辑的计划 */}
                     <Card 
-                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30"
+                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 transition-all duration-300 ease-out hover:scale-103 hover:shadow-xl"
                         sx={{ 
                             backgroundColor: 'transparent',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                            '&:hover': {
+                                boxShadow: '0 0 30px rgba(14, 165, 233, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                                transform: 'scale(1.02) translateY(-2px)'
+                            }
                         }}
                     >
                         <CardContent className="p-6">
@@ -429,7 +448,8 @@ const DashboardPage = () => {
                                         sx={{ 
                                             color: 'var(--accent-blue)', 
                                             marginRight: 1,
-                                            filter: 'drop-shadow(0 0 6px rgba(14, 165, 233, 0.4))'
+                                            filter: 'drop-shadow(0 0 6px rgba(14, 165, 233, 0.4))',
+                                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                                         }}
                                     />
                                     <Typography 
@@ -463,8 +483,17 @@ const DashboardPage = () => {
                                     recentlyEdited.map(plan => (
                                         <div 
                                             key={plan.id}
-                                            className="p-4 bg-secondary/50 backdrop-blur-md rounded-lg border border-primary/20 cursor-pointer transition-all hover:border-primary/40 hover:bg-secondary/70"
+                                            className="p-4 bg-secondary/50 backdrop-blur-md rounded-lg border border-primary/20 cursor-pointer transition-all duration-300 hover:border-primary/40 hover:bg-secondary/70 hover:shadow-lg"
                                             onClick={() => handlePlanClick(plan.id)}
+                                            style={{
+                                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.boxShadow = '0 0 20px rgba(14, 165, 233, 0.2), 0 8px 25px -8px rgba(0, 0, 0, 0.25)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.boxShadow = '';
+                                            }}
                                         >
                                             <Typography 
                                                 variant="body1" 
@@ -511,9 +540,14 @@ const DashboardPage = () => {
 
                     {/* 即将开始的计划 */}
                     <Card 
-                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30"
+                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 transition-all duration-300 ease-out hover:scale-103 hover:shadow-xl"
                         sx={{ 
                             backgroundColor: 'transparent',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                            '&:hover': {
+                                boxShadow: '0 0 30px rgba(245, 158, 11, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                                transform: 'scale(1.02) translateY(-2px)'
+                            }
                         }}
                     >
                         <CardContent className="p-6">
@@ -523,7 +557,8 @@ const DashboardPage = () => {
                                         sx={{ 
                                             color: 'var(--accent-orange)', 
                                             marginRight: 1,
-                                            filter: 'drop-shadow(0 0 6px rgba(245, 158, 11, 0.4))'
+                                            filter: 'drop-shadow(0 0 6px rgba(245, 158, 11, 0.4))',
+                                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                                         }}
                                     />
                                     <Typography 
@@ -557,8 +592,17 @@ const DashboardPage = () => {
                                     upcomingPlans.map(plan => (
                                         <div 
                                             key={plan.id}
-                                            className="p-4 bg-secondary/50 backdrop-blur-md rounded-lg border border-primary/20 cursor-pointer transition-all hover:border-primary/40 hover:bg-secondary/70"
+                                            className="p-4 bg-secondary/50 backdrop-blur-md rounded-lg border border-primary/20 cursor-pointer transition-all duration-300 hover:border-primary/40 hover:bg-secondary/70 hover:shadow-lg"
                                             onClick={() => handlePlanClick(plan.id)}
+                                            style={{
+                                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.boxShadow = '0 0 20px rgba(245, 158, 11, 0.2), 0 8px 25px -8px rgba(0, 0, 0, 0.25)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.boxShadow = '';
+                                            }}
                                         >
                                             <div className="flex items-center justify-between mb-2">
                                                 <Typography 
@@ -621,9 +665,13 @@ const DashboardPage = () => {
                 {/* 所有计划 */}
                 <div className="mb-8">
                     <Card 
-                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30"
+                        className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 transition-all duration-300 ease-out hover:shadow-xl"
                         sx={{ 
                             backgroundColor: 'transparent',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                            '&:hover': {
+                                boxShadow: '0 0 30px rgba(14, 165, 233, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                            }
                         }}
                     >
                         <CardContent className="p-6">
@@ -633,7 +681,8 @@ const DashboardPage = () => {
                                         sx={{ 
                                             color: 'var(--accent-blue)', 
                                             marginRight: 1.5,
-                                            filter: 'drop-shadow(0 0 6px rgba(14, 165, 233, 0.4))'
+                                            filter: 'drop-shadow(0 0 6px rgba(14, 165, 233, 0.4))',
+                                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                                         }}
                                     />
                                     <Typography 
