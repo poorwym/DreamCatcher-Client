@@ -3,6 +3,7 @@ import './DashboardPage.css';
 import PlanCard from "../../components/PlanCard/PlanCard.jsx";
 import {useAuth} from "../../context/AuthProvider.jsx";
 import { getPlans } from "../../api/plan.js";
+import Background from "../../components/Background/Background.jsx";
 
 const DashboardPage = () => {
     const [planList, setPlanList] = useState([])
@@ -55,10 +56,11 @@ const DashboardPage = () => {
     
     return(
         <>
-            <div className="flex flex-col items-center justify-center h-auto">
+            <Background />
+            <div className="flex flex-col items-center justify-center h-auto mt-32">
                 {planList.length > 0 ? (
                     planList.map((plan, index) => (
-                        <PlanCard key={plan.plan_id || index} plan={plan} />
+                        <PlanCard key={plan.id || index} index={index} plan={plan} />
                     ))
                 ) : (
                     <div className="text-white">暂无计划</div>

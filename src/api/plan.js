@@ -95,10 +95,14 @@ export const getPlans = async (params = {}, fetchWithAuth) => {
 /**
  * 创建拍摄计划
  * @param {Object} planData - 计划数据
- * @param {string} planData.title - 计划标题
+ * @param {string} planData.name - 计划名称
  * @param {string} planData.description - 计划描述
- * @param {string} planData.location - 拍摄地点
- * @param {string} planData.scheduled_time - 计划时间（ISO 8601格式）
+ * @param {string} planData.start_time - 开始时间（ISO 8601格式）
+ * @param {Object} planData.camera - 相机配置
+ * @param {number} planData.camera.focal_length - 焦距
+ * @param {Array<number>} planData.camera.position - 位置 [经度, 纬度, 高度]
+ * @param {Array<number>} planData.camera.rotation - 旋转 [x, y, z, w]
+ * @param {string} planData.tileset_url - tileset URL
  * @param {Function} fetchWithAuth - 来自AuthProvider的认证请求函数
  * @returns {Promise<Object>} 创建的计划对象
  */
@@ -107,22 +111,22 @@ export const createPlan = async (planData, fetchWithAuth) => {
         throw new Error('计划数据不能为空');
     }
 
-    const { title, description, location, scheduled_time } = planData;
+    const { name, description, start_time, camera, tileset_url } = planData;
     
-    if (!title || typeof title !== 'string') {
-        throw new Error('计划标题不能为空');
+    if (!name || typeof name !== 'string') {
+        throw new Error('计划名称不能为空');
     }
     
     if (!description || typeof description !== 'string') {
         throw new Error('计划描述不能为空');
     }
     
-    if (!location || typeof location !== 'string') {
-        throw new Error('拍摄地点不能为空');
+    if (!start_time || typeof start_time !== 'string') {
+        throw new Error('开始时间不能为空');
     }
-    
-    if (!scheduled_time || typeof scheduled_time !== 'string') {
-        throw new Error('计划时间不能为空');
+
+    if (!camera || typeof camera !== 'object') {
+        throw new Error('相机配置不能为空');
     }
 
     if (!fetchWithAuth) {
@@ -136,10 +140,11 @@ export const createPlan = async (planData, fetchWithAuth) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                title,
+                name,
                 description,
-                location,
-                scheduled_time,
+                start_time,
+                camera,
+                tileset_url,
             }),
         });
 
@@ -160,10 +165,11 @@ export const createPlan = async (planData, fetchWithAuth) => {
  * 更新拍摄计划
  * @param {string} planId - 计划UUID
  * @param {Object} planData - 更新的计划数据
- * @param {string} [planData.title] - 计划标题
+ * @param {string} [planData.name] - 计划名称
  * @param {string} [planData.description] - 计划描述
- * @param {string} [planData.location] - 拍摄地点
- * @param {string} [planData.scheduled_time] - 计划时间（ISO 8601格式）
+ * @param {string} [planData.start_time] - 开始时间（ISO 8601格式）
+ * @param {Object} [planData.camera] - 相机配置
+ * @param {string} [planData.tileset_url] - tileset URL
  * @param {Function} fetchWithAuth - 来自AuthProvider的认证请求函数
  * @returns {Promise<Object>} 更新后的计划对象
  */
@@ -300,30 +306,41 @@ export const getAllPlansAdmin = async (params = {}, fetchWithAuth) => {
  * 
  * 计划对象：
  * {
- *   plan_id: string - 计划UUID
+ *   id: string - 计划UUID
  *   user_id: string - 用户UUID
- *   title: string - 计划标题
+ *   name: string - 计划名称
  *   description: string - 计划描述
- *   location: string - 拍摄地点
- *   scheduled_time: string - 计划时间（ISO 8601格式）
+ *   start_time: string - 开始时间（ISO 8601格式）
+ *   camera: {
+ *     focal_length: number - 焦距
+ *     position: [number, number, number] - 位置 [经度, 纬度, 高度]
+ *     rotation: [number, number, number, number] - 旋转 [x, y, z, w]
+ *   }
+ *   tileset_url: string - tileset URL
  *   created_at: string - 创建时间（ISO 8601格式）
  *   updated_at: string - 更新时间（ISO 8601格式）
  * }
  * 
  * 创建计划请求：
  * {
- *   title: string - 计划标题
+ *   name: string - 计划名称
  *   description: string - 计划描述
- *   location: string - 拍摄地点
- *   scheduled_time: string - 计划时间（ISO 8601格式）
+ *   start_time: string - 开始时间（ISO 8601格式）
+ *   camera: {
+ *     focal_length: number - 焦距
+ *     position: [number, number, number] - 位置 [经度, 纬度, 高度]
+ *     rotation: [number, number, number, number] - 旋转 [x, y, z, w]
+ *   }
+ *   tileset_url: string - tileset URL
  * }
  * 
  * 更新计划请求：
  * {
- *   title?: string - 计划标题（可选）
+ *   name?: string - 计划名称（可选）
  *   description?: string - 计划描述（可选）
- *   location?: string - 拍摄地点（可选）
- *   scheduled_time?: string - 计划时间（可选）
+ *   start_time?: string - 开始时间（可选）
+ *   camera?: object - 相机配置（可选）
+ *   tileset_url?: string - tileset URL（可选）
  * }
  * 
  * 查询参数：
