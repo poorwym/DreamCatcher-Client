@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {useAuth} from "../../context/AuthProvider.jsx";
-import {getPlan} from "../../api/plan.js";
+import {getPlan, updatePlan} from "../../api/plan.js";
 import Map2DContainer from "../../components/Map2D/Map2DContainer.jsx";
 import { useParams } from 'react-router-dom';
-import { Spin, Alert } from "antd";
+import { Spin, Alert, message } from "antd";
+import { Button } from '@mui/material';
 import "../../assets/style.css";
 import Background from "../../components/Background/Background.jsx";
 import AstronomicalLayer from "./components/AstronomicalLayer.jsx";
+import CameraController from "./components/CameraController.jsx";
+import TimeController from "./components/TimeController.jsx";
+import AstronomicalWidget from "./components/AstronomicalWidget.jsx";
 
 function PlanMap2DPage() {
     const {fetchWithAuth} = useAuth();
@@ -14,8 +18,9 @@ function PlanMap2DPage() {
     const [plan, setPlan] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [position, setPosition] = useState([null, null]);
     const [time, setTime] = useState(null);
+    const [camera, setCamera] = useState(null);
+    const [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
         const loadPlan = async () => {
@@ -24,13 +29,16 @@ function PlanMap2DPage() {
                 setError(null);
                 const planData = await getPlan(plan_id, fetchWithAuth);
                 setPlan(planData);
+                // 设置位置和时间数据
+                if (planData && planData.camera && planData.camera.position) {
+                    setTime(planData.start_time);
+                    setCamera(planData.camera);
+                }
             } catch (err) {
                 console.error('加载计划详情失败:', err);
                 setError(err.message || '加载计划详情失败');
             } finally {
                 setLoading(false);
-                setPosition([plan.camera.position[0], plan.camera.position[1]]);
-                setTime(plan.start_time);
             }
         };
 
@@ -38,6 +46,35 @@ function PlanMap2DPage() {
             loadPlan();
         }
     }, [plan_id, fetchWithAuth]);
+
+    const handleUpdatePlan = async () => {
+        if (!plan || !camera || !time) {
+            message.error('缺少必要的计划数据');
+            return;
+        }
+
+        try {
+            setIsUpdating(true);
+            
+            // 构建更新数据
+            const updateData = {
+                start_time: time,
+                camera: {
+                    ...camera,
+                    position: [camera.position[0], camera.position[1], camera.position[2] || 0]
+                }
+            };
+
+            const updatedPlan = await updatePlan(plan_id, updateData, fetchWithAuth);
+            setPlan(updatedPlan);
+            message.success('计划更新成功！');
+        } catch (err) {
+            console.error('更新计划失败:', err);
+            message.error(err.message || '更新计划失败');
+        } finally {
+            setIsUpdating(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -64,12 +101,12 @@ function PlanMap2DPage() {
         );
     }
 
-    if (!plan || !plan.camera || !plan.camera.position) {
+    if (!plan || !plan.camera || !plan.camera.position || !time) {
         return (
             <div className="flex justify-center items-center min-h-screen bg-black p-9">
                 <Alert
                     message="数据错误"
-                    description="计划数据或相机位置信息缺失"
+                    description="计划数据、相机位置信息或时间信息缺失"
                     type="warning"
                     showIcon
                     className="max-w-md"
@@ -79,17 +116,60 @@ function PlanMap2DPage() {
     }
 
     return (
-       <div className="w-full h-full">
+       <div className="w-full min-h-screen">
            <Background />
-           {/* 地图容器 */}
-           <div className='flex flex-col'>
-                <div style={{ height: "500px"}} className='w-2/3 pt-16'>
-                    <Map2DContainer lat={position[1]} lon={position[0]}>
-                        <AstronomicalLayer lat={position[1]} lon={position[0]} time={time}/>
+           {/* 地图容器 - 响应式布局 */}
+           <div className='flex flex-col lg:flex-row lg:justify-left w-full min-h-screen lg:h-screen overflow-x-visible'>
+                {/* 地图区域 */}
+                <div className='w-full lg:w-2/3 h-96 lg:h-screen pt-16 lg:pt-16 lg:fixed lg:top-0 lg:left-0 overflow-x-visible'>
+                    <Map2DContainer 
+                        lat={camera.position[1]} 
+                        lon={camera.position[0]} 
+                        zoom={16} 
+                        height="800px"
+                    >
+                        <AstronomicalLayer lat={camera.position[1]} lon={camera.position[0]} time={time}/>
                     </Map2DContainer>
                 </div>
-                <div className="w-auto flex flex-row">
-                    <div className="bg-primary/90 h-auto "></div>
+                
+                {/* 控制面板区域 */}
+                <div className="w-full lg:w-1/3 lg:fixed lg:top-0 lg:right-0 lg:h-screen overflow-y-auto overflow-x-visible pt-6 lg:pt-24 px-5 lg:pr-10 lg:pl-5">
+                    <div className="flex flex-col pb-8 overflow-visible">
+                        {/* 相机控制组件 */}
+                        <CameraController camera={camera} setCamera={setCamera} />
+                        
+                        {/* 时间控制组件 */}
+                        <TimeController time={time} setTime={setTime} />
+                        
+                        {/* 天文信息显示组件 */}
+                        <AstronomicalWidget lon={camera.position[0]} lat={camera.position[1]} time={time} />
+                        
+                        {/* 更新计划按钮 */}
+                        <Button
+                            type="button"
+                            fullWidth
+                            variant="contained"
+                            disabled={isUpdating || loading}
+                            onClick={handleUpdatePlan}
+                            className="!mb-10"
+                            sx={{
+                                backgroundColor: 'var(--text-primary)',
+                                color: 'var(--text-contrast)',
+                                padding: '12px 0',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                                '&:hover': {
+                                    backgroundColor: 'var(--accent-blue)',
+                                },
+                                '&:disabled': {
+                                    backgroundColor: 'var(--text-muted)',
+                                    color: 'var(--text-secondary)',
+                                }
+                            }}
+                        >
+                            {isUpdating ? '更新中...' : '更新计划'}
+                        </Button>
+                    </div>
                 </div>
            </div>
        </div>
