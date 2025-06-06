@@ -28,10 +28,10 @@
     "html2canvas": "^1.4.1",
     "http-proxy-middleware": "^3.0.5",
     "leaflet": "^1.9.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.0.0-rc.1",
+    "react-dom": "^19.0.0-rc.1",
     "react-icons": "^5.5.0",
-    "react-leaflet": "^5.0.0",
+    "react-leaflet": "^5.0.0-rc.2",
     "react-router-dom": "^7.5.2",
     "resium": "^1.19.0-beta.1",
     "styled-components": "^6.1.18",
@@ -41,7 +41,7 @@
     "vite-plugin-cesium": "^1.2.23"
   },
   "devDependencies": {
-    "@craco/craco": "^7.1.0",
+    "@craco/craco": "^5.9.0",
     "@eslint/js": "^9.22.0",
     "@tailwindcss/postcss": "^4.1.8",
     "@types/react": "^19.0.10",
