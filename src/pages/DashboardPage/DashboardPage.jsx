@@ -106,7 +106,7 @@ const DashboardPage = () => {
     };
 
     const formatUserName = (user) => {
-        if (user?.name) return user.name;
+        if (user?.user_name) return user.user_name;
         if (user?.email) return user.email.split('@')[0];
         return '用户';
     };
@@ -166,7 +166,7 @@ const DashboardPage = () => {
                                 width: 80, 
                                 height: 80, 
                                 bgcolor: 'var(--accent-blue)',
-                                fontSize: '2rem',
+                                fontSize: '3rem',
                                 fontWeight: 'bold',
                                 filter: 'drop-shadow(0 0 15px rgba(14, 165, 233, 0.5))',
                                 border: '2px solid rgba(var(--border-primary-rgb), 0.3)'

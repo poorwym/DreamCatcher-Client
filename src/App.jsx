@@ -7,7 +7,7 @@ import './assets/style.css'; // 导入全局主题样式
 
 // 导入页面组件
 import HomePage from './pages/HomePage/HomePage';
-// import RegisterPage from './pages/RegisterPage/RegisterPage';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
 import PlansListPage from './pages/PlansListPage/PlansListPage';
 import NewPlanPage from './pages/NewPlanPage/NewPlanPage';
@@ -29,6 +29,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/dashboard" element={
             <RequireAuth>
               <DashboardPage />
