@@ -20,7 +20,7 @@ import {
   Place as LocationIcon,
   Refresh as RefreshIcon
 } from '@mui/icons-material';
-import { getAstronomicalData } from '../utils/astronomicalUtils';
+import { getAstronomicalData } from '../../../utils/astronomicalUtils.js';
 import '../../../assets/style.css';
 
 function AstronomicalWidget({lon, lat, time}) {

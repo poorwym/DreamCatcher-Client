@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Marker, Popup, Polyline } from 'react-leaflet';
 import SunCalc from 'suncalc';
-import { getAstronomicalData } from '../utils/astronomicalUtils.js';
+import { getAstronomicalData } from '../../../utils/astronomicalUtils.js';
 import {
   createCameraIcon,
   createSunIcon,
@@ -20,22 +20,40 @@ import {
  * - 月出/月落方向：使用 SunCalc 在月出/月落时刻的月亮方位角动态计算
  * - 所有方向标记都会根据实际的天文数据准确显示
  */
-function AstronomicalLayer({ lat, lon, time }) {
+function AstronomicalLayer({ lat, lon, time, zoomLevel }) {
   const [astronomicalData, setAstronomicalData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   /**
+   * 根据缩放等级动态计算基础距离
+   * @param {number} zoomLevel - 地图缩放等级
+   * @returns {number} 基础距离（度数）
+   */
+  const getBaseDegreeByZoom = (zoomLevel) => {
+    // zoomLevel 16 为基准（0.002），zoom越大距离越小，zoom越小距离越大
+    const baseZoom = 16;
+    const baseDegree = 0.002;
+    
+    // 使用指数缩放，每级缩放距离变化约2倍
+    const zoomDiff = zoomLevel - baseZoom;
+    return baseDegree * Math.pow(0.7, zoomDiff);
+  };
+
+  /**
    * 根据方位角 + 距离估算地图坐标
    * @param {number} azimuthDeg - 0°=正北，顺时针递增
-   * @param {number} distanceDeg - "地图度数" 级别的半径（越大 marker 越远）
+   * @param {number} distanceMultiplier - 距离倍数（基于基础距离）
    * @param {number} altitudeDeg - 调整距离的高度角
    * @returns {[number, number]} [lat, lon]
    */
   const calculatePosition = (
     azimuthDeg,
-    distanceDeg = 0.002,
+    distanceMultiplier = 1,
     altitudeDeg = 0,
   ) => {
+    const baseDegree = getBaseDegreeByZoom(zoomLevel || 16);
+    const distanceDeg = baseDegree * distanceMultiplier;
+    
     const azimuthRad = (azimuthDeg * Math.PI) / 180; // 转弧度
     const altitudeFactor = 1 + Math.cos((altitudeDeg * Math.PI) / 180);
     const effectiveDistance = distanceDeg * altitudeFactor;
@@ -94,18 +112,18 @@ function AstronomicalLayer({ lat, lon, time }) {
   const cameraPos = [lat, lon];
   const sunPos = calculatePosition(
     parseFloat(sunPosition.azimuth),
-    0.002,
+    1.0, // 太阳位置距离倍数
     parseFloat(sunPosition.altitude),
   );
   const moonPos = calculatePosition(
     parseFloat(moonPosition.azimuth),
-    0.001,
+    0.5, // 月亮位置稍近一些
     parseFloat(moonPosition.altitude),
   );
-  const sunrisePos = calculatePosition(parseFloat(sunriseAzimuth), 0.003);
-  const sunsetPos = calculatePosition(parseFloat(sunsetAzimuth), 0.003);
-  const moonrisePos = calculatePosition(parseFloat(moonriseAzimuth), 0.002);
-  const moonsetPos = calculatePosition(parseFloat(moonsetAzimuth), 0.002);
+  const sunrisePos = calculatePosition(parseFloat(sunriseAzimuth), 1.5); // 日出方向稍远
+  const sunsetPos = calculatePosition(parseFloat(sunsetAzimuth), 1.5); // 日落方向稍远
+  const moonrisePos = calculatePosition(parseFloat(moonriseAzimuth), 1.0); // 月出方向
+  const moonsetPos = calculatePosition(parseFloat(moonsetAzimuth), 1.0); // 月落方向
 
   // ================ 射线路径定义 =================
   const polylines = [

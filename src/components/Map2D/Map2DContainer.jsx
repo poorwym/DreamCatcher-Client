@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import {MapContainer, Marker, Popup, TileLayer} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 
@@ -8,7 +8,7 @@ function Map2DContainer({lon, lat, zoom, height, children}) {
     
     // Leaflet 使用 [latitude, longitude] 的顺序
     const position = [lat, lon];
-    
+
     return (
     <div className='w-full'>
         <MapContainer 

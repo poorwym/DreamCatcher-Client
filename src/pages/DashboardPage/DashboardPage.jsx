@@ -231,7 +231,7 @@ const DashboardPage = () => {
                 </div>
 
                 {/* 统计信息和快捷操作 */}
-                <div className="grid grid-cols-4 gap-6 mb-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
                     {/* 总计划数 */}
                     <Card 
                         className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 transition-all duration-300 ease-out hover:border-primary/50 hover:shadow-xl hover:scale-103 cursor-pointer"
@@ -428,7 +428,7 @@ const DashboardPage = () => {
                 </div>
 
                 {/* 最近编辑和即将开始 */}
-                <div className="grid grid-cols-2 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     {/* 最近编辑的计划 */}
                     <Card 
                         className="bg-secondary/90 backdrop-blur-lg rounded-xl shadow-2xl border border-primary/30 transition-all duration-300 ease-out hover:scale-103 hover:shadow-xl"

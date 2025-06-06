@@ -9,7 +9,6 @@ import './assets/style.css'; // 导入全局主题样式
 import HomePage from './pages/HomePage/HomePage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
-import PlansListPage from './pages/PlansListPage/PlansListPage';
 import NewPlanPage from './pages/NewPlanPage/NewPlanPage';
 import PlanDetailsPage from './pages/PlanDetailsPage/PlanDetailsPage';
 import PlanMap2DPage from './pages/PlanMap2DPage/PlanMap2DPage';
@@ -19,6 +18,7 @@ import AboutPage from "./pages/AboutPage/AboutPage"
 import CloudRenderingPage from "./pages/CloudRenderingPage/CloudRenderingPage.jsx";
 import LoginPage from './pages/LoginPage/LoginPage';
 import RequireAuth from "./components/RequireAuth/RequireAuth.jsx";
+import LLMPage from './pages/LLMPage/LLMPage.jsx';
 
 function App() {
   // 应用启动时预加载常用地点图片
@@ -37,7 +37,12 @@ function App() {
           } />
           <Route path="/plans" element={
             <RequireAuth>
-              <PlansListPage />
+              <DashboardPage />
+            </RequireAuth>
+          } />
+          <Route path="/llm" element={
+            <RequireAuth>
+              <LLMPage />
             </RequireAuth>
           } />
           <Route path="/plans/new" element={

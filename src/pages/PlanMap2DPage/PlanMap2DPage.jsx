@@ -11,6 +11,7 @@ import AstronomicalLayer from "./components/AstronomicalLayer.jsx";
 import CameraController from "./components/CameraController.jsx";
 import TimeController from "./components/TimeController.jsx";
 import AstronomicalWidget from "./components/AstronomicalWidget.jsx";
+import EventLayer from "../../components/Map2D/Layers/EventLayer.jsx";
 
 function PlanMap2DPage() {
     const {fetchWithAuth} = useAuth();
@@ -21,6 +22,7 @@ function PlanMap2DPage() {
     const [time, setTime] = useState(null);
     const [camera, setCamera] = useState(null);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [zoomLevel, setZoomLevel] = useState(16);
 
     useEffect(() => {
         const loadPlan = async () => {
@@ -115,6 +117,19 @@ function PlanMap2DPage() {
         );
     }
 
+    const onMapClick = (latlng) => {
+        setCamera(
+            {
+                    ...camera,
+                    position: [latlng.lng, latlng.lat, camera.position[2] | 0],
+            }
+        );
+    }
+
+    const onMapZoom = (zoomLevel) => {
+        setZoomLevel(zoomLevel);
+    }
+
     return (
        <div className="w-full min-h-screen">
            <Background />
@@ -128,7 +143,8 @@ function PlanMap2DPage() {
                         zoom={16} 
                         height="800px"
                     >
-                        <AstronomicalLayer lat={camera.position[1]} lon={camera.position[0]} time={time}/>
+                        <AstronomicalLayer lat={camera.position[1]} lon={camera.position[0]} time={time} zoomLevel={zoomLevel}/>
+                        <EventLayer onClick={onMapClick} onZoom={onMapZoom} />
                     </Map2DContainer>
                 </div>
                 
