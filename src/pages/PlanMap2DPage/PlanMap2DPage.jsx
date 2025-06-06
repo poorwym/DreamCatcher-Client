@@ -136,7 +136,7 @@ function PlanMap2DPage() {
            {/* 地图容器 - 响应式布局 */}
            <div className='flex flex-col lg:flex-row lg:justify-left w-full min-h-screen lg:h-screen overflow-x-visible'>
                 {/* 地图区域 */}
-                <div className='w-full lg:w-2/3 h-96 lg:h-screen pt-16 lg:pt-16 lg:fixed lg:top-0 lg:left-0 overflow-x-visible'>
+                <div className='w-full lg:w-2/3 h-96 lg:h-screen pt-20 pl-4 lg:fixed lg:top-0 lg:left-0 overflow-x-visible'>
                     <Map2DContainer 
                         lat={camera.position[1]} 
                         lon={camera.position[0]} 

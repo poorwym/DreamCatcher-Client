@@ -10,12 +10,11 @@ function Map2DContainer({lon, lat, zoom, height, children}) {
     const position = [lat, lon];
 
     return (
-    <div className='w-full'>
         <MapContainer 
             center={position} 
             zoom={zoom}
             scrollWheelZoom={false}
-            className='w-auto m-8 rounded-2xl'
+            className='w-auto m-4 rounded-2xl'
             style={{ height: height || "500px"}}
         >
             <TileLayer
@@ -24,7 +23,6 @@ function Map2DContainer({lon, lat, zoom, height, children}) {
             />
             {children}
         </MapContainer>
-    </div>
     );
 }
 

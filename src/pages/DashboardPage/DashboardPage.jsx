@@ -4,7 +4,7 @@ import PlanCard from "../../components/PlanCard/PlanCard.jsx";
 import {useAuth} from "../../context/AuthProvider.jsx";
 import { getPlans } from "../../api/plan.js";
 import Background from "../../components/Background/Background.jsx";
-import PlanMapWidget from "./components/PlanMapWidget.jsx";
+import DashboardMapWidget from "./components/DashboardMapWidget.jsx";
 import { 
     Card, 
     CardContent, 
@@ -780,8 +780,8 @@ const DashboardPage = () => {
 
                 {/* 地图组件 */}
                 <div className="mb-8">
-                    <div className="h-96">
-                        <PlanMapWidget plans={planList} />
+                    <div className="">
+                        <DashboardMapWidget plans={planList} />
                     </div>
                 </div>
             </div>
