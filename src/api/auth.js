@@ -1,6 +1,7 @@
 /**
  * DreamCatcher 认证API封装
  * 基于后端API文档实现的认证相关接口
+ * 统一处理：token为对象格式，access_token为字符串，仅在Authorization头中使用
  */
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
@@ -20,7 +21,7 @@ const handleResponse = async (response) => {
 
 /**
  * 创建带有认证头的fetch请求
- * @param {string} token 
+ * @param {Object} token - token对象 { access_token, token_type, expires_in }
  * @returns {function}
  */
 const createAuthFetch = (token) => {
@@ -30,8 +31,9 @@ const createAuthFetch = (token) => {
             ...(options.headers || {}) 
         };
         
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
+        // 从token对象中提取access_token用于Authorization头
+        if (token && token.access_token) {
+            headers['Authorization'] = `Bearer ${token.access_token}`;
         }
 
         const response = await fetch(url, { 
@@ -91,7 +93,7 @@ export const login = async ({ email, password }) => {
 
 /**
  * 获取当前用户信息
- * @param {string} token - JWT令牌
+ * @param {Object} token - token对象 { access_token, token_type, expires_in }
  * @returns {Promise<Object>}
  */
 export const getCurrentUser = async (token) => {
@@ -102,7 +104,7 @@ export const getCurrentUser = async (token) => {
 
 /**
  * 获取当前用户详细信息
- * @param {string} token - JWT令牌
+ * @param {Object} token - token对象 { access_token, token_type, expires_in }
  * @returns {Promise<Object>}
  */
 export const getCurrentUserDetail = async (token) => {
@@ -113,7 +115,7 @@ export const getCurrentUserDetail = async (token) => {
 
 /**
  * 更新当前用户信息
- * @param {string} token - JWT令牌
+ * @param {Object} token - token对象 { access_token, token_type, expires_in }
  * @param {Object} userData 
  * @param {string} [userData.user_name] - 新用户名
  * @param {string} [userData.email] - 新邮箱地址
@@ -131,7 +133,7 @@ export const updateCurrentUser = async (token, userData) => {
 
 /**
  * 修改密码
- * @param {string} token - JWT令牌
+ * @param {Object} token - token对象 { access_token, token_type, expires_in }
  * @param {Object} passwords 
  * @param {string} passwords.old_password - 旧密码
  * @param {string} passwords.new_password - 新密码
@@ -148,7 +150,7 @@ export const changePassword = async (token, { old_password, new_password }) => {
 
 /**
  * 根据ID获取用户信息
- * @param {string} token - JWT令牌
+ * @param {Object} token - token对象 { access_token, token_type, expires_in }
  * @param {string} userId - 用户UUID
  * @returns {Promise<Object>}
  */
@@ -160,7 +162,7 @@ export const getUserById = async (token, userId) => {
 
 /**
  * 验证令牌
- * @param {string} token - JWT令牌
+ * @param {Object} token - token对象 { access_token, token_type, expires_in }
  * @returns {Promise<Object>}
  */
 export const verifyToken = async (token) => {
@@ -173,7 +175,7 @@ export const verifyToken = async (token) => {
 
 /**
  * 创建带认证的fetch函数供其他模块使用
- * @param {string} token - JWT令牌
+ * @param {Object} token - token对象 { access_token, token_type, expires_in }
  * @returns {function}
  */
 export const createAuthenticatedFetch = (token) => {

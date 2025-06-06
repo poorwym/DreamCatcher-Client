@@ -10,9 +10,10 @@ import * as authAPI from "../api/auth.js";
 /**
  * DreamCatcher 前端身份验证上下文
  *
- * - 登录 / 注册后保存 JWT 到 localStorage
+ * - 登录 / 注册后保存 JWT token对象 到 localStorage
  * - 挂载时自动读取并验证 token -> 获取当前用户信息
  * - 提供 fetchWithAuth 包装器，自动附带 Authorization 头
+ * - token统一为对象格式：{ access_token, token_type, expires_in }
  */
 
 const AuthContext = createContext(null);
@@ -32,14 +33,26 @@ export const useAuth = () => {
 export default function AuthProvider({ children }) {
     /* ------------------------- 状态 ------------------------- */
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(() => localStorage.getItem("dc_token"));
+    const [token, setToken] = useState(() => {
+        const storedToken = localStorage.getItem("dc_token");
+        try {
+            return storedToken ? JSON.parse(storedToken) : null;
+        } catch (err) {
+            console.warn("解析localStorage中的token失败:", err);
+            localStorage.removeItem("dc_token");
+            return null;
+        }
+    });
     const [loading, setLoading] = useState(true);
 
     /* ------------------------- 工具函数 ------------------------- */
-    const saveToken = (t) => {
-        setToken(t);
-        if (t) localStorage.setItem("dc_token", t);
-        else localStorage.removeItem("dc_token");
+    const saveToken = (tokenObj) => {
+        setToken(tokenObj);
+        if (tokenObj) {
+            localStorage.setItem("dc_token", JSON.stringify(tokenObj));
+        } else {
+            localStorage.removeItem("dc_token");
+        }
     };
 
     const fetchWithAuth = useCallback(
@@ -67,8 +80,6 @@ export default function AuthProvider({ children }) {
             return;
         }
 
-        console.log("Loading user with token:", token.substring(0, 20) + "...");
-        
         try {
             const userData = await authAPI.getCurrentUser(token);
             console.log("User loaded successfully:", userData);
@@ -78,7 +89,11 @@ export default function AuthProvider({ children }) {
             console.error("Error details:", {
                 message: err.message,
                 status: err.status,
-                token: token ? token.substring(0, 20) + "..." : "none"
+                token: token ? {
+                    token_type: token.token_type,
+                    expires_in: token.expires_in,
+                    access_token_prefix: token.access_token ? token.access_token.substring(0, 20) + "..." : "none"
+                } : "none"
             });
             
             // 清除可能无效的token

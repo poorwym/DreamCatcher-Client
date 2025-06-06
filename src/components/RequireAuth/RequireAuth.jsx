@@ -72,7 +72,11 @@ export default function RequireAuth({ children }) {
         // 记住用户原本想访问的页面，登录成功后可回跳
         console.log("RequireAuth: Authentication check failed", {
             hasToken: !!token,
-            tokenPrefix: token ? token.substring(0, 20) + "..." : "none",
+            tokenInfo: token ? {
+                token_type: token.token_type,
+                expires_in: token.expires_in,
+                access_token_prefix: token.access_token ? token.access_token.substring(0, 20) + "..." : "none"
+            } : "none",
             hasUser: !!user,
             user: user ? user.user_name : "none",
             currentPath: location.pathname

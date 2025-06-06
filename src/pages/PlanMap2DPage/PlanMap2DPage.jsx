@@ -45,7 +45,7 @@ import { createCameraIcon } from './components/MapIcons';
 import { handleExport } from './utils/mapExport';
 
 // 导入API服务
-import { planAPI, astronomyAPI } from '../../services/api';
+// import { planAPI, astronomyAPI } from '../../services/api';
 
 // 修复 Leaflet 默认图标问题
 let DefaultIcon = L.divIcon({
