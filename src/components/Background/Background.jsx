@@ -180,7 +180,7 @@ function Background() {
     return (
         <div
             ref={mountRef}
-            className="fixed inset-0 z-1 bg-primary"
+            className="fixed inset-0 z-0 bg-primary"
         />
     );
 }

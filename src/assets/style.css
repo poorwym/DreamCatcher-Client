@@ -29,6 +29,10 @@
   --accent-blue-hover: #0284c7;
   --accent-green: #10b981;         /* 生命绿 */
   --accent-green-hover: #059669;
+
+  /* RGB 变量用于透明度支持 */
+  --bg-secondary-rgb: 30, 41, 59;
+  --border-primary-rgb: 96, 165, 250;
 }
 
 /* 白天模式主题变量 */
@@ -57,6 +61,10 @@
   --accent-blue-hover: #0369a1;
   --accent-green: #059669;         /* 稍深的绿色 */
   --accent-green-hover: #047857;
+
+  /* RGB 变量用于透明度支持 */
+  --bg-secondary-rgb: 226, 232, 240;
+  --border-primary-rgb: 30, 64, 175;
 }
 
 /* === 使用CSS变量的通用样式类 === */
