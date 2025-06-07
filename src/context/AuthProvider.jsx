@@ -166,3 +166,22 @@ export default function AuthProvider({ children }) {
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
+
+/*
+* login responese
+* {
+    "user": {
+        "user_id": "89f0f3a0-4c1e-4a41-bb8e-a786dd0828b4",
+        "user_name": "Alice Smith",
+        "email": "alice@example.com"
+    },
+    "token": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4OWYwZjNhMC00YzFlLTRhNDEtYmI4ZS1hNzg2ZGQwODI4YjQiLCJlbWFpbCI6ImFsaWNlQGV4YW1wbGUuY29tIiwiZXhwIjoxNzQ5MjU1Mjg2fQ.ywuVwr-0ooSIUnxcOs8dIL5C3NbOxCkjnzpDDleDOkw",
+        "token_type": "bearer",
+        "expires_in": 1800
+    },
+    "message": "登录成功"
+}
+*
+*
+* */

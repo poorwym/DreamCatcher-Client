@@ -60,7 +60,7 @@ const DashboardPage = () => {
         };
         
         fetchPlans();
-    }, [user, fetchWithAuth])
+    }, [])
 
     // 计算统计数据
     const getStatistics = () => {
@@ -720,7 +720,7 @@ const DashboardPage = () => {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-96 overflow-y-auto">
                             {planList.length > 0 ? (
-                                                planList.slice(0, 6).map((plan, index) => (
+                                                planList.map((plan, index) => (
                                                     <div key={plan.id} className="flex justify-center">
                                                         <PlanCard 
                                                             index={index} 

@@ -78,12 +78,13 @@ export const checkLLMHealth = async () => {
  * {
  *   query: string - 用户的问题或请求
  * }
- * 
- * 聊天响应：
+ *
+ * 聊天响应
  * {
- *   response: string - LLM的回复内容
- *   success: boolean - 请求是否成功
- *   message: string - 状态消息
+ *     "response": "我已经为您创建了今天的西湖拍摄计划，计划名称为“西湖拍摄计划”，开始时间为今天的日期。计划已成功创建，状态为“created”。",
+ *     "success": true,
+ *     "message": "请求处理成功",
+ *     "timestamp": "2025-06-07T07:45:20.815768"
  * }
  * 
  * 健康检查响应：

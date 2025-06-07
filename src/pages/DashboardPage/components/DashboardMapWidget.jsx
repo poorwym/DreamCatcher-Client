@@ -69,7 +69,7 @@ const DashboardMapWidget = ({ plans }) => {
 
     return (
         <Card 
-            className="bg-secondary/80 backdrop-blur-lg border border-primary/30 transition-all duration-300 ease-out hover:shadow-xl"
+            className="bg-secondary/90 backdrop-blur-lg border border-primary/30 transition-all duration-300 ease-out hover:shadow-xl"
             sx={{ 
                 background: 'rgba(var(--bg-secondary-rgb), 0.8)',
                 backdropFilter: 'blur(16px)',
@@ -80,7 +80,7 @@ const DashboardMapWidget = ({ plans }) => {
                 }
             }}
         >
-            <CardContent className="pb-3 pt-6 flex flex-col">
+            <CardContent className="pb-3 pt-6 flex flex-col bg-transparent">
                 {/* 标题栏 */}
                 <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center">

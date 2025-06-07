@@ -36,9 +36,23 @@ const createAuthFetch = (token) => {
             headers['Authorization'] = `Bearer ${token.access_token}`;
         }
 
-        const response = await fetch(url, { 
-            ...options, 
-            headers 
+        const request = {
+            url,
+            method: options.method || 'GET',
+            headers,
+            body: options.body ? JSON.parse(options.body) : undefined
+        };
+        console.log('API Request:', request);
+
+        // const response = await fetch(url, { 
+        //     ...options, 
+        //     headers 
+        // });
+
+        const response = await fetch(request.url, {
+            method: request.method,
+            headers: request.headers,
+            body: request.body ? JSON.stringify(request.body) : undefined
         });
 
         // 统一处理401错误

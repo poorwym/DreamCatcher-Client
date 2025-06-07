@@ -103,6 +103,7 @@ export const getPlans = async (params = {}, fetchWithAuth) => {
  * @param {Array<number>} planData.camera.position - 位置 [经度, 纬度, 高度]
  * @param {Array<number>} planData.camera.rotation - 旋转 [x, y, z, w]
  * @param {string} planData.tileset_url - tileset URL
+ * @param {string} planData.user_id - 用户UUID
  * @param {Function} fetchWithAuth - 来自AuthProvider的认证请求函数
  * @returns {Promise<Object>} 创建的计划对象
  */
@@ -111,7 +112,7 @@ export const createPlan = async (planData, fetchWithAuth) => {
         throw new Error('计划数据不能为空');
     }
 
-    const { name, description, start_time, camera, tileset_url } = planData;
+    const { name, description, start_time, camera, tileset_url, user_id } = planData;
     
     if (!name || typeof name !== 'string') {
         throw new Error('计划名称不能为空');
@@ -127,6 +128,10 @@ export const createPlan = async (planData, fetchWithAuth) => {
 
     if (!camera || typeof camera !== 'object') {
         throw new Error('相机配置不能为空');
+    }
+
+    if (!user_id || typeof user_id !== 'string') {
+        throw new Error('用户ID不能为空');
     }
 
     if (!fetchWithAuth) {
@@ -145,6 +150,7 @@ export const createPlan = async (planData, fetchWithAuth) => {
                 start_time,
                 camera,
                 tileset_url,
+                user_id,
             }),
         });
 
@@ -323,24 +329,31 @@ export const getAllPlansAdmin = async (params = {}, fetchWithAuth) => {
  * 
  * 创建计划请求：
  * {
- *   name: string - 计划名称
- *   description: string - 计划描述
- *   start_time: string - 开始时间（ISO 8601格式）
- *   camera: {
- *     focal_length: number - 焦距
- *     position: [number, number, number] - 位置 [经度, 纬度, 高度]
- *     rotation: [number, number, number, number] - 旋转 [x, y, z, w]
- *   }
- *   tileset_url: string - tileset URL
+ *   "name": "Sunset Time-lapse",
+ *   "description": "Capture sunset over the city skyline",
+ *   "start_time": "2025-06-10T18:30:00Z",
+ *   "camera": {
+ *     "focal_length": 35.0,
+ *     "position": [
+ *       120.1536,
+ *       30.2875,
+ *       100.0
+ *     ],
+ *     "rotation": [
+ *       0.0,
+ *       0.0,
+ *       0.0,
+ *       1.0
+ *     ]
+ *   },
+ *   "tileset_url": "https://example.com/tileset.json",
+ *   "user_id": "89f0f3a0-4c1e-4a41-bb8e-a786dd0828b4"
  * }
  * 
  * 更新计划请求：
  * {
- *   name?: string - 计划名称（可选）
- *   description?: string - 计划描述（可选）
- *   start_time?: string - 开始时间（可选）
- *   camera?: object - 相机配置（可选）
- *   tileset_url?: string - tileset URL（可选）
+ *   "description": "Updated description for sunset time-lapse",
+ *   "tileset_url": "https://cdn.example.com/new_tileset.json"
  * }
  * 
  * 查询参数：
