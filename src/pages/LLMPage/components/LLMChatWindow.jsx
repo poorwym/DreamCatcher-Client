@@ -24,7 +24,9 @@ function LlmChatWindow({children}) {
                         <div className="w-3 h-3 rounded-full bg-yellow-500/70"></div>
                         <div className="w-3 h-3 rounded-full bg-green-500/70"></div>
                     </div>
-                    <h2 className="text-white/80 text-sm font-medium">AI 智能助手</h2>
+                    <h2 className="text-white/80 text-sm font-medium">
+                        Morpheus
+                    </h2>
                     <div className="w-16"></div>
                 </div>
                 

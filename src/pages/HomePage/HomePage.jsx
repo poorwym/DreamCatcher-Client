@@ -16,7 +16,7 @@ function HomePage() {
            
            {/* 副标题 */}
            <p className="text-xl md:text-2xl lg:text-3xl text-secondary font-light tracking-[0.1em] text-center max-w-2xl leading-relaxed" style={{fontFamily: 'Times New Roman'}}>
-             catch your dream
+             Catch Your Dream
            </p>
           
         </div>
