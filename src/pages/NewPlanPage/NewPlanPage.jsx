@@ -200,29 +200,50 @@ function NewPlanPage() {
 
     // Material UI 主题样式
     const cardSx = {
-        backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.9)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(var(--border-primary-rgb), 0.2)',
+        backgroundColor: 'transparent',
+        backdropFilter: 'blur(16px)',
+        border: '1px solid rgba(var(--border-primary-rgb), 0.3)',
         borderRadius: '16px',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), 0 0 30px rgba(14, 165, 233, 0.1)',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        '&:hover': {
+            backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.95)',
+            borderColor: 'rgba(var(--border-primary-rgb), 0.5)',
+            boxShadow: '0 0 30px rgba(14, 165, 233, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            transform: 'translateY(-2px)'
+        }
     };
 
     const textFieldSx = {
         '& .MuiOutlinedInput-root': {
-            backgroundColor: 'var(--bg-tertiary)',
+            backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.6)',
+            backdropFilter: 'blur(8px)',
             color: 'var(--text-main)',
+            border: '1px solid rgba(var(--border-primary-rgb), 0.2)',
+            borderRadius: '12px',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '& fieldset': {
-                borderColor: 'var(--border-subtle)',
+                borderColor: 'rgba(55, 65, 81, 0.3)',
             },
-            '&:hover fieldset': {
-                borderColor: 'var(--border-primary)',
+            '&:hover': {
+                backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.8)',
+                borderColor: 'rgba(var(--border-primary-rgb), 0.4)',
+                '& fieldset': {
+                    borderColor: 'rgba(var(--border-primary-rgb), 0.4)',
+                },
             },
-            '&.Mui-focused fieldset': {
+            '&.Mui-focused': {
+                backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.9)',
                 borderColor: 'var(--border-primary)',
+                boxShadow: '0 0 20px rgba(96, 165, 250, 0.2)',
+                '& fieldset': {
+                    borderColor: 'var(--border-primary)',
+                },
             },
         },
         '& .MuiInputLabel-root': {
             color: 'var(--text-secondary)',
+            fontWeight: 500,
         },
         '& .MuiInputLabel-root.Mui-focused': {
             color: 'var(--text-primary)',
@@ -240,19 +261,30 @@ function NewPlanPage() {
                         className="text-contrast font-bold"
                         sx={{ 
                             mb: 2, 
-                            fontWeight: 'bold',
-                            letterSpacing: '0.05em',
-                            color: 'var(--text-contrast)'
+                            fontWeight: 600,
+                            letterSpacing: '0.1em',
+                            color: 'var(--text-contrast)',
+                            textShadow: '0 0 30px rgba(255, 255, 255, 0.5)',
+                            fontFamily: 'monospace',
+                            textTransform: 'uppercase',
+                            fontSize: { xs: '2rem', md: '2.5rem' }
                         }}
                     >
-                        创建新的拍摄计划
+                        CREATE NEW MISSION
                     </Typography>
                     <Typography 
                         variant="h5" 
                         className="text-secondary"
-                        sx={{ color: 'var(--text-secondary)' }}
+                        sx={{ 
+                            color: 'var(--text-secondary)',
+                            fontSize: '1rem',
+                            fontWeight: 300,
+                            letterSpacing: '0.05em',
+                            textTransform: 'uppercase',
+                            filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.3))'
+                        }}
                     >
-                        规划您的完美拍摄之旅
+                        PHOTOGRAPHY MISSION CONTROL
                     </Typography>
                 </Box>
 
@@ -261,16 +293,20 @@ function NewPlanPage() {
                     <Box sx={{ flex: 1 }}>
                         <Card sx={cardSx}>
                             <CardHeader
-                                avatar={<AddIcon sx={{ color: 'var(--text-primary)' }} />}
+                                avatar={<AddIcon sx={{ color: 'var(--text-primary)', filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.4))' }} />}
                                 title={
                                     <Typography 
                                         variant="h5" 
                                         sx={{ 
                                             color: 'var(--text-primary)',
-                                            fontWeight: 'bold'
+                                            fontWeight: 600,
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em',
+                                            fontFamily: 'monospace',
+                                            filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.3))'
                                         }}
                                     >
-                                        计划信息
+                                        MISSION INFO
                                     </Typography>
                                 }
                                 sx={{ pb: 1 }}
@@ -285,10 +321,15 @@ function NewPlanPage() {
                                                 color: 'var(--text-primary)',
                                                 mb: 3,
                                                 pb: 1,
-                                                borderBottom: '1px solid var(--border-subtle)'
+                                                borderBottom: '1px solid rgba(var(--border-primary-rgb), 0.3)',
+                                                fontWeight: 600,
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.1em',
+                                                fontFamily: 'monospace',
+                                                filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.3))'
                                             }}
                                         >
-                                            基本信息
+                                            BASIC INFO
                                         </Typography>
                                         
                                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -325,7 +366,7 @@ function NewPlanPage() {
                                         </Box>
                                     </Box>
 
-                                    <Divider sx={{ borderColor: 'var(--border-subtle)' }} />
+                                    <Divider sx={{ borderColor: 'rgba(var(--border-primary-rgb), 0.2)' }} />
 
                                     {/* 位置搜索部分 */}
                                     <Box>
@@ -335,14 +376,19 @@ function NewPlanPage() {
                                                 color: 'var(--text-primary)',
                                                 mb: 3,
                                                 pb: 1,
-                                                borderBottom: '1px solid var(--border-subtle)',
+                                                borderBottom: '1px solid rgba(var(--border-primary-rgb), 0.3)',
                                                 display: 'flex',
                                                 alignItems: 'center',
-                                                gap: 1
+                                                gap: 1,
+                                                fontWeight: 600,
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.1em',
+                                                fontFamily: 'monospace',
+                                                filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.3))'
                                             }}
                                         >
-                                            <LocationIcon />
-                                            拍摄位置
+                                            <LocationIcon sx={{ filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.4))' }} />
+                                            LOCATION TARGET
                                         </Typography>
                                         
                                         <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
@@ -373,12 +419,25 @@ function NewPlanPage() {
                                                 onClick={handleSearch}
                                                 disabled={isSearching || !searchQuery.trim()}
                                                 sx={{
-                                                    backgroundColor: 'var(--accent-blue)',
-                                                    '&:hover': {
-                                                        backgroundColor: 'var(--accent-blue-hover)',
-                                                    },
+                                                    backgroundColor: 'rgba(14, 165, 233, 0.8)',
+                                                    backdropFilter: 'blur(8px)',
+                                                    border: '1px solid rgba(14, 165, 233, 0.3)',
+                                                    borderRadius: '12px',
                                                     minWidth: '120px',
-                                                    px: 3
+                                                    px: 3,
+                                                    fontWeight: 600,
+                                                    textTransform: 'uppercase',
+                                                    letterSpacing: '0.5px',
+                                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                                    '&:hover': {
+                                                        backgroundColor: 'rgba(14, 165, 233, 0.9)',
+                                                        transform: 'scale(1.05) translateY(-2px)',
+                                                        boxShadow: '0 0 25px rgba(14, 165, 233, 0.4), 0 10px 20px rgba(0, 0, 0, 0.2)',
+                                                    },
+                                                    '&:disabled': {
+                                                        backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.5)',
+                                                        color: 'var(--text-muted)',
+                                                    }
                                                 }}
                                             >
                                                 {isSearching ? (
@@ -393,11 +452,14 @@ function NewPlanPage() {
                                         {searchResults.length > 0 && (
                                             <Paper 
                                                 sx={{ 
-                                                    backgroundColor: 'var(--bg-tertiary)',
-                                                    border: '1px solid var(--border-subtle)',
+                                                    backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.8)',
+                                                    backdropFilter: 'blur(12px)',
+                                                    border: '1px solid rgba(var(--border-primary-rgb), 0.2)',
+                                                    borderRadius: '12px',
                                                     maxHeight: 200, 
                                                     overflow: 'auto',
-                                                    mb: 2
+                                                    mb: 2,
+                                                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)'
                                                 }}
                                             >
                                                 <List>
@@ -406,8 +468,13 @@ function NewPlanPage() {
                                                             <ListItemButton 
                                                                 onClick={() => handleLocationSelect(result)}
                                                                 sx={{
+                                                                    borderRadius: '8px',
+                                                                    margin: '4px',
+                                                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                                                                     '&:hover': {
-                                                                        backgroundColor: 'var(--bg-secondary)',
+                                                                        backgroundColor: 'rgba(11, 15, 26, 0.6)',
+                                                                        backdropFilter: 'blur(8px)',
+                                                                        transform: 'translateX(4px)',
                                                                     }
                                                                 }}
                                                             >
@@ -437,17 +504,28 @@ function NewPlanPage() {
                                                 label={`${selectedLocation.name} - ${selectedLocation.district}`}
                                                 onDelete={() => setSelectedLocation(null)}
                                                 sx={{
-                                                    backgroundColor: 'var(--accent-green)',
+                                                    backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                                                    backdropFilter: 'blur(8px)',
                                                     color: 'white',
+                                                    border: '1px solid rgba(16, 185, 129, 0.3)',
+                                                    fontWeight: 500,
                                                     '& .MuiChip-deleteIcon': {
                                                         color: 'white',
+                                                        '&:hover': {
+                                                            color: 'rgba(255, 255, 255, 0.8)',
+                                                        }
                                                     },
+                                                    '&:hover': {
+                                                        backgroundColor: 'rgba(16, 185, 129, 0.9)',
+                                                        transform: 'scale(1.02)',
+                                                    },
+                                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                                                 }}
                                             />
                                         )}
                                     </Box>
 
-                                    <Divider sx={{ borderColor: 'var(--border-subtle)' }} />
+                                    <Divider sx={{ borderColor: 'rgba(var(--border-primary-rgb), 0.2)' }} />
 
                                     {/* 相机配置部分 */}
                                     <Box>
@@ -457,14 +535,19 @@ function NewPlanPage() {
                                                 color: 'var(--text-primary)',
                                                 mb: 3,
                                                 pb: 1,
-                                                borderBottom: '1px solid var(--border-subtle)',
+                                                borderBottom: '1px solid rgba(var(--border-primary-rgb), 0.3)',
                                                 display: 'flex',
                                                 alignItems: 'center',
-                                                gap: 1
+                                                gap: 1,
+                                                fontWeight: 600,
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.1em',
+                                                fontFamily: 'monospace',
+                                                filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.3))'
                                             }}
                                         >
-                                            <CameraIcon />
-                                            相机配置
+                                            <CameraIcon sx={{ filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.4))' }} />
+                                            CAMERA CONFIG
                                         </Typography>
                                         
                                         <Grid container spacing={2}>
@@ -497,7 +580,7 @@ function NewPlanPage() {
                                         </Grid>
                                     </Box>
 
-                                    <Divider sx={{ borderColor: 'var(--border-subtle)' }} />
+                                    <Divider sx={{ borderColor: 'rgba(var(--border-primary-rgb), 0.2)' }} />
 
                                     {/* Tileset URL */}
                                     <TextField
@@ -531,15 +614,30 @@ function NewPlanPage() {
                                         disabled={isSubmitting}
                                         startIcon={isSubmitting ? <CircularProgress size={20} /> : <ScheduleIcon />}
                                         sx={{
-                                            backgroundColor: 'var(--accent-orange)',
-                                            '&:hover': {
-                                                backgroundColor: 'var(--accent-orange-hover)',
-                                                transform: 'scale(1.02)',
-                                            },
-                                            py: 2,
+                                            backgroundColor: 'rgba(245, 158, 11, 0.8)',
+                                            backdropFilter: 'blur(12px)',
+                                            border: '1px solid rgba(245, 158, 11, 0.3)',
+                                            borderRadius: '16px',
+                                            py: 2.5,
                                             fontSize: '1.1rem',
                                             fontWeight: 'bold',
-                                            transition: 'all 0.3s ease',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '1px',
+                                            color: 'white',
+                                            boxShadow: '0 8px 25px rgba(245, 158, 11, 0.3), 0 0 20px rgba(245, 158, 11, 0.1)',
+                                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(245, 158, 11, 0.95)',
+                                                transform: 'scale(1.02) translateY(-4px)',
+                                                boxShadow: '0 0 40px rgba(245, 158, 11, 0.5), 0 20px 40px rgba(0, 0, 0, 0.3)',
+                                                borderColor: 'rgba(245, 158, 11, 0.6)',
+                                            },
+                                            '&:disabled': {
+                                                backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.5)',
+                                                color: 'var(--text-muted)',
+                                                transform: 'none',
+                                                boxShadow: 'none',
+                                            }
                                         }}
                                     >
                                         {isSubmitting ? '创建中...' : '创建拍摄计划'}
@@ -553,16 +651,20 @@ function NewPlanPage() {
                     <Box sx={{ flex: 1 }}>
                         <Card sx={cardSx}>
                             <CardHeader
-                                avatar={<LocationIcon sx={{ color: 'var(--text-primary)' }} />}
+                                avatar={<LocationIcon sx={{ color: 'var(--text-primary)', filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.4))' }} />}
                                 title={
                                     <Typography 
                                         variant="h5" 
                                         sx={{ 
                                             color: 'var(--text-primary)',
-                                            fontWeight: 'bold'
+                                            fontWeight: 600,
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.05em',
+                                            fontFamily: 'monospace',
+                                            filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.3))'
                                         }}
                                     >
-                                        位置预览
+                                        LOCATION PREVIEW
                                     </Typography>
                                 }
                                 subheader={
@@ -623,28 +725,46 @@ function NewPlanPage() {
                                             flexDirection: 'column',
                                             alignItems: 'center', 
                                             justifyContent: 'center',
-                                            backgroundColor: 'var(--bg-tertiary)',
-                                            gap: 3
+                                            backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.3)',
+                                            backdropFilter: 'blur(12px)',
+                                            border: '1px solid rgba(var(--border-primary-rgb), 0.2)',
+                                            borderRadius: '16px',
+                                            gap: 3,
+                                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.4)',
+                                                borderColor: 'rgba(var(--border-primary-rgb), 0.3)',
+                                            }
                                         }}
                                     >
-                                        <LocationIcon sx={{ fontSize: 80, color: 'var(--text-muted)' }} />
+                                        <LocationIcon sx={{ fontSize: 80, color: 'var(--text-muted)', filter: 'drop-shadow(0 0 15px rgba(96, 165, 250, 0.2))' }} />
                                         <Typography 
                                             variant="h5" 
-                                            sx={{ color: 'var(--text-muted)', fontWeight: 'bold' }}
+                                            sx={{ 
+                                                color: 'var(--text-muted)', 
+                                                fontWeight: 600,
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.1em',
+                                                fontFamily: 'monospace'
+                                            }}
                                         >
-                                            请先搜索并选择拍摄位置
+                                            SELECT TARGET LOCATION
                                         </Typography>
                                         <Typography 
                                             variant="body1" 
                                             sx={{ 
                                                 color: 'var(--text-secondary)', 
                                                 textAlign: 'center',
-                                                maxWidth: 300
+                                                maxWidth: 300,
+                                                fontSize: '0.9rem',
+                                                lineHeight: 1.6,
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.05em'
                                             }}
                                         >
-                                            选择位置后，这里将显示地图预览
+                                            SEARCH AND SELECT A LOCATION
                                             <br />
-                                            您可以在地图上查看拍摄点的详细位置
+                                            TO VIEW MAP PREVIEW
                                         </Typography>
                                     </Box>
                                 )}
