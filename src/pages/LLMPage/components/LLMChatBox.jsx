@@ -24,8 +24,8 @@ function LlmChatBox({onSendMessage, isInitial = false}) {
 
     return (
         <div className={`${isInitial ? 'relative' : 'fixed bottom-8 left-1/2 transform -translate-x-1/2'} w-3/4 z-20`}>
-            <div className="bg-black/30 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/10 p-4">
-                <div className="flex items-end space-x-3">
+            <div className="bg-primary/90 backdrop-blur-lg rounded-2xl shadow-2xl border border-subtle p-4">
+                <div className="flex items-center space-x-3">
                     <TextField
                         fullWidth
                         multiline
@@ -33,28 +33,28 @@ function LlmChatBox({onSendMessage, isInitial = false}) {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         onKeyPress={handleKeyPress}
-                        placeholder="输入您的问题..."
+                        placeholder="Tell me your dream ..."
                         variant="outlined"
                         sx={{
                             '& .MuiOutlinedInput-root': {
-                                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                                backgroundColor: 'rgba(var(--bg-secondary-rgb), 0.1)',
                                 backdropFilter: 'blur(10px)',
                                 borderRadius: '12px',
-                                color: 'white',
+                                color: 'var(--text-main)',
                                 '& fieldset': {
-                                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                                    borderColor: 'var(--border-subtle)',
                                 },
                                 '&:hover fieldset': {
-                                    borderColor: 'rgba(255, 255, 255, 0.3)',
+                                    borderColor: 'var(--border-secondary)',
                                 },
                                 '&.Mui-focused fieldset': {
-                                    borderColor: 'rgba(59, 130, 246, 0.5)',
+                                    borderColor: 'var(--border-primary)',
                                 },
                             },
                             '& .MuiInputBase-input': {
-                                color: 'white',
+                                color: 'var(--text-main)',
                                 '&::placeholder': {
-                                    color: 'rgba(255, 255, 255, 0.5)',
+                                    color: 'var(--text-muted)',
                                     opacity: 1,
                                 },
                             },
@@ -63,18 +63,20 @@ function LlmChatBox({onSendMessage, isInitial = false}) {
                     <IconButton
                         onClick={handleSend}
                         disabled={!message.trim()}
+                        className=""
                         sx={{
-                            backgroundColor: message.trim() ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+                            backgroundColor: message.trim() ? 'rgba(var(--accent-blue-rgb, 14, 165, 233), 0.2)' : 'rgba(var(--bg-secondary-rgb), 0.1)',
                             backdropFilter: 'blur(10px)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            color: message.trim() ? '#60a5fa' : 'rgba(255, 255, 255, 0.5)',
+                            marginLeft: "10px",
+                            border: `1px solid var(--border-subtle)`,
+                            color: message.trim() ? 'var(--accent-blue)' : 'var(--text-muted)',
                             width: 48,
                             height: 48,
                             '&:hover': {
-                                backgroundColor: message.trim() ? 'rgba(59, 130, 246, 0.3)' : 'rgba(255, 255, 255, 0.15)',
+                                backgroundColor: message.trim() ? 'rgba(var(--accent-blue-rgb, 14, 165, 233), 0.3)' : 'rgba(var(--bg-secondary-rgb), 0.2)',
                             },
                             '&:disabled': {
-                                color: 'rgba(255, 255, 255, 0.3)',
+                                color: 'var(--text-muted)',
                             },
                         }}
                     >

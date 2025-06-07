@@ -1,0 +1,44 @@
+#ChatWindow {
+    height: 65vh;
+    max-height: 65vh;
+    overflow: hidden;
+}
+
+/* 自定义滚动条样式 */
+#ChatWindow .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--bg-secondary-rgb), 0.4) transparent;
+}
+
+#ChatWindow .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+}
+
+#ChatWindow .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#ChatWindow .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--bg-secondary-rgb), 0.4);
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+
+#ChatWindow .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(var(--bg-secondary-rgb), 0.6);
+}
+
+/* 确保消息容器不会溢出 */
+#ChatWindow > div:last-child {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 消息气泡的最大宽度控制 */
+.message-bubble-container {
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}

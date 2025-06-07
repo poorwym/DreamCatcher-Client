@@ -7,6 +7,7 @@ import MessageBubble from "./components/MessageBubble.jsx";
 import {sendChatMessage} from "../../api/llm.js";
 import {CircularProgress} from "@mui/material";
 import '../../assets/style.css';
+import "./LLMPage.css"
 
 function LlmPage() {
     const {fetchWithAuth} = useAuth();
@@ -70,12 +71,12 @@ function LlmPage() {
                 <div className="relative w-full z-10 flex flex-col justify-center items-center min-h-screen pt-16">
                     {/* 大号Morpheus标题 */}
                     <div className="mt-16 mb-16">
-                        <h1 className="text-6xl md:text-8xl font-serif text-white/90 mb-4 tracking-wider text-center"
+                        <h1 className="text-6xl md:text-8xl font-serif text-contrast mb-4 tracking-wider text-center"
                             style={{ fontFamily: 'Times New Roman, serif' }}>
                             Morpheus
                         </h1>
-                        <p className="text-center text-white/60 text-lg">
-                            Your AI Dream Interpreter
+                        <p className="text-center text-secondary text-lg">
+                            Your Dream Interpreter
                         </p>
                     </div>
 
@@ -90,7 +91,7 @@ function LlmPage() {
                     <div className="flex flex-col items-center min-h-screen pt-16">
                         {/* 小号Morpheus标题 */}
                         <div className="relative mt-8 mb-4 z-30">
-                            <h2 className="relative text-2xl font-serif text-white/80 tracking-wide"
+                            <h2 className="relative text-2xl font-serif text-primary tracking-wide"
                                 style={{ fontFamily: 'Times New Roman, serif' }}>
                                 Morpheus
                             </h2>
@@ -108,11 +109,11 @@ function LlmPage() {
 
                             {/* 加载指示器 */}
                             {isLoading && (
-                                <div className="flex justify-start mb-4">
-                                    <div className="bg-gray-800/90 backdrop-blur-lg rounded-2xl px-4 py-3 shadow-lg border border-white/10 mr-12">
+                                <div className="flex justify-start m-4">
+                                    <div className="bg-secondary/80 backdrop-blur-lg rounded-2xl px-4 py-3 shadow-lg border border-subtle mr-12">
                                         <div className="flex items-center space-x-2">
-                                            <CircularProgress size={16} sx={{ color: '#60a5fa' }} />
-                                            <span className="text-gray-300 text-sm">AI正在思考中...</span>
+                                            <CircularProgress size={16} sx={{ color: 'var(--accent-blue)' }} />
+                                            <span className="text-main text-sm">Thinking...</span>
                                         </div>
                                     </div>
                                 </div>

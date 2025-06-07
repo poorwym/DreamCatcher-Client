@@ -31,8 +31,14 @@
   --accent-green-hover: #059669;
 
   /* RGB 变量用于透明度支持 */
+  --bg-primary-rgb: 11, 15, 26;
   --bg-secondary-rgb: 30, 41, 59;
   --border-primary-rgb: 96, 165, 250;
+  --border-secondary-rgb: 148, 163, 184;
+  --border-subtle-rgb: 55, 65, 81;
+  --accent-blue-rgb: 14, 165, 233;
+  --accent-orange-rgb: 245, 158, 11;
+  --accent-green-rgb: 16, 185, 129;
 }
 
 /* 白天模式主题变量 */
@@ -63,8 +69,14 @@
   --accent-green-hover: #047857;
 
   /* RGB 变量用于透明度支持 */
+  --bg-primary-rgb: 248, 250, 252;
   --bg-secondary-rgb: 226, 232, 240;
   --border-primary-rgb: 30, 64, 175;
+  --border-secondary-rgb: 71, 85, 105;
+  --border-subtle-rgb: 203, 213, 225;
+  --accent-blue-rgb: 2, 132, 199;
+  --accent-orange-rgb: 234, 88, 12;
+  --accent-green-rgb: 5, 150, 105;
 }
 
 /* === 使用CSS变量的通用样式类 === */
