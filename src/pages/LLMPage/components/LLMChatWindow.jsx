@@ -15,8 +15,7 @@ function LlmChatWindow({children}) {
     }, [children]);
     
     return (
-        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 w-full max-w-4xl h-[60vh] z-10">
-            <div className="bg-black/30 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/10 h-full flex flex-col">
+            <div id="ChatWindow" className="w-3/4 bg-black/30 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/10 h-full flex flex-col">
                 {/* 窗口标题栏 */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
                     <div className="flex items-center space-x-3">
@@ -24,9 +23,9 @@ function LlmChatWindow({children}) {
                         <div className="w-3 h-3 rounded-full bg-yellow-500/70"></div>
                         <div className="w-3 h-3 rounded-full bg-green-500/70"></div>
                     </div>
-                    <h2 className="text-white/80 text-sm font-medium">
-                        Morpheus
-                    </h2>
+                    {/*<h2 className="text-white/80 text-sm font-medium">*/}
+                    {/*    Chat Session*/}
+                    {/*</h2>*/}
                     <div className="w-16"></div>
                 </div>
                 
@@ -52,7 +51,6 @@ function LlmChatWindow({children}) {
                     )}
                 </div>
             </div>
-        </div>
     );
 }
 

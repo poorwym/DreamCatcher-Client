@@ -4,7 +4,8 @@ import SendIcon from '@mui/icons-material/Send';
 import '../../../assets/style.css';
 
 // onSendMessage: function(message: string) => void
-function LlmChatBox({onSendMessage}) {
+// isInitial: boolean - 是否为初始状态（无对话时）
+function LlmChatBox({onSendMessage, isInitial = false}) {
     const [message, setMessage] = useState('');
 
     const handleSend = () => {
@@ -22,7 +23,7 @@ function LlmChatBox({onSendMessage}) {
     };
 
     return (
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4 z-20">
+        <div className={`${isInitial ? 'relative' : 'fixed bottom-8 left-1/2 transform -translate-x-1/2'} w-3/4 z-20`}>
             <div className="bg-black/30 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/10 p-4">
                 <div className="flex items-end space-x-3">
                     <TextField
