@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Camera from '../../core/Camera.js';
-import './CloudRenderingPage.css';
 import Button from '@mui/material/Button';
+import "../../assets/style.css"
 import RenderWindow from "../../components/RenderWindow/RenderWindow.jsx";
+import Background from "../../components/Background/Background.jsx";
 
 function CloudRenderingPage() {
 
@@ -74,14 +74,36 @@ function CloudRenderingPage() {
     };
 
     return (
-        <div>
-            <Button variant="contained" onClick={startRender}>
-                Start Rendering
-            </Button>
-            <Button variant="contained" onClick={stopRender}>
-                Stop Rendering
-            </Button>
-            <RenderWindow wsRef={wsRef} isRendering={isRendering} />
+        <div className="w-full h-full">
+            <Background/>
+            <div className="flex flex-col pt-32 justify-center items-center">
+                {
+                   ! isRendering ? (
+                        <Button
+                            variant="contained"
+                            onClick={startRender}
+                            className="w-1/2 m-4"
+                            sx={{
+                                backgroundColor: 'green',
+                            }}
+                        >
+                            Start Rendering
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="contained"
+                            onClick={stopRender}
+                            className="w-1/2 m-4"
+                            sx={{
+                                backgroundColor: 'red'
+                            }}
+                        >
+                            Stop Rendering
+                        </Button>
+                    )
+                }
+                <RenderWindow className="z-10 relative mt-3" wsRef={wsRef} isRendering={isRendering} />
+            </div>
         </div>
     );
 }

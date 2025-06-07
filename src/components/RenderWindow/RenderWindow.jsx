@@ -3,6 +3,7 @@ import WebRTCPlayer from '../WebRTCPlayer/WebRTCPlayer.jsx';
 import Camera       from '../../core/Camera.js';
 import useCameraController from '../../hooks/useCameraController.js';
 import { sendCamera } from '../../utils/sendCamera.js';
+import "../../assets/style.css"
 
 export default function RenderWindow({ wsRef, isRendering }) {
     const camRef = useRef(new Camera());
@@ -31,7 +32,7 @@ export default function RenderWindow({ wsRef, isRendering }) {
     }, [wsRef, isRendering]); // 添加isRendering作为依赖
 
     return (
-        <div id="render-canvas" style={{ width: '100%', height: '100%' }}>
+        <div id="render-canvas" className="z-10" style={{ width: '100%', height: '100%' }}>
             <WebRTCPlayer />
         </div>
     );

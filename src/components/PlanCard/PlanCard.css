@@ -1,0 +1,17 @@
+.plan-card {
+    /* 添加过渡效果 */
+    transition: transform 0.3s ease;
+
+    /* 默认状态 */
+    transform: scale(1);
+
+    /* 悬停时放大 */
+    &:hover {
+        transform: scale(1.02);
+    }
+
+    /* 点击时的放大效果 */
+    &:active {
+        transform: scale(1.03);
+    }
+}
