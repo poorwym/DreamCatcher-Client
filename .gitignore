@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .idea/
+videos/
+
+repomix-output.xml

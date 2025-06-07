@@ -1,0 +1,277 @@
+@import "tailwindcss";
+/*
+*/
+
+/* === 主题变量定义 === */
+:root {
+  /* 夜间模式 - 默认宇宙深空主题 */
+  --bg-primary: #0b0f1a;           /* 页面主背景 */
+  --bg-primary-hover: #121827;
+  --bg-secondary: #1e293b;         /* 模块块状背景 */
+  --bg-secondary-hover: #334155;
+  --bg-tertiary: #111827;          /* 深色底 */
+  --bg-card: #1f2937;
+  
+  --text-primary: #60a5fa;         /* 亮蓝文字强调 */
+  --text-secondary: #94a3b8;       /* 次级文字/辅助说明 */
+  --text-main: #d1d5db;            /* 正文亮灰文字 */
+  --text-muted: #6b7280;           /* 暗淡注释文字 */
+  --text-contrast: #ffffff;        /* 主标题、星球大字 */
+  
+  --border-primary: #60a5fa;
+  --border-secondary: #94a3b8;
+  --border-subtle: #374151;
+  
+  /* 强调色保持不变，适配两个主题 */
+  --accent-orange: #f59e0b;        /* 金属橙 */
+  --accent-orange-hover: #d97706;
+  --accent-blue: #0ea5e9;          /* 高光蓝 */
+  --accent-blue-hover: #0284c7;
+  --accent-green: #10b981;         /* 生命绿 */
+  --accent-green-hover: #059669;
+
+  /* RGB 变量用于透明度支持 */
+  --bg-primary-rgb: 11, 15, 26;
+  --bg-secondary-rgb: 30, 41, 59;
+  --border-primary-rgb: 96, 165, 250;
+  --border-secondary-rgb: 148, 163, 184;
+  --border-subtle-rgb: 55, 65, 81;
+  --accent-blue-rgb: 14, 165, 233;
+  --accent-orange-rgb: 245, 158, 11;
+  --accent-green-rgb: 16, 185, 129;
+}
+
+/* 白天模式主题变量 */
+[data-theme="light"] {
+  --bg-primary: #f8fafc;           /* 清净白色背景 */
+  --bg-primary-hover: #f1f5f9;
+  --bg-secondary: #e2e8f0;         /* 浅灰模块背景 */
+  --bg-secondary-hover: #cbd5e1;
+  --bg-tertiary: #ffffff;          /* 纯白底 */
+  --bg-card: #f8fafc;
+  
+  --text-primary: #1e40af;         /* 深蓝强调文字 */
+  --text-secondary: #475569;       /* 中等灰色次级文字 */
+  --text-main: #334155;            /* 深灰正文 */
+  --text-muted: #64748b;           /* 浅灰注释文字 */
+  --text-contrast: #0f172a;        /* 深色标题文字 */
+  
+  --border-primary: #1e40af;
+  --border-secondary: #475569;
+  --border-subtle: #cbd5e1;
+  
+  /* 强调色在白天模式下稍作调整以保持对比度 */
+  --accent-orange: #ea580c;        /* 稍深的橙色 */
+  --accent-orange-hover: #c2410c;
+  --accent-blue: #0284c7;          /* 稍深的蓝色 */
+  --accent-blue-hover: #0369a1;
+  --accent-green: #059669;         /* 稍深的绿色 */
+  --accent-green-hover: #047857;
+
+  /* RGB 变量用于透明度支持 */
+  --bg-primary-rgb: 248, 250, 252;
+  --bg-secondary-rgb: 226, 232, 240;
+  --border-primary-rgb: 30, 64, 175;
+  --border-secondary-rgb: 71, 85, 105;
+  --border-subtle-rgb: 203, 213, 225;
+  --accent-blue-rgb: 2, 132, 199;
+  --accent-orange-rgb: 234, 88, 12;
+  --accent-green-rgb: 5, 150, 105;
+}
+
+/* === 使用CSS变量的通用样式类 === */
+
+/* Primary 主色 */
+.bg-primary         { background-color: var(--bg-primary); }
+.bg-primary-hover   { background-color: var(--bg-primary-hover); }
+.text-primary       { color: var(--text-primary); }
+.border-primary     { border-color: var(--border-primary); }
+
+/* Secondary 次色 */
+.bg-secondary       { background-color: var(--bg-secondary); }
+.bg-secondary-hover { background-color: var(--bg-secondary-hover); }
+.text-secondary     { color: var(--text-secondary); }
+.border-secondary   { border-color: var(--border-secondary); }
+
+/* Tertiary 第三级 */
+.bg-tertiary        { background-color: var(--bg-tertiary); }
+.bg-card            { background-color: var(--bg-card); }
+
+/* Text 文字 */
+.text-main          { color: var(--text-main); }
+.text-muted         { color: var(--text-muted); }
+.text-contrast      { color: var(--text-contrast); }
+
+/* Border 边框 */
+.border-subtle      { border-color: var(--border-subtle); }
+
+/* === Accent 强调色（保持原有设计）=== */
+.bg-accent          { background-color: var(--accent-orange); }
+.bg-accent-hover    { background-color: var(--accent-orange-hover); }
+.text-accent        { color: var(--accent-orange); }
+.border-accent      { border-color: var(--accent-orange); }
+
+/* Info 信息色 */
+.bg-info            { background-color: var(--accent-blue); }
+.bg-info-hover      { background-color: var(--accent-blue-hover); }
+.text-info          { color: var(--accent-blue); }
+.border-info        { border-color: var(--accent-blue); }
+
+/* Success 成功色 */
+.bg-success         { background-color: var(--accent-green); }
+.bg-success-hover   { background-color: var(--accent-green-hover); }
+.text-success       { color: var(--accent-green); }
+.border-success     { border-color: var(--accent-green); }
+
+/* === 兼容性保持：原有的具体颜色类（可选保留）=== */
+.bg-gray-900        { background-color: #111827; }
+.bg-gray-800        { background-color: #1f2937; }
+.bg-gray-700        { background-color: #374151; }
+
+.text-gray-300      { color: #d1d5db; }
+.text-gray-500      { color: #6b7280; }
+.text-gray-800      { color: #1f2937; }
+
+.border-gray-700    { border-color: #374151; }
+.border-gray-500    { border-color: #6b7280; }
+
+.text-white         { color: #ffffff; }
+.bg-black           { background-color: #000000; }
+.bg-white           { background-color: #ffffff; }
+
+/* === 主题切换过渡动画 === */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* === 额外的主题相关样式 === */
+/* 为图片/媒体元素在白天模式下添加适当的滤镜效果 */
+[data-theme="light"] img,
+[data-theme="light"] video {
+  filter: brightness(0.95) contrast(1.05);
+}
+
+/* 为代码块等特殊元素提供更好的主题适配 */
+.code-block {
+  background-color: var(--bg-secondary);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+}
+
+/* 阴影效果的主题适配 */
+.shadow-theme {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .shadow-theme {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .shadow-theme {
+  box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.05);
+}
+
+/* === 天文图标动画效果 === */
+/* 太阳脉冲动画 */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+/* 设置页面悬停缩放动画 */
+.hover\:scale-102:hover {
+  transform: scale(1.02);
+}
+
+.hover\:scale-103:hover {
+  transform: scale(1.03);
+}
+
+/* 月亮光晕动画 */
+@keyframes moonGlow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}
+
+/* 相机图标悬停效果 */
+.camera-marker-icon:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+/* 太阳图标样式 */
+.sun-marker-icon {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.sun-marker-icon:hover {
+  animation-duration: 1s;
+  transform: scale(1.1);
+}
+
+/* 月亮图标样式 */
+.moon-marker-beautiful {
+  transition: transform 0.3s ease;
+}
+
+.moon-marker-beautiful:hover {
+  transform: scale(1.15);
+}
+
+/* 日出日落标记悬停效果 */
+.sunrise-marker:hover,
+.sunset-marker:hover,
+.moonrise-marker:hover,
+.moonset-marker:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* Leaflet 弹窗样式优化 */
+.leaflet-popup-content-wrapper {
+  background: rgba(var(--bg-secondary-rgb), 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  color: var(--text-main) !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(var(--bg-secondary-rgb), 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* 地图容器样式优化 */
+.leaflet-container {
+  background: var(--bg-primary) !important;
+  border: 2px solid rgba(var(--border-primary-rgb), 0.3) !important;
+  box-shadow: 0 0 30px rgba(var(--border-primary-rgb), 0.2) !important;
+}
+
+/* 地图控件样式 */
+.leaflet-control-zoom a {
+  background: rgba(var(--bg-secondary-rgb), 0.9) !important;
+  color: var(--text-main) !important;
+  border: 1px solid rgba(var(--border-primary-rgb), 0.3) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: rgba(var(--bg-secondary-rgb), 1) !important;
+  color: var(--text-primary) !important;
+}

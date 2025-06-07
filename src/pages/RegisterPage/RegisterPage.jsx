@@ -1,11 +1,14 @@
-import React from 'react'
+import React from 'react';
+import Background from "../../components/Background/Background.jsx";
+import RegisterContainer from "./components/RegisterContainer.jsx";
 
 function RegisterPage() {
-  return (
-    <div>
-      <h1>Register</h1>
-    </div>
-  )
+    return (
+        <div>
+            <Background />
+            <RegisterContainer />
+        </div>
+    );
 }
 
-export default RegisterPage
+export default RegisterPage;

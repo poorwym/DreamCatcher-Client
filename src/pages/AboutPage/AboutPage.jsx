@@ -1,11 +1,14 @@
-import React from 'react'
+import React from 'react';
+import Background from "../../components/Background/Background.jsx";
+import "../../assets/style.css"
 
 function AboutPage() {
-  return (
-    <div>
-      <h1>About</h1>
-    </div>
-  )
+    return (
+        <div className="w-full h-full">
+         <Background/>
+
+        </div>
+    );
 }
 
-export default AboutPage
+export default AboutPage;
