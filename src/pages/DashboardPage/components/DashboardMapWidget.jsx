@@ -70,8 +70,8 @@ const DashboardMapWidget = ({ plans }) => {
     return (
         <Card 
             className="bg-secondary/90 backdrop-blur-lg border border-primary/30 transition-all duration-300 ease-out hover:shadow-xl"
-            sx={{ 
-                background: 'rgba(var(--bg-secondary-rgb), 0.8)',
+            sx={{
+                background: 'transparent',
                 backdropFilter: 'blur(16px)',
                 border: '1px solid rgba(var(--border-primary-rgb), 0.3)',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',

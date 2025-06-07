@@ -157,9 +157,9 @@ const DashboardPage = () => {
     return(
         <>
             <Background />
-            <div className="flex flex-col mt-32 max-w-7xl mx-auto px-6 relative ">
+            <div className="flex flex-col max-w-7xl mx-auto px-6 relative ">
                 {/* 用户信息和标题 */}
-                <div className="flex flex-col items-center justify-center h-auto mb-12">
+                <div className="flex flex-col items-center justify-center h-auto mb-12 mt-32">
                     <div className="flex items-center space-x-6 mb-8">
                         <Avatar 
                             sx={{ 
@@ -780,9 +780,7 @@ const DashboardPage = () => {
 
                 {/* 地图组件 */}
                 <div className="mb-8">
-                    <div className="">
-                        <DashboardMapWidget plans={planList} />
-                    </div>
+                    <DashboardMapWidget plans={planList} />
                 </div>
             </div>
         </>

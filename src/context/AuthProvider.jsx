@@ -73,7 +73,7 @@ export default function AuthProvider({ children }) {
     );
 
     /* ------------------------- 初始化加载用户 ------------------------- */
-    const loadUser = useCallback(async () => {
+    const loadUser = useCallback(async (showError = true) => {
         if (!token) {
             console.log("No token found, skipping user load");
             setLoading(false);
@@ -85,16 +85,18 @@ export default function AuthProvider({ children }) {
             console.log("User loaded successfully:", userData);
             setUser(userData);
         } catch (err) {
-            console.error("加载用户信息失败:", err);
-            console.error("Error details:", {
-                message: err.message,
-                status: err.status,
-                token: token ? {
-                    token_type: token.token_type,
-                    expires_in: token.expires_in,
-                    access_token_prefix: token.access_token ? token.access_token.substring(0, 20) + "..." : "none"
-                } : "none"
-            });
+            if (showError) {
+                console.error("加载用户信息失败:", err);
+                console.error("Error details:", {
+                    message: err.message,
+                    status: err.status,
+                    token: token ? {
+                        token_type: token.token_type,
+                        expires_in: token.expires_in,
+                        access_token_prefix: token.access_token ? token.access_token.substring(0, 20) + "..." : "none"
+                    } : "none"
+                });
+            }
             
             // 清除可能无效的token
             if (err.message === 'Unauthorized' || err.message.includes('401')) {
@@ -103,7 +105,9 @@ export default function AuthProvider({ children }) {
                 setUser(null);
             } else {
                 // 对于其他错误（如网络错误），不清除token，但设置user为null
-                console.warn("网络或其他错误，保留token但不设置用户:", err.message);
+                if (showError) {
+                    console.warn("网络或其他错误，保留token但不设置用户:", err.message);
+                }
                 setUser(null);
             }
         } finally {
@@ -152,6 +156,23 @@ export default function AuthProvider({ children }) {
         }
     }, [token]);
 
+    // 刷新用户信息
+    const refreshUser = useCallback(async () => {
+        if (!token) {
+            console.log("No token available for refresh");
+            return false;
+        }
+
+        try {
+            setLoading(true);
+            await loadUser(false); // 不显示错误，因为这是手动刷新
+            return true;
+        } catch (err) {
+            console.error("刷新用户信息失败:", err);
+            return false;
+        }
+    }, [token, loadUser]);
+
     /* ------------------------- 上下文值 ------------------------- */
     const value = {
         user,
@@ -161,6 +182,7 @@ export default function AuthProvider({ children }) {
         login,
         logout,
         verifyToken,
+        refreshUser, // 新增刷新用户信息方法
         fetchWithAuth, // 便于业务层调用受保护接口
     };
 

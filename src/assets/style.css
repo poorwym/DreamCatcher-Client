@@ -172,6 +172,15 @@
   }
 }
 
+/* 设置页面悬停缩放动画 */
+.hover\:scale-102:hover {
+  transform: scale(1.02);
+}
+
+.hover\:scale-103:hover {
+  transform: scale(1.03);
+}
+
 /* 月亮光晕动画 */
 @keyframes moonGlow {
   0%, 100% {

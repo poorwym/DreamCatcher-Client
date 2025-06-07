@@ -36,7 +36,7 @@ const NavBar = () => {
   // 截断用户名函数
   const truncateUsername = (username) => {
     if (!username) return '';
-    return username.length > 5 ? username.substring(0, 7) + '...' : username;
+    return username.length > 7 ? username.substring(0, 7) + '...' : username;
   };
 
   return (
