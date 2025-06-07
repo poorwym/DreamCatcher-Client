@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import "../../assets/style.css"
 
 /** 创建 SDP offer 并等待 ICE 完成 */
 async function createOfferSDP(pc) {
@@ -70,18 +71,17 @@ function WebRTCPlayer() {
     }, []);
 
     return (
-        <div>
             <video
                 ref={videoRef}
                 id="video"
                 autoPlay
                 playsInline
+                className="z-10"
                 muted
                 controls={false}
                 // controls
                 style={{ width: "100%" }}
             />
-        </div>
     );
 }
 

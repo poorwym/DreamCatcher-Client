@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import NavBar from './components/NavBar/NavBar';
-import imageService from './services/imageService';
 import './App.css'; // 导入App样式
 import './assets/style.css'; // 导入全局主题样式
 
@@ -68,9 +67,7 @@ function App() {
             </RequireAuth>
           } />
           <Route path="/cloudrendering" element={
-            <RequireAuth>
               <CloudRenderingPage />
-            </RequireAuth>
           } />
           
           <Route path="/settings" element={
