@@ -99,7 +99,11 @@ function PlanDetailsPage() {
                 setFormData({
                     name: planData.name || '',
                     description: planData.description || '',
-                    start_time: planData.start_time ? new Date(planData.start_time).toISOString().slice(0, 16) : '',
+                    start_time: planData.start_time ? (() => {
+                        const date = new Date(planData.start_time);
+                        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+                        return date.toISOString().slice(0, 16);
+                    })() : '',
                     tileset_url: planData.tileset_url || ''
                 });
                 

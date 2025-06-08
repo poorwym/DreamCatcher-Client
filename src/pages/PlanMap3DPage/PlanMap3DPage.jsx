@@ -106,6 +106,12 @@ function PlanMap3DPage() {
                 // 用于存储太阳位置标记
                 let sunMarker = null;
                 
+                // 获取中国时间的辅助函数
+                const getChinaTime = () => {
+                    // 直接创建中国时区的时间
+                    return new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Shanghai"}));
+                };
+                
                 // 设置基于真实太阳位置的光照
                 const setupSunLighting = () => {
                     try {
@@ -122,10 +128,20 @@ function PlanMap3DPage() {
                         }
                         
                         if (true) { // 总是执行太阳光照设置
-                            const currentTime = new Date();
+                            // 获取中国时间
+                            const chinaTime = getChinaTime();
                             
-                            // 计算当前时间太阳位置
-                            const sunPos = calculateSunPosition(currentTime, latitude, longitude);
+                            // 计算当前时间太阳位置（使用中国时间）
+                            const sunPos = calculateSunPosition(chinaTime, latitude, longitude);
+                            console.log('使用中国时间计算太阳位置:', chinaTime.toLocaleString('zh-CN', {
+                                timeZone: 'Asia/Shanghai',
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                            }));
                             console.log('太阳位置:', sunPos);
                             
                             // 将太阳方位角和高度角转换为 Cesium 坐标系
@@ -228,12 +244,20 @@ function PlanMap3DPage() {
                                 });
                             }
                             
-                            // 更新太阳信息状态
+                            // 更新太阳信息状态（使用中国时间）
                             setSunInfo({
                                 altitude: sunPos.altitude,
                                 azimuth: sunPos.azimuth,
                                 intensity: lightIntensity.toFixed(2),
-                                updateTime: currentTime.toLocaleTimeString('zh-CN')
+                                updateTime: chinaTime.toLocaleString('zh-CN', {
+                                    timeZone: 'Asia/Shanghai',
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    second: '2-digit'
+                                })
                             });
                             
                             console.log(`太阳光照设置完成 - 方位角: ${sunPos.azimuth}°, 高度角: ${sunPos.altitude}°, 光照强度: ${lightIntensity.toFixed(2)}`);
@@ -256,44 +280,180 @@ function PlanMap3DPage() {
 
                 const add_tileset = async (url) => {
                     try {
-                        console.log("加载tileset, url=",url);
-                        const tileset = await Cesium.Cesium3DTileset.fromUrl(url);
+                        console.log("加载tileset, url=", url);
+                        
+                        // 验证 URL 格式
+                        if (!url || typeof url !== 'string') {
+                            throw new Error('Invalid tileset URL');
+                        }
+                        
+                        // 使用 Cesium.Cesium3DTileset.fromUrl 创建 tileset
+                        const tileset = await Cesium.Cesium3DTileset.fromUrl(url, {
+                            // 可选配置参数
+                            debugShowBoundingVolume: false,
+                            debugShowContentBoundingVolume: false,
+                            debugShowGeometricError: false,
+                            debugWireframe: false
+                        });
+                        
+                        if (!tileset) {
+                            throw new Error('Failed to create tileset from URL');
+                        }
+                        
+                        console.log('Tileset 创建成功，添加到场景');
+                        console.log('Tileset 对象属性:', {
+                            ready: tileset.ready,
+                            hasReadyPromise: !!tileset.readyPromise,
+                            boundingSphere: !!tileset.boundingSphere,
+                            root: !!tileset.root
+                        });
+                        
                         viewerRef.current.scene.primitives.add(tileset);
                         
-                        // tileset加载完成后，飞到tileset上空
-                        tileset.readyPromise.then(() => {
-                            console.log('Tileset加载完成，飞到上空');
-                            const boundingSphere = tileset.boundingSphere;
-                            const center = boundingSphere.center;
-                            const radius = boundingSphere.radius;
+                        // 处理 tileset 加载完成的多种方式
+                        const handleTilesetReady = () => {
+                            console.log('Tileset加载完成，飞到计划指定位置');
                             
-                            // 计算合适的高度（tileset半径的2倍，最少1000米，最大50000米）
-                            const height = Math.min(Math.max(radius * 2, 1000), 50000);
-                            
-                            // 将笛卡尔坐标转换为经纬度
-                            const cartographic = Cesium.Cartographic.fromCartesian(center);
-                            const longitude = Cesium.Math.toDegrees(cartographic.longitude);
-                            const latitude = Cesium.Math.toDegrees(cartographic.latitude);
-                            
-                            console.log(`飞行到: 经度${longitude}, 纬度${latitude}, 高度${height}m`);
-                            
-                            viewerRef.current.camera.flyTo({
-                                destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, height),
-                                orientation: {
-                                    heading: Cesium.Math.toRadians(0), // 朝向北方
-                                    pitch: Cesium.Math.toRadians(-30), // 向下30度俯视
-                                    roll: 0
-                                },
-                                duration: 3.0 // 飞行时间3秒
+                            // 直接使用计划中的相机位置
+                            if (plan.camera && plan.camera.position && Array.isArray(plan.camera.position) && plan.camera.position.length >= 2) {
+                                const [longitude, latitude] = plan.camera.position;
+                                
+                                // 使用计划中的高度，如果没有则使用默认高度
+                                let height = 5000; // 默认高度5000米
+                                
+                                if (plan.camera.position.length >= 3) {
+                                    height = plan.camera.position[2];
+                                } else if (plan.camera.height) {
+                                    height = plan.camera.height;
+                                }
+                                
+                                console.log(`飞行到计划位置: 经度${longitude.toFixed(6)}, 纬度${latitude.toFixed(6)}, 高度${height}m`);
+                                
+                                try {
+                                    viewerRef.current.camera.flyTo({
+                                        destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, height),
+                                        orientation: {
+                                            heading: plan.camera.heading ? Cesium.Math.toRadians(plan.camera.heading) : Cesium.Math.toRadians(0),
+                                            pitch: plan.camera.pitch ? Cesium.Math.toRadians(plan.camera.pitch) : Cesium.Math.toRadians(-30),
+                                            roll: plan.camera.roll ? Cesium.Math.toRadians(plan.camera.roll) : 0
+                                        },
+                                        duration: 3.0 // 飞行时间3秒
+                                    });
+                                } catch (flyError) {
+                                    console.error('飞行到计划位置失败:', flyError);
+                                }
+                            } else {
+                                console.warn('计划中没有有效的相机位置信息，跳过自动飞行');
+                            }
+                        };
+                        
+                        // 方法1: 检查 tileset 是否已经准备好
+                        if (tileset.ready) {
+                            console.log('Tileset 已经准备就绪');
+                            handleTilesetReady();
+                        } 
+                        // 方法2: 使用 readyPromise（如果可用）
+                        else if (tileset.readyPromise && typeof tileset.readyPromise.then === 'function') {
+                            console.log('使用 readyPromise 等待加载完成');
+                            try {
+                                await tileset.readyPromise;
+                                handleTilesetReady();
+                            } catch (promiseError) {
+                                console.error('readyPromise 失败:', promiseError);
+                                // 降级处理
+                                setTimeout(handleTilesetReady, 2000);
+                            }
+                        }
+                        // 方法3: 使用事件监听
+                        else if (tileset.readyEvent && typeof tileset.readyEvent.addEventListener === 'function') {
+                            console.log('使用 readyEvent 监听加载完成');
+                            tileset.readyEvent.addEventListener(() => {
+                                handleTilesetReady();
                             });
-                        });
+                        }
+                        // 方法4: 降级处理 - 延时执行
+                        else {
+                            console.log('使用延时方案等待 tileset 加载');
+                            setTimeout(() => {
+                                if (tileset.ready) {
+                                    handleTilesetReady();
+                                } else {
+                                    console.warn('Tileset 可能未完全加载，尝试执行飞行操作');
+                                    handleTilesetReady();
+                                }
+                            }, 2000); // 等待2秒
+                        }
+                        
+                        return tileset;
                         
                     } catch (error) {
                         console.error('加载 tileset 失败:', error);
+                        
+                        // 提供更详细的错误信息
+                        if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
+                            console.error('网络请求失败，请检查 URL 是否可访问:', url);
+                            console.error('建议检查：');
+                            console.error('1. 服务器是否运行在 http://localhost:8080');
+                            console.error('2. tileset.json 文件是否存在');
+                            console.error('3. 是否存在 CORS 跨域问题');
+                        } else if (error.message.includes('JSON') || error.message.includes('parse')) {
+                            console.error('tileset.json 格式错误，请检查文件内容');
+                        } else if (error.message.includes('Invalid tileset')) {
+                            console.error('tileset 数据格式不符合 3D Tiles 规范');
+                        } else {
+                            console.error('未知错误:', error.message);
+                        }
+                        
+                        throw error;
                     }
                 }
 
-                // 只有当存在tileset_url时才加载tileset并飞行
+                // 加载固定的 Cesium Ion tileset (ID: 96188) 和地形
+                const loadFixedTileset = async () => {
+                    try {
+                        // console.log('加载固定的 Cesium Ion tileset (ID: 96188)');
+                        // const fixedTileset = await Cesium.Cesium3DTileset.fromIonAssetId(96188);
+                        // viewerRef.current.scene.primitives.add(fixedTileset);
+                        viewerRef.current.scene.setTerrain(
+                            new Cesium.Terrain(
+                              Cesium.CesiumTerrainProvider.fromIonAssetId(1),
+                            ),
+                          );
+                        console.log('固定 tileset 加载成功');
+                    } catch (error) {
+                        console.error('加载固定 tileset 失败:', error);
+                        // 即使固定 tileset 加载失败，也不影响整体功能
+                    }
+                };
+
+                // 设置初始相机位置
+                if (plan.camera && plan.camera.position && Array.isArray(plan.camera.position) && plan.camera.position.length >= 2) {
+                    const [longitude, latitude] = plan.camera.position;
+                    let height = 5000; // 默认高度5000米
+                    
+                    if (plan.camera.position.length >= 3) {
+                        height = plan.camera.position[2];
+                    } else if (plan.camera.height) {
+                        height = plan.camera.height;
+                    }
+                    
+                    console.log(`设置初始相机位置: 经度${longitude.toFixed(6)}, 纬度${latitude.toFixed(6)}, 高度${height}m`);
+                    
+                    // 设置初始相机位置
+                    viewerRef.current.camera.setView({
+                        destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, height),
+                        orientation: {
+                            heading: plan.camera.heading ? Cesium.Math.toRadians(plan.camera.heading) : Cesium.Math.toRadians(0),
+                            pitch: plan.camera.pitch ? Cesium.Math.toRadians(plan.camera.pitch) : Cesium.Math.toRadians(-30),
+                            roll: plan.camera.roll ? Cesium.Math.toRadians(plan.camera.roll) : 0
+                        }
+                    });
+                }
+
+                // 加载固定的 tileset
+                loadFixedTileset();
+
+                // 只有当存在tileset_url时才加载自定义tileset
                 if(plan.tileset_url) {
                     add_tileset(plan.tileset_url);
                 }
