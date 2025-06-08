@@ -2,6 +2,7 @@ import React from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { useNavigate } from 'react-router-dom';
+import { isUTCFuture, formatUTCForDisplay } from '../../../utils/timeUtils';
 import "../../../assets/style.css";
 import "./PointLayer.css";
 
@@ -75,19 +76,11 @@ const PointLayer = ({ plans }) => {
   };
 
   const getPlanStatus = (plan) => {
-    const now = new Date();
-    const startTime = new Date(plan.start_time);
-    return startTime > now ? 'upcoming' : 'past';
+    return isUTCFuture(plan.start_time) ? 'upcoming' : 'past';
   };
 
-  const formatDateTime = (dateString) => {
-    return new Date(dateString).toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const formatDateTime = (utcDateString) => {
+    return formatUTCForDisplay(utcDateString).fullDateTime;
   };
 
   const getStatusText = (status) => {

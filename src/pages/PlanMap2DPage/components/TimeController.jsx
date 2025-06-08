@@ -15,24 +15,23 @@ import {
   FastForward as FastForwardIcon,
   FastRewind as FastRewindIcon
 } from '@mui/icons-material';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
+import { 
+    utcToDateTimeLocal, 
+    localToUTC, 
+    utcAdd, 
+    formatUTCForDisplay 
+} from '../../../utils/timeUtils';
 import '../../../assets/style.css';
 
-// 注册dayjs插件
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
-// time : "2025-06-11T02:30:00+08:00"
+// time : UTC时间字符串格式 "2025-06-08T11:30:00.000Z"
 function TimeController({time, setTime}) {
     const [localDateTime, setLocalDateTime] = useState('');
 
     // 初始化本地时间状态
     useEffect(() => {
         if (time) {
-            // 使用dayjs转换为本地时间格式 (YYYY-MM-DDTHH:mm)
-            const localString = dayjs(time).format('YYYY-MM-DDTHH:mm');
+            // 将UTC时间转换为本地datetime-local格式
+            const localString = utcToDateTimeLocal(time);
             setLocalDateTime(localString);
         }
     }, [time]);
@@ -42,19 +41,27 @@ function TimeController({time, setTime}) {
         const newDateTime = event.target.value;
         setLocalDateTime(newDateTime);
         
-        // 使用dayjs转换为ISO格式并保持本地时区
-        const isoString = dayjs(newDateTime).format();
-        setTime(isoString);
+        // 将本地时间转换为UTC时间
+        const utcString = localToUTC(newDateTime);
+        setTime(utcString);
     };
 
     // 快速调整时间的函数
     const adjustTime = (amount, unit) => {
         if (!time) return;
         
-        // 使用dayjs进行时间运算
-        const newDate = dayjs(time).add(amount, unit);
-        const isoString = newDate.format();
-        setTime(isoString);
+        // 在UTC时间基础上进行运算
+        const newUtcTime = utcAdd(time, amount, unit);
+        setTime(newUtcTime);
+    };
+
+    // 格式化显示当前时间
+    const formatCurrentTime = () => {
+        if (!time) return '';
+        const display = formatUTCForDisplay(time, {
+            fullFormat: 'YYYY年MM月DD日 HH:mm:ss (ZZ)'
+        });
+        return display.fullDateTime;
     };
 
     return (
@@ -380,7 +387,7 @@ function TimeController({time, setTime}) {
                                     textShadow: '0 0 5px rgba(255, 255, 255, 0.3)'
                                 }}
                             >
-                                {dayjs(time).format('YYYY年MM月DD日 HH:mm:ss (ZZ)')}
+                                {formatCurrentTime()}
                             </Typography>
                         </Box>
                     )}

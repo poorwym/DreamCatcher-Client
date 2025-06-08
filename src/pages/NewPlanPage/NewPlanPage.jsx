@@ -36,6 +36,7 @@ import { createPlan } from '../../api/plan';
 import { getPosition } from '../../api/util';
 import Map2DContainer from '../../components/Map2D/Map2DContainer';
 import { Marker, Popup } from 'react-leaflet';
+import { localToUTC, getCurrentDateTimeLocal } from '../../utils/timeUtils';
 import '../../assets/style.css';
 import Background from "../../components/Background/Background.jsx";
 
@@ -162,7 +163,7 @@ function NewPlanPage() {
             const planData = {
                 name: formData.name.trim(),
                 description: formData.description.trim(),
-                start_time: new Date(formData.start_time).toISOString(),
+                start_time: localToUTC(formData.start_time),
                 camera: cameraConfig,
                 tileset_url: formData.tileset_url ? formData.tileset_url : "",
                 user_id: user.user_id
@@ -184,11 +185,9 @@ function NewPlanPage() {
         }
     };
 
-    // 获取当前时间的ISO字符串（用于datetime-local输入）
+    // 获取当前时间的datetime-local格式（用于输入框最小值）
     const getCurrentDateTime = () => {
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        return now.toISOString().slice(0, 16);
+        return getCurrentDateTimeLocal();
     };
 
     // 处理键盘事件

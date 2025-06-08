@@ -26,6 +26,7 @@ import {
     Map as MapIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { isUTCFuture, formatUTCForDisplay, getCurrentUTC } from '../../utils/timeUtils';
 import "../../assets/style.css";
 
 const DashboardPage = () => {
@@ -64,11 +65,17 @@ const DashboardPage = () => {
 
     // 计算统计数据
     const getStatistics = () => {
-        const now = new Date();
-        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const nowUTC = getCurrentUTC();
         
-        const recentPlans = planList.filter(plan => new Date(plan.created_at) >= sevenDaysAgo);
-        const upcomingPlans = planList.filter(plan => new Date(plan.start_time) > now);
+        const recentPlans = planList.filter(plan => {
+            if (!plan.created_at) return false;
+            // 计算7天前的UTC时间
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            return new Date(plan.created_at) >= sevenDaysAgo;
+        });
+        
+        const upcomingPlans = planList.filter(plan => isUTCFuture(plan.start_time));
         
         return {
             total: planList.length,
@@ -80,15 +87,15 @@ const DashboardPage = () => {
     // 获取最近编辑的计划
     const getRecentlyEditedPlans = () => {
         return [...planList]
+            .filter(plan => plan.updated_at)
             .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
             .slice(0, 3);
     };
 
     // 获取即将到期的计划
     const getUpcomingPlans = () => {
-        const now = new Date();
         return planList
-            .filter(plan => new Date(plan.start_time) > now)
+            .filter(plan => isUTCFuture(plan.start_time))
             .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
             .slice(0, 3);
     };
@@ -515,7 +522,7 @@ const DashboardPage = () => {
                                                     fontWeight: 300
                                                 }}
                                             >
-                                                EDITED: {new Date(plan.updated_at).toLocaleDateString('en-US')}
+                                                EDITED: {formatUTCForDisplay(plan.updated_at).date}
                                             </Typography>
                                         </div>
                                     ))
@@ -638,7 +645,7 @@ const DashboardPage = () => {
                                                     fontWeight: 300
                                                 }}
                                             >
-                                                {new Date(plan.start_time).toLocaleString('en-US')}
+                                                {formatUTCForDisplay(plan.start_time).fullDateTime}
                                             </Typography>
                                         </div>
                                     ))

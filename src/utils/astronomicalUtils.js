@@ -95,7 +95,7 @@ export const calculatePhotographyTimes = (date, latitude, longitude) => {
 export const getAstronomicalData = (date, latitude, longitude) => {
   try {
     console.log('=== 计算天文数据 ===');
-    console.log('日期时间:', date.toLocaleString());
+    console.log('日期时间 (UTC):', date.toISOString());
     console.log('位置:', { latitude, longitude });
     
     const sunPos = calculateSunPosition(date, latitude, longitude);
