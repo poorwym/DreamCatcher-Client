@@ -40,6 +40,25 @@ import { localToUTC, getCurrentDateTimeLocal } from '../../utils/timeUtils';
 import '../../assets/style.css';
 import Background from "../../components/Background/Background.jsx";
 
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// 设置marker图标
+import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
+import iconUrl    from 'leaflet/dist/images/marker-icon.png';
+import shadowUrl  from 'leaflet/dist/images/marker-shadow.png';
+
+// 先删除旧的 _getIconUrl，避免缓存旧路径
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: iconRetina,
+  iconUrl:       iconUrl,
+  shadowUrl:     shadowUrl,
+  iconSize:   [25, 41],
+  iconAnchor: [12, 41],
+});
+
 function NewPlanPage() {
     const navigate = useNavigate();
     const { fetchWithAuth, user } = useAuth();
