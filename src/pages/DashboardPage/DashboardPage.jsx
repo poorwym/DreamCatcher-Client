@@ -747,7 +747,7 @@ const DashboardPage = () => {
                                         />
                                         <Typography 
                                             variant="h5" 
-                                            className="text-muted mb-6 uppercase tracking-wider"
+                                            className="text-muted uppercase tracking-wider"
                                             sx={{ 
                                                 color: 'var(--text-muted)',
                                                 fontSize: '1.1rem',
@@ -759,6 +759,7 @@ const DashboardPage = () => {
                                         <Button
                                             variant="contained"
                                             startIcon={<Add />}
+                                            className="m-3"
                                             onClick={handleCreateNewPlan}
                                             sx={{
                                                 backgroundColor: 'var(--accent-blue)',
@@ -767,6 +768,7 @@ const DashboardPage = () => {
                                                 letterSpacing: '0.1em',
                                                 fontSize: '0.9rem',
                                                 fontWeight: 500,
+                                                margin: '24px',
                                                 padding: '12px 24px',
                                                 filter: 'drop-shadow(0 0 10px rgba(14, 165, 233, 0.4))',
                                                 '&:hover': {
