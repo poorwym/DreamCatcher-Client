@@ -76,7 +76,7 @@ const DashboardMapWidget = ({ plans }) => {
                 border: '1px solid rgba(var(--border-primary-rgb), 0.3)',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
-                    boxShadow: '0 0 30px rgba(14, 165, 233, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                    boxShadow: '0 0 30px rgba(var(--accent-blue-rgb), 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.25)',
                 }
             }}
         >
@@ -88,7 +88,7 @@ const DashboardMapWidget = ({ plans }) => {
                             sx={{ 
                                 color: 'var(--accent-blue)', 
                                 marginRight: 1,
-                                filter: 'drop-shadow(0 0 6px rgba(14, 165, 233, 0.4))'
+                                filter: 'drop-shadow(0 0 6px rgba(var(--accent-blue-rgb), 0.4))'
                             }}
                         />
                         <Typography 
@@ -130,14 +130,14 @@ const DashboardMapWidget = ({ plans }) => {
                                 <PointLayer plans={plans} />
                             </Map2DContainer>
                     ) : (
-                        <div className="w-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg border border-primary/20">
+                        <div className="w-full flex items-center justify-center bg-secondary/50 rounded-lg border border-primary/20 backdrop-blur-md p-3">
                             <div className="text-center">
                                 <MapIcon 
                                     sx={{ 
                                         fontSize: 48, 
                                         color: 'var(--text-muted)', 
                                         marginBottom: 2,
-                                        filter: 'drop-shadow(0 0 10px rgba(107, 114, 128, 0.3))'
+                                        filter: 'drop-shadow(0 0 10px rgba(var(--border-subtle-rgb), 0.3))'
                                     }}
                                 />
                                 <Typography 
@@ -172,10 +172,10 @@ const DashboardMapWidget = ({ plans }) => {
                     <div className="flex items-center justify-center space-x-6 mt-4 pt-4 border-t border-primary/20">
                         <div className="flex items-center space-x-2">
                             <div 
-                                className="w-3 h-3 rounded-full border border-white shadow-sm"
+                                className="w-3 h-3 rounded-full border border-contrast shadow-sm"
                                 style={{ 
-                                    backgroundColor: '#10B981',
-                                    boxShadow: '0 0 6px rgba(16, 185, 129, 0.5)'
+                                    backgroundColor: 'var(--accent-green)',
+                                    boxShadow: '0 0 6px rgba(var(--accent-green-rgb), 0.5)'
                                 }}
                             />
                             <Typography 
@@ -192,10 +192,10 @@ const DashboardMapWidget = ({ plans }) => {
                         </div>
                         <div className="flex items-center space-x-2">
                             <div 
-                                className="w-3 h-3 rounded-full border border-white shadow-sm"
+                                className="w-3 h-3 rounded-full border border-contrast shadow-sm"
                                 style={{ 
-                                    backgroundColor: '#F59E0B',
-                                    boxShadow: '0 0 6px rgba(245, 158, 11, 0.5)'
+                                    backgroundColor: 'var(--accent-orange)',
+                                    boxShadow: '0 0 6px rgba(var(--accent-orange-rgb), 0.5)'
                                 }}
                             />
                             <Typography 

@@ -40,8 +40,22 @@ function LlmPage() {
         setIsLoading(true);
 
         try {
-            // 调用LLM API
-            const response = await sendChatMessage(message, fetchWithAuth);
+            // 构建包含历史记录的完整消息
+            let fullMessage = "";
+            
+            if (chatHistory.length > 0) {
+                fullMessage += "对话历史记录:{\n";
+                chatHistory.forEach(chat => {
+                    const role = chat.role === "user" ? "user" : "morpheus";
+                    fullMessage += `${role}: ${chat.message}\n`;
+                });
+                fullMessage += "}\n";
+            }
+            
+            fullMessage += `用户的最新请求是: ${message}`;
+
+            // 调用LLM API，发送包含历史记录的完整消息
+            const response = await sendChatMessage(fullMessage, fetchWithAuth);
             
             // 添加助手回复到聊天历史
             const assistantMessage = {

@@ -192,11 +192,14 @@ export const updatePlan = async (planId, planData, fetchWithAuth) => {
         throw new Error('需要认证函数');
     }
 
-    // 过滤掉空值和undefined值
+    // 过滤掉空值和undefined值，但保留空字符串的tileset_url
     const updateData = {};
     Object.keys(planData).forEach(key => {
-        if (planData[key] !== null && planData[key] !== undefined && planData[key] !== '') {
-            updateData[key] = planData[key];
+        if (planData[key] !== null && planData[key] !== undefined) {
+            // 对于 tileset_url，允许空字符串
+            if (key === 'tileset_url' || planData[key] !== '') {
+                updateData[key] = planData[key];
+            }
         }
     });
 
