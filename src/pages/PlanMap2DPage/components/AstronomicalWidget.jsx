@@ -21,6 +21,7 @@ import {
   Refresh as RefreshIcon
 } from '@mui/icons-material';
 import { getAstronomicalData } from '../../../utils/astronomicalUtils.js';
+import { formatUTCForDisplay } from '../../../utils/timeUtils';
 import '../../../assets/style.css';
 
 function AstronomicalWidget({lon, lat, time}) {
@@ -753,7 +754,7 @@ function AstronomicalWidget({lon, lat, time}) {
                                     fontSize: '0.8rem'
                                 }}
                             >
-                                QUERY TIME: {new Date(time).toLocaleString('zh-CN')}
+                                QUERY TIME: {formatUTCForDisplay(time).fullDateTime}
                             </Typography>
                         </Box>
                     </Box>

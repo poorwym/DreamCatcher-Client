@@ -4,6 +4,7 @@ import { LocationOn, Schedule, Edit, Delete, CameraAlt } from '@mui/icons-materi
 import { useNavigate } from 'react-router-dom';
 import "../../assets/style.css";
 import "./PlanCard.css";
+import { formatUTCForDisplay, isUTCFuture } from '../../utils/timeUtils';
 
 // {
 //   "name": "Sunset Time-lapse",
@@ -43,20 +44,12 @@ function PlanCard({ index, plan, onEdit, onDelete }) {
         navigate(`/plans/${plan.id}`);
     };
 
-    // 格式化时间显示
-    const formatDateTime = (dateString) => {
-        const date = new Date(dateString);
-        return {
-            date: date.toLocaleDateString('zh-CN', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            }),
-            time: date.toLocaleTimeString('zh-CN', {
-                hour: '2-digit',
-                minute: '2-digit'
-            })
-        };
+    // 格式化时间显示 - 使用UTC时间工具
+    const formatDateTime = (utcDateString) => {
+        return formatUTCForDisplay(utcDateString, {
+            dateFormat: 'YYYY年MM月DD日',
+            timeFormat: 'HH:mm'
+        });
     };
 
     // 格式化地理坐标显示
@@ -204,10 +197,10 @@ function PlanCard({ index, plan, onEdit, onDelete }) {
                 {/* 状态标签 */}
                 <div className="flex justify-between items-center">
                     <Chip
-                        label={new Date(plan.start_time) > new Date() ? "待拍摄" : "已过期"}
+                        label={isUTCFuture(plan.start_time) ? "待拍摄" : "已过期"}
                         size="small"
                         sx={{
-                            backgroundColor: new Date(plan.start_time) > new Date() 
+                            backgroundColor: isUTCFuture(plan.start_time)
                                 ? 'var(--accent-green)' 
                                 : 'var(--accent-orange)',
                             color: 'var(--text-contrast)',

@@ -104,6 +104,7 @@
 
 /* Border 边框 */
 .border-subtle      { border-color: var(--border-subtle); }
+.border-contrast    { border-color: var(--text-contrast); }
 
 /* === Accent 强调色（保持原有设计）=== */
 .bg-accent          { background-color: var(--accent-orange); }
@@ -247,6 +248,11 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
 }
 
+/* 浅色模式下的弹窗样式 */
+[data-theme="light"] .leaflet-popup-content-wrapper {
+  box-shadow: 0 8px 32px rgba(var(--border-subtle-rgb), 0.4), 0 4px 16px rgba(var(--border-subtle-rgb), 0.2) !important;
+}
+
 .leaflet-popup-content {
   margin: 0 !important;
   color: var(--text-main) !important;
@@ -262,6 +268,11 @@
   background: var(--bg-primary) !important;
   border: 2px solid rgba(var(--border-primary-rgb), 0.3) !important;
   box-shadow: 0 0 30px rgba(var(--border-primary-rgb), 0.2) !important;
+}
+
+/* 浅色模式下的地图样式优化 */
+[data-theme="light"] .leaflet-container {
+  box-shadow: 0 4px 20px rgba(var(--border-primary-rgb), 0.15), 0 2px 8px rgba(var(--border-subtle-rgb), 0.1) !important;
 }
 
 /* 地图控件样式 */

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Marker, Popup, Polyline } from 'react-leaflet';
 import SunCalc from 'suncalc';
 import { getAstronomicalData } from '../../../utils/astronomicalUtils.js';
+import { formatUTCForDisplay } from '../../../utils/timeUtils';
 import {
   createCameraIcon,
   createSunIcon,
@@ -157,7 +158,7 @@ function AstronomicalLayer({ lat, lon, time, zoomLevel }) {
             </p>
             <p className="text-sm">
               <span className="font-medium">时间:</span>{' '}
-              {new Date(time).toLocaleString('zh-CN')}
+              {formatUTCForDisplay(time).fullDateTime}
             </p>
           </div>
         </Popup>

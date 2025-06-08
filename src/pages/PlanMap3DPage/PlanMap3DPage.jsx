@@ -8,6 +8,7 @@ import { Spin, Alert } from "antd";
 import "../../assets/style.css";
 import Background from "../../components/Background/Background.jsx";
 import { calculateSunPosition } from "../../utils/astronomicalUtils.js";
+import { getCurrentUTC, formatUTCForDisplay } from '../../utils/timeUtils';
 
 const CESIUM_TOKEN=import.meta.env.VITE_CESIUM_TOKEN;
 
@@ -106,10 +107,13 @@ function PlanMap3DPage() {
                 // 用于存储太阳位置标记
                 let sunMarker = null;
                 
-                // 获取中国时间的辅助函数
-                const getChinaTime = () => {
-                    // 直接创建中国时区的时间
-                    return new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Shanghai"}));
+                // 获取当前UTC时间的辅助函数
+                const getCurrentTime = () => {
+                    // 如果计划有指定的开始时间，使用计划时间；否则使用当前UTC时间
+                    if (plan.start_time) {
+                        return new Date(plan.start_time);
+                    }
+                    return new Date(); // 当前UTC时间
                 };
                 
                 // 设置基于真实太阳位置的光照
@@ -128,20 +132,12 @@ function PlanMap3DPage() {
                         }
                         
                         if (true) { // 总是执行太阳光照设置
-                            // 获取中国时间
-                            const chinaTime = getChinaTime();
+                            // 获取当前时间（UTC）
+                            const currentTime = getCurrentTime();
                             
-                            // 计算当前时间太阳位置（使用中国时间）
-                            const sunPos = calculateSunPosition(chinaTime, latitude, longitude);
-                            console.log('使用中国时间计算太阳位置:', chinaTime.toLocaleString('zh-CN', {
-                                timeZone: 'Asia/Shanghai',
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                second: '2-digit'
-                            }));
+                            // 计算当前时间太阳位置（使用UTC时间）
+                            const sunPos = calculateSunPosition(currentTime, latitude, longitude);
+                            console.log('使用UTC时间计算太阳位置:', currentTime.toISOString());
                             console.log('太阳位置:', sunPos);
                             
                             // 将太阳方位角和高度角转换为 Cesium 坐标系
@@ -244,20 +240,12 @@ function PlanMap3DPage() {
                                 });
                             }
                             
-                            // 更新太阳信息状态（使用中国时间）
+                            // 更新太阳信息状态（使用UTC时间）
                             setSunInfo({
                                 altitude: sunPos.altitude,
                                 azimuth: sunPos.azimuth,
                                 intensity: lightIntensity.toFixed(2),
-                                updateTime: chinaTime.toLocaleString('zh-CN', {
-                                    timeZone: 'Asia/Shanghai',
-                                    year: 'numeric',
-                                    month: '2-digit',
-                                    day: '2-digit',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    second: '2-digit'
-                                })
+                                updateTime: formatUTCForDisplay(currentTime.toISOString()).fullDateTime
                             });
                             
                             console.log(`太阳光照设置完成 - 方位角: ${sunPos.azimuth}°, 高度角: ${sunPos.altitude}°, 光照强度: ${lightIntensity.toFixed(2)}`);
